@@ -1,0 +1,13 @@
+.stock-movements-page {
+  padding: 10px;
+
+  &__selection-container {
+    width: 100%;
+    margin-top: 3vh;
+  }
+
+  &__grid-container {
+    height: 60vh;
+    width: 100%;
+  }
+}
