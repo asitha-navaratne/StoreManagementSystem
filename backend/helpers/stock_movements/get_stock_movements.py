@@ -12,8 +12,7 @@ def get_stock_movements(store: str, date: str, db: Session):
 
     if date == datetime.today().strftime('%Y-%m-%d'):
         subquery = (
-            select(StockMovements.product_id,
-            func.max(StockMovements.record_date).label('latest_record_date'))
+            select(StockMovements.product_id, func.max(StockMovements.record_date).label('latest_record_date'))
             .group_by(StockMovements.product_id)
             .subquery()
         )
