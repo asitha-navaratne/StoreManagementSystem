@@ -3,7 +3,10 @@ type SuppliersApiColumnsType = {
   company_name: string;
   contact_person: string;
   number: string;
+  supplier_tin: number;
   email: string;
+  invoice_type: "local" | "foreign";
+  payment_period: number;
   active: string;
   created_by: string;
   created_on: string;

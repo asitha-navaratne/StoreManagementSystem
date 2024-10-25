@@ -8,7 +8,10 @@ class CreateSupplierModel(BaseModel):
     company_name: str
     contact_person: str
     number: str
+    supplier_tin: int
     email: str
+    invoice_type: str
+    payment_period: int
     active: bool
     created_by: str
     created_on: datetime

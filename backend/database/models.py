@@ -75,7 +75,10 @@ class Suppliers(Base):
     company_name: Mapped[str] = mapped_column(nullable=False)
     contact_person: Mapped[str] = mapped_column(nullable=False)
     number: Mapped[str] = mapped_column(nullable=False)
+    supplier_tin: Mapped[int] = mapped_column(nullable=False)
     email: Mapped[str]
+    invoice_type: Mapped[str]
+    payment_period: Mapped[int]
     active: Mapped[bool] = mapped_column(nullable=False)
     created_by: Mapped[int] = mapped_column(ForeignKey('users.id'), nullable=False)
     created_on: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
