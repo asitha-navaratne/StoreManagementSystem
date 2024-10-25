@@ -31,6 +31,7 @@ import AlertWindow from "../../Components/AlertWindow/AlertWindow";
 
 import LoaderDataType from "./types/LoaderType";
 import InitPriceRowValues from "../../Constants/InitPriceRowValues";
+import Categories from "../../Constants/Categories";
 
 import Service from "../../Services/PriceMasterService";
 
@@ -116,10 +117,22 @@ const PriceMasterPage = () => {
       headerAlign: "left",
     },
     {
+      field: "category",
+      headerName: "Category",
+      flex: 1,
+      editable: true,
+      type: "singleSelect",
+      valueOptions: Categories,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
       field: "bottleSize",
       headerName: "Bottle Size",
       flex: 1,
       editable: true,
+      type: "number",
+      valueFormatter: (value) => `${value}L`,
       align: "left",
       headerAlign: "left",
     },
@@ -128,6 +141,28 @@ const PriceMasterPage = () => {
       headerName: "Container Size",
       flex: 1,
       editable: true,
+      type: "number",
+      valueFormatter: (value) => `${value}L`,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "taxPrice",
+      headerName: "Tax Price",
+      flex: 1,
+      editable: true,
+      type: "number",
+      valueFormatter: (value) => `Rs. ${value}`,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "cost",
+      headerName: "Cost",
+      flex: 1,
+      editable: true,
+      type: "number",
+      valueFormatter: (value) => `Rs. ${value}`,
       align: "left",
       headerAlign: "left",
     },
@@ -137,6 +172,7 @@ const PriceMasterPage = () => {
       flex: 1,
       editable: true,
       type: "number",
+      valueFormatter: (value) => `Rs. ${value}`,
       align: "left",
       headerAlign: "left",
     },
@@ -154,6 +190,8 @@ const PriceMasterPage = () => {
       headerName: "Margin",
       flex: 1,
       editable: true,
+      type: "number",
+      valueFormatter: (value) => `${value}%`,
       align: "left",
       headerAlign: "left",
     },

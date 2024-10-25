@@ -4,11 +4,14 @@ type PriceMasterApiColumnsType = {
   company_name: string;
   brand: string;
   brand_code: string;
-  bottle_size: string;
-  container_size: string;
+  category: string;
+  bottle_size: number;
+  container_size: number;
+  tax_price: number;
+  cost: number;
   price: number;
   commissions: number;
-  margin: string;
+  margin: number;
   active: string;
   created_by: string;
   created_on: string;

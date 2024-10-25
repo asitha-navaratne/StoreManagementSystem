@@ -4,11 +4,14 @@ type PriceMasterGridColumnsType = {
   companyName: string;
   brand: string;
   brandCode: string;
-  bottleSize: string;
-  containerSize: string;
+  category: string;
+  bottleSize: number;
+  containerSize: number;
+  taxPrice: number;
+  cost: number;
   price: number;
   commissions: number;
-  margin: string;
+  margin: number;
   active: string;
   createdBy: string;
   createdOn: string;

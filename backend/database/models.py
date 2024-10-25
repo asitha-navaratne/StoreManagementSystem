@@ -96,11 +96,14 @@ class PriceMaster(Base):
     supplier_id: Mapped[int] = mapped_column(ForeignKey('suppliers.id'), index=True, nullable=False)
     brand: Mapped[str] = mapped_column(nullable=False)
     brand_code: Mapped[str] = mapped_column(nullable=False)
-    bottle_size: Mapped[str]
-    container_size: Mapped[str]
+    category: Mapped[str]
+    bottle_size: Mapped[int]
+    container_size: Mapped[int]
+    tax_price: Mapped[int]
+    cost: Mapped[int]
     price: Mapped[int]
-    commissions:Mapped[str]
-    margin:Mapped[str]
+    commissions:Mapped[int]
+    margin:Mapped[int]
     active: Mapped[bool] = mapped_column(nullable=False)
     created_by: Mapped[int] = mapped_column(ForeignKey('users.id'), nullable=False)
     created_on: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
