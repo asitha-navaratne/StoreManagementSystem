@@ -6,6 +6,9 @@ type StockMovementsApiColumnsType = {
   store_name: string;
   record_date: string;
   in_hand: number;
+  second_in_hand: number;
+  third_in_hand: number;
+  fourth_in_hand: number;
   current_in_hand: number;
   purchased_amount: number;
   sold: number;

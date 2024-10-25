@@ -47,7 +47,7 @@ const StockMovementsPage = () => {
     useState<boolean>(true);
   const [isGridDataLoading, setIsGridDataLoading] = useState<boolean>(false);
 
-  const columns: GridColDef[] = [
+  const columns = [
     {
       field: "id",
       headerName: "ID",
@@ -77,26 +77,56 @@ const StockMovementsPage = () => {
       type: "date",
       align: "left",
       headerAlign: "left",
-      valueFormatter: (value) =>
+      valueFormatter: (value: Dayjs) =>
         value ? dayjs(value).format("YYYY-MM-DD") : null,
     },
     {
-      field: "inHand",
-      headerName: "Previous Day Stock",
+      field: "fourthInHand",
+      headerName: "-4 Days Stock",
       flex: 1,
       type: "number",
       align: "left",
       headerAlign: "left",
     },
     {
-      field: "currentInHand",
-      headerName: "In Hand",
+      field: "thirdInHand",
+      headerName: "-3 Days Stock",
       flex: 1,
-      editable: isGridEditable,
       type: "number",
       align: "left",
       headerAlign: "left",
     },
+    {
+      field: "secondInHand",
+      headerName: "-2 Days Stock",
+      flex: 1,
+      type: "number",
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "inHand",
+      headerName: selectedDate?.isSame(dayjs(), "day")
+        ? "Previous Day Stock"
+        : "In Hand",
+      flex: 1,
+      type: "number",
+      align: "left",
+      headerAlign: "left",
+    },
+    ...(selectedDate?.isSame(dayjs(), "day")
+      ? [
+          {
+            field: "currentInHand",
+            headerName: "In Hand",
+            flex: 1,
+            editable: isGridEditable,
+            type: "number",
+            align: "left",
+            headerAlign: "left",
+          },
+        ]
+      : []),
     {
       field: "purchasedAmount",
       headerName: "Purchased Amount",
@@ -257,7 +287,7 @@ const StockMovementsPage = () => {
       <Box className={styles["stock-movements-page__grid-container"]}>
         <DataGrid
           rows={rows}
-          columns={columns}
+          columns={columns as GridColDef[]}
           editMode="row"
           loading={isGridDataLoading}
           processRowUpdate={processRowUpdate}

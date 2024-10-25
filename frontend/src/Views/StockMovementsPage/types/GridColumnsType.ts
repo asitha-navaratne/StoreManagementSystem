@@ -6,6 +6,9 @@ type StockMovementsGridColumnsType = {
   storeName: string;
   recordDate: string;
   inHand: number;
+  secondInHand: number;
+  thirdInHand: number;
+  fourthInHand: number;
   currentInHand: number;
   purchasedAmount: number;
   sold: number;
