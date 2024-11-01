@@ -55,7 +55,6 @@ const theme = createTheme({
     MuiSelect: {
       styleOverrides: {
         root: {
-          minWidth: "15vw",
           color: "#fff",
         },
         icon: {

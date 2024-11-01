@@ -31,7 +31,7 @@ import AlertWindow from "../../Components/AlertWindow/AlertWindow";
 
 import LoaderDataType from "./types/LoaderType";
 import InitPriceRowValues from "../../Constants/InitPriceRowValues";
-import Categories from "../../Constants/Categories";
+import AlcoholCategories from "../../Constants/AlcoholCategories";
 
 import Service from "../../Services/PriceMasterService";
 
@@ -122,7 +122,7 @@ const PriceMasterPage = () => {
       flex: 1,
       editable: true,
       type: "singleSelect",
-      valueOptions: Categories,
+      valueOptions: AlcoholCategories,
       align: "left",
       headerAlign: "left",
     },

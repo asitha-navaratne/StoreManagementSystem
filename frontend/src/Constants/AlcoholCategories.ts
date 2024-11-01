@@ -1,4 +1,4 @@
-const Categories: string[] = [
+const AlcoholCategories: string[] = [
   "Whiskey",
   "Arrack",
   "Brandy",
@@ -19,4 +19,4 @@ const Categories: string[] = [
   "Liqueurs",
 ];
 
-export default Categories;
+export default AlcoholCategories;

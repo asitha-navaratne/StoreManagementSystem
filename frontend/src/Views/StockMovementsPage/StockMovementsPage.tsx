@@ -258,6 +258,7 @@ const StockMovementsPage = () => {
             value={selectedStore}
             label="Store"
             onChange={handleStoreChange}
+            sx={{ minWidth: "15vw" }}
           >
             {storesList.map((store) => (
               <MenuItem key={store.id} value={store.storeName}>
