@@ -11,6 +11,7 @@ const loader = async function () {
         id: row.id,
         companyName: row.company_name,
         contactPerson: row.contact_person,
+        supplierCode: row.supplier_code,
         number: row.number,
         supplierTin: row.supplier_tin,
         email: row.email,

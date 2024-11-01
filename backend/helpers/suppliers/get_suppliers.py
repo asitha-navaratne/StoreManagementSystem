@@ -21,6 +21,7 @@ def get_suppliers(db: Session):
             'id': result[0].id,
             'company_name': result[0].company_name,
             'contact_person': result[0].contact_person,
+            'supplier_code': result[0].supplier_code,
             'number': result[0].number,
             'supplier_tin': result[0].supplier_tin,
             'email': result[0].email,

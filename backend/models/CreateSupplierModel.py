@@ -7,8 +7,9 @@ class CreateSupplierModel(BaseModel):
     id: int
     company_name: str
     contact_person: str
+    supplier_code: str
     number: str
-    supplier_tin: int
+    supplier_tin: str
     email: str
     invoice_type: str
     payment_period: int

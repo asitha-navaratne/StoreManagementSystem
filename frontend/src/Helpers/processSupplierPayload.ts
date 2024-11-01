@@ -9,6 +9,7 @@ const processSupplierPayload = function (
     id: column.id,
     company_name: column.companyName,
     contact_person: column.contactPerson,
+    supplier_code: column.supplierCode,
     number: column.number,
     supplier_tin: column.supplierTin,
     email: column.email,

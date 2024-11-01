@@ -16,6 +16,7 @@ def edit_supplier(supplier: CreateSupplierModel, db: Session):
         .values(
             company_name = supplier.company_name,
             contact_person = supplier.contact_person,
+            supplier_code = supplier.supplier_code,
             number = supplier.number,
             supplier_tin = supplier.supplier_tin,
             email = supplier.email,

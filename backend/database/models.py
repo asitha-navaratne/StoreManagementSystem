@@ -74,8 +74,9 @@ class Suppliers(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     company_name: Mapped[str] = mapped_column(nullable=False)
     contact_person: Mapped[str] = mapped_column(nullable=False)
+    supplier_code: Mapped[str]
     number: Mapped[str] = mapped_column(nullable=False)
-    supplier_tin: Mapped[int] = mapped_column(nullable=False)
+    supplier_tin: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str]
     invoice_type: Mapped[str]
     payment_period: Mapped[int]

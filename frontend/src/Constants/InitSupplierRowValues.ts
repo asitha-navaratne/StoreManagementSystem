@@ -1,8 +1,9 @@
 const InitSupplierRowValues = {
   companyName: "",
   contactPerson: "",
+  supplierCode: "",
   number: "",
-  supplierTin: 0,
+  supplierTin: "",
   email: "",
   invoiceType: "local",
   paymentPeriod: 0,

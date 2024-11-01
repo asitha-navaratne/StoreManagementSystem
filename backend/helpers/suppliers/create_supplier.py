@@ -14,6 +14,7 @@ def create_supplier(supplier: CreateSupplierModel, db: Session):
         id = supplier.id,
         company_name = supplier.company_name,
         contact_person = supplier.contact_person,
+        supplier_code = supplier.supplier_code,
         number = supplier.number,
         supplier_tin = supplier.supplier_tin,
         email = supplier.email,

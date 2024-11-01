@@ -181,15 +181,22 @@ const SuppliersPage = () => {
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
+    const paymentPeriodValue = newRow.invoiceType === "local" ? 7 : 30;
+
     if (isAddButtonClicked) {
-      const addRow = { ...newRow, isNew: false };
+      const addRow = {
+        ...newRow,
+        paymentPeriod: paymentPeriodValue,
+        isNew: false,
+      };
       setRows(rows.map((row) => (row.id === newRow.id ? addRow : row)));
-      setAddedRow({ ...newRow });
+      setAddedRow({ ...addRow });
       setIsAddButtonClicked(false);
       return addRow;
     } else {
       const updatedRow = {
         ...newRow,
+        paymentPeriod: paymentPeriodValue,
         updatedBy: "AsithaN",
         updatedOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         isNew: false,
