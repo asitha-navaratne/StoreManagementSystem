@@ -180,7 +180,6 @@ const PriceMasterPage = () => {
       field: "commissions",
       headerName: "Commissions",
       flex: 1,
-      editable: true,
       type: "number",
       align: "left",
       headerAlign: "left",
@@ -406,15 +405,18 @@ const PriceMasterPage = () => {
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
+    const commissionValue = newRow.price - newRow.cost;
+
     if (isAddButtonClicked) {
-      const addRow = { ...newRow, isNew: false };
+      const addRow = { ...newRow, commissions: commissionValue, isNew: false };
       setRows(rows.map((row) => (row.id === newRow.id ? addRow : row)));
-      setAddedRow({ ...newRow });
+      setAddedRow({ ...addRow });
       setIsAddButtonClicked(false);
       return addRow;
     } else {
       const updatedRow = {
         ...newRow,
+        commissions: commissionValue,
         updatedBy: "AsithaN",
         updatedOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         isNew: false,
