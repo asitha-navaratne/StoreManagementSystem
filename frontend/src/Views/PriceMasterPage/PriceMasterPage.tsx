@@ -466,9 +466,11 @@ const PriceMasterPage = () => {
 
   return (
     <Box className={styles["price-master-page"]}>
-      <Typography variant="h4" component="h1" sx={{ mb: 5 }}>
-        Price Master
-      </Typography>
+      <Box className={styles["price-master-page__title-section"]}>
+        <Typography variant="h4" component="h1">
+          Price Master
+        </Typography>
+      </Box>
       <Box className={styles["price-master-page__grid-container"]}>
         <DataGrid
           rows={rows}

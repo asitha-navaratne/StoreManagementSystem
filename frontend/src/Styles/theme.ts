@@ -70,6 +70,11 @@ const theme = createTheme({
       },
     },
   },
+  typography: {
+    h4: {
+      fontSize: "3vh",
+    },
+  },
 });
 
 export default theme;

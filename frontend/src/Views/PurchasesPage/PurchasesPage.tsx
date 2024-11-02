@@ -420,9 +420,11 @@ const PurchasesPage = () => {
 
   return (
     <Box className={styles["purchases-page"]}>
-      <Typography variant="h4" component="h1" sx={{ mb: 5 }}>
-        Purchases
-      </Typography>
+      <Box className={styles["purchases-page__title-section"]}>
+        <Typography variant="h4" component="h1">
+          Purchases
+        </Typography>
+      </Box>
       <Box className={styles["purchases-page__grid-container"]}>
         <DataGrid
           rows={rows}

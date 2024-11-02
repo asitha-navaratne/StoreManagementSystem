@@ -246,9 +246,11 @@ const SuppliersPage = () => {
 
   return (
     <Box className={styles["suppliers-page"]}>
-      <Typography variant="h4" component="h1" sx={{ mb: 5 }}>
-        Suppliers
-      </Typography>
+      <Box className={styles["suppliers-page__title-section"]}>
+        <Typography variant="h4" component="h1">
+          Suppliers
+        </Typography>
+      </Box>
       <Box className={styles["suppliers-page__grid-container"]}>
         <DataGrid
           rows={rows}

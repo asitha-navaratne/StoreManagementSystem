@@ -1,3 +1,5 @@
 .root {
-  padding: 5px;
+  &__button-container {
+    height: 4vh;
+  }
 }

@@ -20,16 +20,18 @@ const Root = () => {
   }, []);
 
   return (
-    <Box className={styles["root"]}>
-      <IconButton
-        onClick={handleMenuButtonClick}
-        sx={{ color: "primary.main" }}
-      >
-        <MenuIcon />
-      </IconButton>
+    <>
+      <Box className={styles["root__button-container"]}>
+        <IconButton
+          onClick={handleMenuButtonClick}
+          sx={{ color: "primary.main", position: "absolute" }}
+        >
+          <MenuIcon />
+        </IconButton>
+      </Box>
       <Sidebar isOpen={isMenuShown} handleClose={handleMenuClose} />
       <Outlet />
-    </Box>
+    </>
   );
 };
 
