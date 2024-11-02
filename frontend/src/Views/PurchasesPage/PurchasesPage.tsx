@@ -213,9 +213,7 @@ const PurchasesPage = () => {
             <GridActionsCellItem
               icon={<CancelIcon />}
               label="Cancel"
-              className="textPrimary"
               onClick={handleCancelButtonClick(id)}
-              color="inherit"
               sx={{
                 color: "error.main",
               }}
@@ -227,15 +225,18 @@ const PurchasesPage = () => {
           <GridActionsCellItem
             icon={<EditIcon />}
             label="Edit"
-            className="textPrimary"
             onClick={handleEditButtonClick(id)}
-            color="inherit"
+            sx={{
+              color: "primary.main",
+            }}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
             onClick={handleDeleteButtonClick(id)}
-            color="inherit"
+            sx={{
+              color: "error.main",
+            }}
           />,
         ];
       },

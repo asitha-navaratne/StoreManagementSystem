@@ -21,6 +21,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 
 import styles from "./PriceMasterPage.module.scss";
 import dataGridStyles from "../../Styles/dataGridStyles";
@@ -199,10 +201,22 @@ const PriceMasterPage = () => {
       headerName: "Active",
       flex: 1,
       editable: true,
-      type: "singleSelect",
-      valueOptions: ["true", "false"],
-      align: "left",
-      headerAlign: "left",
+      type: "boolean",
+      renderCell: (params) => {
+        return params.value ? (
+          <CheckIcon
+            style={{
+              color: "#fff",
+            }}
+          />
+        ) : (
+          <CloseIcon
+            style={{
+              color: "#fff",
+            }}
+          />
+        );
+      },
     },
     {
       field: "createdBy",
@@ -257,9 +271,7 @@ const PriceMasterPage = () => {
             <GridActionsCellItem
               icon={<CancelIcon />}
               label="Cancel"
-              className="textPrimary"
               onClick={handleCancelButtonClick(id)}
-              color="inherit"
               sx={{
                 color: "error.main",
               }}
@@ -271,15 +283,18 @@ const PriceMasterPage = () => {
           <GridActionsCellItem
             icon={<EditIcon />}
             label="Edit"
-            className="textPrimary"
             onClick={handleEditButtonClick(id)}
-            color="inherit"
+            sx={{
+              color: "primary.main",
+            }}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
             onClick={handleDeleteButtonClick(id)}
-            color="inherit"
+            sx={{
+              color: "error.main",
+            }}
           />,
         ];
       },

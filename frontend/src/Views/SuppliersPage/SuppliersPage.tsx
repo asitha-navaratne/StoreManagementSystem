@@ -21,6 +21,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 
 import styles from "./SuppliersPage.module.scss";
 import dataGridStyles from "../../Styles/dataGridStyles";
@@ -28,7 +30,6 @@ import dataGridStyles from "../../Styles/dataGridStyles";
 import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
 import AlertWindow from "../../Components/AlertWindow/AlertWindow";
 
-import GridColDefs from "./types/GridColDefs";
 import InitSupplierRowValues from "../../Constants/InitSupplierRowValues";
 
 import Service from "../../Services/SupplierService";
@@ -47,7 +48,135 @@ const SuppliersPage = () => {
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState<boolean>(false);
 
   const columns: GridColDef[] = [
-    ...GridColDefs,
+    {
+      field: "id",
+      headerName: "Supplier ID",
+      flex: 1,
+      type: "number",
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "companyName",
+      headerName: "Company Name",
+      flex: 1,
+      editable: true,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "contactPerson",
+      headerName: "Contact Person",
+      flex: 1,
+      editable: true,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "supplierCode",
+      headerName: "Supplier Code",
+      flex: 1,
+      editable: true,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "number",
+      headerName: "Phone Number",
+      flex: 1,
+      editable: true,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "supplierTin",
+      headerName: "Supplier TIN Number",
+      flex: 1,
+      editable: true,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "email",
+      headerName: "Email",
+      flex: 1,
+      editable: true,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "invoiceType",
+      headerName: "Invoice Type",
+      flex: 1,
+      editable: true,
+      type: "singleSelect",
+      valueOptions: ["local", "foreign"],
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "paymentPeriod",
+      headerName: "Payment Period",
+      type: "number",
+      flex: 1,
+      align: "left",
+      headerAlign: "left",
+      valueFormatter: (value) => (value === 1 ? "1 day" : `${value} days`),
+    },
+    {
+      field: "active",
+      headerName: "Active",
+      flex: 1,
+      editable: true,
+      type: "boolean",
+      renderCell: (params) => {
+        return params.value ? (
+          <CheckIcon
+            style={{
+              color: "#fff",
+            }}
+          />
+        ) : (
+          <CloseIcon
+            style={{
+              color: "#fff",
+            }}
+          />
+        );
+      },
+    },
+    {
+      field: "createdBy",
+      headerName: "Created By",
+      flex: 1,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "createdOn",
+      headerName: "Created On",
+      flex: 1,
+      align: "left",
+      headerAlign: "left",
+      valueFormatter: (value) =>
+        value ? dayjs(value).format("YYYY-MM-DD HH:mm:ss") : null,
+    },
+    {
+      field: "updatedBy",
+      headerName: "Updated By",
+      flex: 1,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "updatedOn",
+      headerName: "Updated On",
+      flex: 1,
+      align: "left",
+      headerAlign: "left",
+      valueFormatter: (value) =>
+        value ? dayjs(value).format("YYYY-MM-DD HH:mm:ss") : null,
+    },
     {
       field: "actions",
       type: "actions",
@@ -71,7 +200,6 @@ const SuppliersPage = () => {
               label="Cancel"
               className="textPrimary"
               onClick={handleCancelButtonClick(id)}
-              color="inherit"
               sx={{
                 color: "error.main",
               }}
@@ -85,13 +213,17 @@ const SuppliersPage = () => {
             label="Edit"
             className="textPrimary"
             onClick={handleEditButtonClick(id)}
-            color="inherit"
+            sx={{
+              color: "primary.main",
+            }}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
             onClick={handleDeleteButtonClick(id)}
-            color="inherit"
+            sx={{
+              color: "error.main",
+            }}
           />,
         ];
       },

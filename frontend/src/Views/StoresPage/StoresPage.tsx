@@ -21,6 +21,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 
 import styles from "./StoresPage.module.scss";
 import dataGridStyles from "../../Styles/dataGridStyles";
@@ -28,7 +30,6 @@ import dataGridStyles from "../../Styles/dataGridStyles";
 import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
 import AlertWindow from "../../Components/AlertWindow/AlertWindow";
 
-import GridColDefs from "./types/GridColDefs";
 import InitStoreRowValues from "../../Constants/InitStoreRowValues";
 
 import Service from "../../Services/StoreService";
@@ -47,7 +48,84 @@ const StoresPage = () => {
   const [isWindowOpen, setIsWindowOpen] = useState<boolean>(false);
 
   const columns: GridColDef[] = [
-    ...GridColDefs,
+    {
+      field: "id",
+      headerName: "Store ID",
+      flex: 1,
+      type: "number",
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "storeName",
+      headerName: "Store Name",
+      flex: 1,
+      editable: true,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "storeAddress",
+      headerName: "Store Address",
+      flex: 1,
+      editable: true,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "active",
+      headerName: "Active",
+      flex: 1,
+      editable: true,
+      type: "boolean",
+      renderCell: (params) => {
+        return params.value ? (
+          <CheckIcon
+            style={{
+              color: "#fff",
+            }}
+          />
+        ) : (
+          <CloseIcon
+            style={{
+              color: "#fff",
+            }}
+          />
+        );
+      },
+    },
+    {
+      field: "createdBy",
+      headerName: "Created By",
+      flex: 1,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "createdOn",
+      headerName: "Created On",
+      flex: 1,
+      align: "left",
+      headerAlign: "left",
+      valueFormatter: (value) =>
+        value ? dayjs(value).format("YYYY-MM-DD HH:mm:ss") : null,
+    },
+    {
+      field: "updatedBy",
+      headerName: "Updated By",
+      flex: 1,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "updatedOn",
+      headerName: "Updated On",
+      flex: 1,
+      align: "left",
+      headerAlign: "left",
+      valueFormatter: (value) =>
+        value ? dayjs(value).format("YYYY-MM-DD HH:mm:ss") : null,
+    },
     {
       field: "actions",
       type: "actions",
@@ -71,7 +149,6 @@ const StoresPage = () => {
               label="Cancel"
               className="textPrimary"
               onClick={handleCancelButtonClick(id)}
-              color="inherit"
               sx={{
                 color: "error.main",
               }}
@@ -85,13 +162,17 @@ const StoresPage = () => {
             label="Edit"
             className="textPrimary"
             onClick={handleEditButtonClick(id)}
-            color="inherit"
+            sx={{
+              color: "primary.main",
+            }}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
             onClick={handleDeleteButtonClick(id)}
-            color="inherit"
+            sx={{
+              color: "error.main",
+            }}
           />,
         ];
       },
