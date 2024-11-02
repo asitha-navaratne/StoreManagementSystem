@@ -19,6 +19,9 @@ const dataGridStyles = {
   "& .MuiDataGrid-columnHeader button": {
     color: "#fff",
   },
+  "& .MuiDataGrid-scrollbarFiller": {
+    backgroundColor: "info.light",
+  },
   "& .MuiDataGrid-toolbarQuickFilter > *": {
     color: "#fff",
     marginBottom: "5px",
