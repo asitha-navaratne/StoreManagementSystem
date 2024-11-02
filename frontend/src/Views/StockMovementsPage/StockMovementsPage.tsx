@@ -243,13 +243,12 @@ const StockMovementsPage = () => {
 
   return (
     <Box className={styles["stock-movements-page"]}>
-      <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
-        Stock Movements
-      </Typography>
-      <Box
-        className={styles["stock-movements-page__selection-container"]}
-        sx={{ mb: 2 }}
-      >
+      <Box className={styles["stock-movements-page__title-section"]}>
+        <Typography variant="h4" component="h1">
+          Stock Movements
+        </Typography>
+      </Box>
+      <Box className={styles["stock-movements-page__selection-container"]}>
         <FormControl sx={{ mr: 2 }}>
           <InputLabel id="select-store-label">Store</InputLabel>
           <Select
