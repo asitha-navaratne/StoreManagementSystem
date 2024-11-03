@@ -61,7 +61,7 @@ const PriceMasterPage = () => {
     },
     {
       field: "shopName",
-      headerName: "Shop Name",
+      headerName: "Store Name",
       flex: 1,
       editable: true,
       type: "singleSelect",
@@ -83,7 +83,7 @@ const PriceMasterPage = () => {
     },
     {
       field: "companyName",
-      headerName: "Company Name",
+      headerName: "Supplier Name",
       flex: 1,
       editable: true,
       renderEditCell: (params) => (
