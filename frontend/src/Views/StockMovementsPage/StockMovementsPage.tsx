@@ -13,6 +13,7 @@ import {
 import {
   DataGrid,
   GridColDef,
+  GridColumnGroupingModel,
   GridRowModel,
   GridRowsProp,
   GridSlots,
@@ -58,97 +59,194 @@ const StockMovementsPage = () => {
     },
     {
       field: "productName",
-      headerName: "Product Name",
+      headerName: "Product",
       flex: 1,
       align: "left",
       headerAlign: "left",
     },
     {
       field: "storeName",
-      headerName: "Store Name",
+      headerName: "Store",
       flex: 1,
       align: "left",
       headerAlign: "left",
-    },
-    {
-      field: "recordDate",
-      headerName: "Record Date",
-      flex: 1,
-      type: "date",
-      align: "left",
-      headerAlign: "left",
-      valueFormatter: (value: Dayjs) =>
-        value ? dayjs(value).format("YYYY-MM-DD") : null,
     },
     {
       field: "fourthInHand",
-      headerName: "-4 Days Stock",
+      headerName: "In Hand",
       flex: 1,
       type: "number",
-      align: "left",
-      headerAlign: "left",
+      align: "center",
+      headerAlign: "center",
+      headerClassName: styles["header-cell--left"],
+      cellClassName: styles["grouped-cell--left"],
+    },
+    {
+      field: "fourthReceived",
+      headerName: "Received",
+      flex: 1,
+      type: "number",
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "fourthSold",
+      headerName: "Sale",
+      flex: 1,
+      type: "number",
+      align: "center",
+      headerAlign: "center",
+      headerClassName: styles["header-cell--right"],
+      cellClassName: styles["grouped-cell--right"],
     },
     {
       field: "thirdInHand",
-      headerName: "-3 Days Stock",
+      headerName: "In Hand",
       flex: 1,
       type: "number",
-      align: "left",
-      headerAlign: "left",
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "thirdReceived",
+      headerName: "Received",
+      flex: 1,
+      type: "number",
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "thirdSold",
+      headerName: "Sale",
+      flex: 1,
+      type: "number",
+      align: "center",
+      headerAlign: "center",
+      headerClassName: styles["header-cell--right"],
+      cellClassName: styles["grouped-cell--right"],
     },
     {
       field: "secondInHand",
-      headerName: "-2 Days Stock",
+      headerName: "In Hand",
       flex: 1,
       type: "number",
-      align: "left",
-      headerAlign: "left",
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "secondReceived",
+      headerName: "Received",
+      flex: 1,
+      type: "number",
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "secondSold",
+      headerName: "Sale",
+      flex: 1,
+      type: "number",
+      align: "center",
+      headerAlign: "center",
+      headerClassName: styles["header-cell--right"],
+      cellClassName: styles["grouped-cell--right"],
     },
     {
       field: "inHand",
-      headerName: selectedDate?.isSame(dayjs(), "day")
-        ? "Previous Day Stock"
-        : "In Hand",
+      headerName: "In Hand",
       flex: 1,
       type: "number",
-      align: "left",
-      headerAlign: "left",
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "purchasedAmount",
+      headerName: "Received",
+      type: "number",
+      flex: 1,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "sold",
+      headerName: "Sale",
+      type: "number",
+      flex: 1,
+      align: "center",
+      headerAlign: "center",
+      headerClassName: styles["header-cell--right"],
+      cellClassName: styles["grouped-cell--right"],
     },
     ...(selectedDate?.isSame(dayjs(), "day")
       ? [
           {
             field: "currentInHand",
-            headerName: "In Hand",
+            headerName: "Current In Hand",
             flex: 1,
             editable: isGridEditable,
             type: "number",
-            align: "left",
-            headerAlign: "left",
+            align: "center",
+            headerAlign: "center",
           },
         ]
       : []),
-    {
-      field: "purchasedAmount",
-      headerName: "Purchased Amount",
-      type: "number",
-      flex: 1,
-      align: "left",
-      headerAlign: "left",
-    },
-    {
-      field: "sold",
-      headerName: "Sold",
-      type: "number",
-      flex: 1,
-      align: "left",
-      headerAlign: "left",
-    },
     {
       field: "updatedBy",
       headerName: "Updated By",
       flex: 1,
       align: "left",
       headerAlign: "left",
+    },
+  ];
+
+  const columnGroupingModel: GridColumnGroupingModel = [
+    {
+      groupId: rows[0]?.fourthRecordDate
+        ? dayjs(rows[0]?.fourthRecordDate).format("YYYY-MM-DD")
+        : dayjs().subtract(4, "day").format("YYYY-MM-DD"),
+      children: [
+        { field: "fourthInHand" },
+        { field: "fourthReceived" },
+        { field: "fourthSold" },
+      ],
+      headerAlign: "center",
+      headerClassName: styles["header-cell--first"],
+    },
+    {
+      groupId: rows[0]?.thirdRecordDate
+        ? dayjs(rows[0]?.thirdRecordDate).format("YYYY-MM-DD")
+        : dayjs().subtract(3, "day").format("YYYY-MM-DD"),
+      children: [
+        { field: "thirdInHand" },
+        { field: "thirdReceived" },
+        { field: "thirdSold" },
+      ],
+      headerAlign: "center",
+      headerClassName: styles["header-cell--right"],
+    },
+    {
+      groupId: rows[0]?.secondRecordDate
+        ? dayjs(rows[0]?.secondRecordDate).format("YYYY-MM-DD")
+        : dayjs().subtract(2, "day").format("YYYY-MM-DD"),
+      children: [
+        { field: "secondInHand" },
+        { field: "secondReceived" },
+        { field: "secondSold" },
+      ],
+      headerAlign: "center",
+      headerClassName: styles["header-cell--right"],
+    },
+    {
+      groupId: rows[0]?.recordDate
+        ? dayjs(rows[0]?.recordDate).format("YYYY-MM-DD")
+        : dayjs().format("YYYY-MM-DD"),
+      children: [
+        { field: "inHand" },
+        { field: "purchasedAmount" },
+        { field: "sold" },
+      ],
+      headerAlign: "center",
+      headerClassName: styles["header-cell--right"],
     },
   ];
 
@@ -288,6 +386,7 @@ const StockMovementsPage = () => {
         <DataGrid
           rows={rows}
           columns={columns as GridColDef[]}
+          columnGroupingModel={columnGroupingModel}
           editMode="row"
           loading={isGridDataLoading}
           processRowUpdate={processRowUpdate}

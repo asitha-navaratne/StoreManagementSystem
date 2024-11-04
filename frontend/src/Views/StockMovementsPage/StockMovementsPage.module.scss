@@ -18,3 +18,24 @@
     width: 100%;
   }
 }
+
+.grouped-cell--left {
+  border-left: 2px solid #fff;
+}
+
+.grouped-cell--right {
+  border-right: 2px solid #fff;
+}
+
+.header-cell--first {
+  border-left: 2px solid #fff;
+  border-right: 2px solid #fff;
+}
+
+.header-cell--left {
+  border-left: 2px solid #fff;
+}
+
+.header-cell--right {
+  border-right: 2px solid #fff;
+}
