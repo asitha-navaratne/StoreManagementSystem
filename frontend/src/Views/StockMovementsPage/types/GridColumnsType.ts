@@ -2,8 +2,11 @@ type StockMovementsGridColumnsType = {
   id: number;
   productId: number;
   productName: string;
+  brandCode: string;
   storeId: number;
   storeName: string;
+  supplierCode: string;
+  price: number;
   recordDate: string;
   inHand: number;
   secondInHand: number;

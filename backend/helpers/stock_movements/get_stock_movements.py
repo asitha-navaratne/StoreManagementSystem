@@ -2,7 +2,7 @@ from datetime import datetime
 from sqlalchemy import select, func, and_, desc
 from sqlalchemy.orm import Session, aliased
 
-from database.models import StockMovements, PriceMaster, Stores, Purchases, Users
+from database.models import StockMovements, PriceMaster, Stores, Suppliers, Purchases, Users
 
 
 def get_stock_movements(store: str, date: str, db: Session):
@@ -31,11 +31,13 @@ def get_stock_movements(store: str, date: str, db: Session):
                 func.lag(sm.record_date, 3).over(partition_by=[sm.product_id], order_by=[sm.product_id, sm.store_id, sm.record_date]).label('fourth_record_date'),
                 PriceMaster,
                 Stores,
+                Suppliers,
                 Purchases.quantity_received,
                 Users.username
             )
             .join(PriceMaster, sm.product_id == PriceMaster.id)
             .join(Stores, sm.store_id == Stores.id)
+            .join(Suppliers, and_(sm.product_id == PriceMaster.id, PriceMaster.supplier_id == Suppliers.id))
             .join(Purchases, and_(sm.product_id == Purchases.product_id, sm.store_id == Purchases.store_id, sm.record_date == Purchases.received_date))
             .join(Users, sm.updated_by == Users.id)
             .where(sm.store_id == store_id)
@@ -84,12 +86,14 @@ def get_stock_movements(store: str, date: str, db: Session):
                 stock_lags_cte.c.fourth_record_date,
                 PriceMaster,
                 Stores,
+                Suppliers,
                 Purchases.quantity_received,
                 Users.username
             )
             .join(stock_lags_cte, sm.id == stock_lags_cte.c.id)
             .join(PriceMaster, sm.product_id == PriceMaster.id)
             .join(Stores, sm.store_id == Stores.id)
+            .join(Suppliers, and_(sm.product_id == PriceMaster.id, PriceMaster.supplier_id == Suppliers.id))
             .join(Purchases, and_(sm.product_id == Purchases.product_id, sm.store_id == Purchases.store_id, sm.record_date == Purchases.received_date))
             .join(Users, sm.updated_by == Users.id)
             .where(stock_lags_cte.c.record_date == date)
@@ -101,8 +105,11 @@ def get_stock_movements(store: str, date: str, db: Session):
             'id': result[0].id,
             'product_id': result[13].id,
             'product_name': result[13].brand,
+            'brand_code': result[13].brand_code,
             'store_id': result[14].id,
             'store_name': result[14].store_name,
+            'supplier_code': result[15].supplier_code,
+            'price': result[13].price,
             'record_date': result[0].record_date,
             'in_hand': result[0].in_hand,
             'second_in_hand': result[1],
@@ -117,9 +124,9 @@ def get_stock_movements(store: str, date: str, db: Session):
             'fourth_sold': result[10],
             'fourth_received': result[11],
             'fourth_record_date': result[12],
-            'purchased_amount': result[15],
+            'purchased_amount': result[16],
             'sold': result[0].sold,
-            'updated_by': result[16],
+            'updated_by': result[17],
         }
         
         processed_results.append(result_dict)

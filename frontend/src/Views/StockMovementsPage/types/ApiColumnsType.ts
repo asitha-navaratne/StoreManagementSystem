@@ -2,8 +2,11 @@ type StockMovementsApiColumnsType = {
   id: number;
   product_id: number;
   product_name: string;
+  brand_code: string;
   store_id: number;
   store_name: string;
+  supplier_code: string;
+  price: number;
   record_date: string;
   in_hand: number;
   second_in_hand: number;
