@@ -29,11 +29,13 @@ import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
 
 import StoreGridColumnsType from "../StoresPage/types/GridColumnsType";
 import StockMovementsApiColumnsType from "./types/ApiColumnsType";
+import StockMovementsGridColumnsType from "./types/GridColumnsType";
 
 import processStockMovementsColumns from "../../Helpers/processStockMovementsColumns";
+import getCurrentInHandAmount from "../../Helpers/getCurrentInHandAmount";
+import getHeadersForGroupedColumns from "../../Helpers/getHeadersForGroupedColumns";
 
 import Service from "../../Services/StockMovementsService";
-import getCurrentInHandAmount from "../../Helpers/getCurrentInHandAmount";
 
 const { GetStockMovements, UpdateStockMovement } = Service();
 
@@ -220,11 +222,12 @@ const StockMovementsPage = () => {
     },
   ];
 
+  const [firstRecordDate, secondRecordDate, thirdRecordDate, fourthRecordDate] =
+    getHeadersForGroupedColumns(rows[0] as StockMovementsGridColumnsType);
+
   const columnGroupingModel: GridColumnGroupingModel = [
     {
-      groupId: rows[0]?.fourthRecordDate
-        ? dayjs(rows[0]?.fourthRecordDate).format("YYYY-MM-DD")
-        : dayjs().subtract(4, "day").format("YYYY-MM-DD"),
+      groupId: firstRecordDate,
       children: [
         { field: "fourthInHand" },
         { field: "fourthReceived" },
@@ -234,9 +237,7 @@ const StockMovementsPage = () => {
       headerClassName: styles["header-cell--first"],
     },
     {
-      groupId: rows[0]?.thirdRecordDate
-        ? dayjs(rows[0]?.thirdRecordDate).format("YYYY-MM-DD")
-        : dayjs().subtract(3, "day").format("YYYY-MM-DD"),
+      groupId: secondRecordDate,
       children: [
         { field: "thirdInHand" },
         { field: "thirdReceived" },
@@ -246,9 +247,7 @@ const StockMovementsPage = () => {
       headerClassName: styles["header-cell--right"],
     },
     {
-      groupId: rows[0]?.secondRecordDate
-        ? dayjs(rows[0]?.secondRecordDate).format("YYYY-MM-DD")
-        : dayjs().subtract(2, "day").format("YYYY-MM-DD"),
+      groupId: thirdRecordDate,
       children: [
         { field: "secondInHand" },
         { field: "secondReceived" },
@@ -258,9 +257,7 @@ const StockMovementsPage = () => {
       headerClassName: styles["header-cell--right"],
     },
     {
-      groupId: rows[0]?.recordDate
-        ? dayjs(rows[0]?.recordDate).format("YYYY-MM-DD")
-        : dayjs().format("YYYY-MM-DD"),
+      groupId: fourthRecordDate,
       children: [
         { field: "inHand" },
         { field: "purchasedAmount" },
