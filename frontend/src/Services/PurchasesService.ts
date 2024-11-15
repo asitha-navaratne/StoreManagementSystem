@@ -14,9 +14,11 @@ const Service = function () {
 
   const AddPurchases = function (
     rows: GridValidRowModel[],
-    supplierId: string
+    supplierName: string
   ) {
-    const payload = rows.map((row) => processPurchasePayload(row, supplierId));
+    const payload = rows.map((row) =>
+      processPurchasePayload(row, supplierName)
+    );
 
     return AxiosInstance.post(config.api.purchases.AddPurchase, payload);
   };

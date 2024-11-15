@@ -1,0 +1,13 @@
+.invoices-page {
+  padding: 10px;
+  height: 96vh;
+
+  &__title-section {
+    height: 5%;
+  }
+
+  &__grid-container {
+    height: 95%;
+    width: 100%;
+  }
+}

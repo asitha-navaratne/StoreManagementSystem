@@ -5,11 +5,13 @@ import Root from "./Components/Root/Root";
 import LoginPage from "./Views/LoginPage/LoginPage";
 import PriceMasterPage from "./Views/PriceMasterPage/PriceMasterPage";
 import PurchasesPage from "./Views/PurchasesPage/PurchasesPage";
+import InvoicesPage from "./Views/InvoicesPage/InvoicesPage";
 import StoresPage from "./Views/StoresPage/StoresPage";
 import SuppliersPage from "./Views/SuppliersPage/SuppliersPage";
 import StockMovementsPage from "./Views/StockMovementsPage/StockMovementsPage";
 
 import priceMasterLoader from "./Views/PriceMasterPage/PriceMasterLoader";
+import invoicesLoader from "./Views/InvoicesPage/InvoicesLoader";
 import storesLoader from "./Views/StoresPage/StoresLoader";
 import suppliersLoader from "./Views/SuppliersPage/SuppliersLoader";
 
@@ -31,6 +33,11 @@ const router = createBrowserRouter([
         path: "purchases",
         element: <PurchasesPage />,
         loader: suppliersLoader,
+      },
+      {
+        path: "invoices",
+        element: <InvoicesPage />,
+        loader: invoicesLoader,
       },
       {
         path: "stores",

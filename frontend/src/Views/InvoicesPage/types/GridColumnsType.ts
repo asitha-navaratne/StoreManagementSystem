@@ -1,7 +1,8 @@
 type InvoiceGridColumnsType = {
   id: number;
   invoiceDate: string;
-  supplierId: number;
+  supplierId?: number;
+  supplierName?: string;
   invoiceNumber: number;
   description: string;
   valueOfPurchases: number;

@@ -20,8 +20,11 @@ const config = {
       AddPurchase: "/purchases",
     },
     invoices: {
-      GetInvoiceByNumberAndSupplier: "/invoices/",
+      GetAllInvoices: "/invoices",
       AddInvoice: "/invoices",
+      EditInvoice: "/invoices",
+      DeleteInvoice: "/invoices",
+      GetInvoiceByNumberAndSupplier: "/invoices/",
     },
     suppliers: {
       GetAllSuppliers: "/suppliers",

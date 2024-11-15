@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 import dayjs from "dayjs";
-import randomInteger from "random-int";
 import { useLoaderData } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import {
@@ -21,78 +20,122 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
 
-import styles from "./StoresPage.module.scss";
+import styles from "./InvoicesPage.module.scss";
 import dataGridStyles from "../../Styles/dataGridStyles";
 
-import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
 import AlertWindow from "../../Components/AlertWindow/AlertWindow";
 
-import InitStoreRowValues from "../../Constants/InitStoreRowValues";
+import Service from "../../Services/InvoicesService";
+import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
 
-import Service from "../../Services/StoreService";
+const { EditInvoice, DeleteInvoice } = Service();
 
-const { AddStore, EditStore, DeleteStore } = Service();
-
-const StoresPage = () => {
+const InvoicesPage = () => {
   const [rows, setRows] = useState<GridRowsProp>(
     useLoaderData() as GridRowsProp
   );
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const [editedRow, setEditedRow] = useState<GridRowModel | null>(null);
-  const [addedRow, setAddedRow] = useState<GridRowModel | null>(null);
-  const [isAddButtonClicked, setIsAddButtonClicked] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<number>(0);
   const [isWindowOpen, setIsWindowOpen] = useState<boolean>(false);
 
   const columns: GridColDef[] = [
     {
       field: "id",
-      headerName: "Store ID",
+      headerName: "Invoice ID",
       flex: 1,
       type: "number",
       align: "left",
       headerAlign: "left",
     },
     {
-      field: "storeName",
-      headerName: "Store Name",
+      field: "invoiceDate",
+      headerName: "Invoice Date",
+      flex: 1,
+      type: "date",
+      editable: true,
+      align: "left",
+      headerAlign: "left",
+      valueFormatter: (value) =>
+        value ? dayjs(value).format("YYYY-MM-DD") : null,
+    },
+    {
+      field: "supplierName",
+      headerName: "Supplier Name",
       flex: 1,
       editable: true,
       align: "left",
       headerAlign: "left",
     },
     {
-      field: "storeAddress",
-      headerName: "Store Address",
+      field: "invoiceNumber",
+      headerName: "Invoice Number",
       flex: 1,
       editable: true,
       align: "left",
       headerAlign: "left",
     },
     {
-      field: "active",
-      headerName: "Active",
+      field: "description",
+      headerName: "Description",
       flex: 1,
       editable: true,
-      type: "boolean",
-      renderCell: (params) => {
-        return params.value ? (
-          <CheckIcon
-            style={{
-              color: "#fff",
-            }}
-          />
-        ) : (
-          <CloseIcon
-            style={{
-              color: "#fff",
-            }}
-          />
-        );
-      },
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "valueOfPurchases",
+      headerName: "Value of Purchases",
+      flex: 1,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "vat",
+      headerName: "Value Added Tax",
+      flex: 1,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "totalPayable",
+      headerName: "Total Payable",
+      flex: 1,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "invoiceType",
+      headerName: "Invoice Type",
+      flex: 1,
+      editable: true,
+      type: "singleSelect",
+      valueOptions: ["Foreign", "Local"],
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "receivedDate",
+      headerName: "Received Date",
+      flex: 1,
+      type: "date",
+      editable: true,
+      align: "left",
+      headerAlign: "left",
+      valueFormatter: (value) =>
+        value ? dayjs(value).format("YYYY-MM-DD") : null,
+    },
+    {
+      field: "paymentDate",
+      headerName: "Payment Date",
+      flex: 1,
+      type: "date",
+      editable: true,
+      align: "left",
+      headerAlign: "left",
+      valueFormatter: (value) =>
+        value ? dayjs(value).format("YYYY-MM-DD") : null,
     },
     {
       field: "createdBy",
@@ -180,23 +223,8 @@ const StoresPage = () => {
   ];
 
   useEffect(() => {
-    if (addedRow) {
-      AddStore({
-        ...addedRow,
-      })
-        .catch((err) => {
-          // TODO: Handle errors properly
-          console.error(err);
-        })
-        .finally(() => {
-          setAddedRow(null);
-        });
-    }
-  }, [addedRow]);
-
-  useEffect(() => {
     if (editedRow) {
-      EditStore({
+      EditInvoice({
         ...editedRow,
       })
         .catch((err) => {
@@ -211,7 +239,7 @@ const StoresPage = () => {
 
   useEffect(() => {
     if (deleteId !== 0 && !isWindowOpen) {
-      DeleteStore(deleteId)
+      DeleteInvoice(deleteId)
         .catch((err) => {
           // TODO: Handle errors properly
           console.error(err);
@@ -228,26 +256,6 @@ const StoresPage = () => {
     setRowModesModel(newRowModesModel);
   };
 
-  const handleAddButtonClicked = function () {
-    setIsAddButtonClicked(true);
-    const id = randomInteger(2 ** 16, 2 ** 17);
-    setRows((oldRows) => [
-      ...oldRows,
-      {
-        id,
-        ...InitStoreRowValues,
-        createdBy: "AsithaN",
-        createdOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
-        updatedBy: null,
-        updatedOn: null,
-      },
-    ]);
-    setRowModesModel((oldModel) => ({
-      ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "storeName" },
-    }));
-  };
-
   const handleRowEditStop: GridEventListener<"rowEditStop"> = function (
     params,
     event
@@ -262,23 +270,15 @@ const StoresPage = () => {
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
-    if (isAddButtonClicked) {
-      const addRow = { ...newRow, isNew: false };
-      setRows(rows.map((row) => (row.id === newRow.id ? addRow : row)));
-      setAddedRow({ ...newRow });
-      setIsAddButtonClicked(false);
-      return addRow;
-    } else {
-      const updatedRow = {
-        ...newRow,
-        updatedBy: "AsithaN",
-        updatedOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
-        isNew: false,
-      };
-      setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-      setEditedRow({ ...updatedRow });
-      return updatedRow;
-    }
+    const updatedRow = {
+      ...newRow,
+      updatedBy: "AsithaN",
+      updatedOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+      isNew: false,
+    };
+    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+    setEditedRow({ ...updatedRow });
+    return updatedRow;
   };
 
   const handleDeleteButtonClick = (id: GridRowId) => () => {
@@ -286,7 +286,7 @@ const StoresPage = () => {
     setDeleteId(id as number);
   };
 
-  const handleDeleteStore = function () {
+  const handleDeleteInvoice = function () {
     setRows(rows.filter((row) => row.id !== deleteId));
     setIsWindowOpen(false);
   };
@@ -296,16 +296,10 @@ const StoresPage = () => {
   };
 
   const handleCancelButtonClick = (id: GridRowId) => () => {
-    if (isAddButtonClicked) {
-      setIsAddButtonClicked(false);
-      const prevRows = rows.filter((row) => row.id !== id);
-      setRows(prevRows);
-    } else {
-      setRowModesModel({
-        ...rowModesModel,
-        [id]: { mode: GridRowModes.View, ignoreModifications: true },
-      });
-    }
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
 
     const changedRow = rows.find((row) => row.id === id);
     if (changedRow!.isNew) {
@@ -319,13 +313,13 @@ const StoresPage = () => {
   };
 
   return (
-    <Box className={styles["stores-page"]}>
-      <Box className={styles["stores-page__title-section"]}>
+    <Box className={styles["invoices-page"]}>
+      <Box className={styles["invoices-page__title-section"]}>
         <Typography variant="h4" component="h1">
-          Stores
+          Invoices
         </Typography>
       </Box>
-      <Box className={styles["stores-page__grid-container"]}>
+      <Box className={styles["invoices-page__grid-container"]}>
         <DataGrid
           rows={rows}
           columns={columns}
@@ -350,9 +344,7 @@ const StoresPage = () => {
           }}
           slotProps={{
             toolbar: {
-              isAddButtonShown: true,
-              isAddButtonDisabled: isAddButtonClicked,
-              handleAddButtonClicked,
+              isAddButtonShown: false,
               showQuickFilter: true,
             },
           }}
@@ -362,13 +354,13 @@ const StoresPage = () => {
       <AlertWindow
         isWindowOpen={isWindowOpen}
         handleClose={handleAlertWindowClose}
-        handleAgreeAction={handleDeleteStore}
+        handleAgreeAction={handleDeleteInvoice}
         handleDisagreeAction={handleAlertWindowClose}
-        windowTitle="Delete Store"
-        description="Are you sure you want to delete this store permanently?"
+        windowTitle="Delete Invoice"
+        description="Are you sure you want to delete this invoice and relevant purchase data permanently?"
       />
     </Box>
   );
 };
 
-export default StoresPage;
+export default InvoicesPage;

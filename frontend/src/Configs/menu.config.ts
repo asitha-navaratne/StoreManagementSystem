@@ -12,6 +12,12 @@ export const menuConfig = [
     icon: "shopping_cart_icon",
   },
   {
+    key: "invoices",
+    title: "Invoices",
+    url: "/invoices",
+    icon: "receipt_icon",
+  },
+  {
     key: "stock-movements",
     title: "Stock Movements",
     url: "/stock-movements",

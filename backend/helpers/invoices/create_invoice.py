@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from database.models import Invoices, Users
+from database.models import Invoices, Suppliers, Users
 
 from models.CreateInvoiceModel import CreateInvoiceModel
 
@@ -9,10 +9,12 @@ from models.CreateInvoiceModel import CreateInvoiceModel
 def create_invoice(invoice: CreateInvoiceModel, db: Session):
     user_id = db.scalars(select(Users.id).where(Users.username == invoice.created_by)).first()
 
+    supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.company_name == invoice.supplier_name)).first()
+
     db_invoice = Invoices(
         id = invoice.id,
         invoice_date = invoice.invoice_date,
-        supplier_id = invoice.supplier_id,
+        supplier_id = supplier_id,
         invoice_number = invoice.invoice_number,
         description = invoice.description,
         value_of_purchases = invoice.value_of_purchases,

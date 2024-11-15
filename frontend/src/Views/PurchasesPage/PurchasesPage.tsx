@@ -431,7 +431,7 @@ const PurchasesPage = () => {
     AddInvoice({
       id,
       ...invoiceData,
-      supplierId: selectedSupplier,
+      supplierName: selectedSupplier,
       invoiceNumber: invoiceNumber,
       createdBy: "AsithaN",
     })
@@ -491,7 +491,7 @@ const PurchasesPage = () => {
                   onChange={(e) => setSelectedSupplier(e.target.value)}
                 >
                   {suppliersList.map((supplier) => (
-                    <MenuItem key={supplier.id} value={supplier.id}>
+                    <MenuItem key={supplier.id} value={supplier.companyName}>
                       {supplier.companyName}
                     </MenuItem>
                   ))}
@@ -646,8 +646,8 @@ const PurchasesPage = () => {
                     width: "7vw",
                   })}
                 >
-                  <MenuItem value="local">Local</MenuItem>
-                  <MenuItem value="foreign">Foreign</MenuItem>
+                  <MenuItem value="Local">Local</MenuItem>
+                  <MenuItem value="Foreign">Foreign</MenuItem>
                 </Select>
               </TableCell>
               <TableCell>

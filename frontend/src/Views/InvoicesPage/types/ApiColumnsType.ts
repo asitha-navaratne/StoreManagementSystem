@@ -1,7 +1,7 @@
 type InvoiceApiColumnsType = {
   id: number;
   invoice_date: string;
-  supplier_id: number;
+  supplier_name: string;
   invoice_number: number;
   description: string;
   value_of_purchases: number;

@@ -1,7 +1,8 @@
 type PropTypes =
   | {
-      isAddButtonDisabled: boolean;
-      handleAddButtonClicked: () => void;
+      isAddButtonShown: boolean;
+      isAddButtonDisabled?: boolean;
+      handleAddButtonClicked?: () => void;
     }
   | {
       isSaveButtonDisabled: boolean;

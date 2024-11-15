@@ -7,7 +7,7 @@ class CreatePurchaseModel(BaseModel):
     id: int
     shop_name: str
     product_name: str
-    supplier_id: int
+    supplier_name: str
     invoice_number: int
     received_date: datetime
     quantity_ordered: int

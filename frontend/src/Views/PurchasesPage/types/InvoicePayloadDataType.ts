@@ -3,7 +3,7 @@ type InvoicePayloadDataType = {
   invoiceDate: string;
   invoiceType: string;
   invoiceNumber: string;
-  supplierId: string;
+  supplierName: string;
   quantity: number;
   valueOfPurchases: number;
   vat: number;

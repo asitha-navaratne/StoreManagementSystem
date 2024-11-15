@@ -511,6 +511,7 @@ const PriceMasterPage = () => {
           }}
           slotProps={{
             toolbar: {
+              isAddButtonShown: true,
               isAddButtonDisabled: isAddButtonClicked,
               handleAddButtonClicked,
               showQuickFilter: true,

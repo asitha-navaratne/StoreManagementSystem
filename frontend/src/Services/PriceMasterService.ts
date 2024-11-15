@@ -28,9 +28,9 @@ const Service = () => {
     return AxiosInstance.delete(`${config.api.priceMaster.DeletePrice}/${id}`);
   };
 
-  const GetPricesBySupplier = function (supplierId: string) {
+  const GetPricesBySupplier = function (supplierName: string) {
     return AxiosInstance.get(
-      `${config.api.priceMaster.GetPricesBySupplier}?supplier=${supplierId}`
+      `${config.api.priceMaster.GetPricesBySupplier}?supplier=${supplierName}`
     );
   };
 

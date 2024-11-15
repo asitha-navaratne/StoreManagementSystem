@@ -110,7 +110,7 @@ const SuppliersPage = () => {
       flex: 1,
       editable: true,
       type: "singleSelect",
-      valueOptions: ["local", "foreign"],
+      valueOptions: ["Local", "Foreign"],
       align: "left",
       headerAlign: "left",
     },
@@ -408,6 +408,7 @@ const SuppliersPage = () => {
           }}
           slotProps={{
             toolbar: {
+              isAddButtonShown: true,
               isAddButtonDisabled: isAddButtonClicked,
               handleAddButtonClicked,
               showQuickFilter: true,

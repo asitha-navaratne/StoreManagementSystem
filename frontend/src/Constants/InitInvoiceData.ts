@@ -10,7 +10,7 @@ const InitInvoiceData = {
   receivedDate: dayjs().format("YYYY-MM-DD"),
   invoiceType: "local",
   payment: "paid",
-  supplierId: "",
+  supplierName: "",
   description: "",
   paymentDate: null,
   createdBy: "",

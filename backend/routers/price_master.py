@@ -44,5 +44,5 @@ def remove_price_item(id: int, db: db_dependency):
     return delete_price_item(id=id, db=db)
 
 @router.get('/')
-def get_prices_by_supplier(supplier: int, db: db_dependency):
+def get_prices_by_supplier(supplier: str, db: db_dependency):
     return get_price_items_by_supplier(supplier, db)

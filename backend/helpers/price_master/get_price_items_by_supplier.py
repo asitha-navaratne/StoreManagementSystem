@@ -1,10 +1,12 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from database.models import PriceMaster, Stores
+from database.models import PriceMaster, Suppliers, Stores
 
 
-def get_price_items_by_supplier(supplier_id: int, db: Session):
+def get_price_items_by_supplier(supplier_name: str, db: Session):
+    supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.company_name == supplier_name)).first()
+
     stmt = (
         select(PriceMaster, Stores)
         .join(Stores, PriceMaster.store_id == Stores.id, isouter=True).where(PriceMaster.supplier_id == supplier_id)

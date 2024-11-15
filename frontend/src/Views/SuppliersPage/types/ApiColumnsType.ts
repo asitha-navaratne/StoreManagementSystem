@@ -6,7 +6,7 @@ type SuppliersApiColumnsType = {
   number: string;
   supplier_tin: string;
   email: string;
-  invoice_type: "local" | "foreign";
+  invoice_type: "Local" | "Foreign";
   payment_period: number;
   active: string;
   created_by: string;

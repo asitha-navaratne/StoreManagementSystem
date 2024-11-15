@@ -6,7 +6,7 @@ from typing import Optional
 class CreateInvoiceModel(BaseModel):
     id: int
     invoice_date: datetime
-    supplier_id: int
+    supplier_name: str
     invoice_number: int
     description: str
     value_of_purchases: int

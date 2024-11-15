@@ -3,7 +3,7 @@ type PurchaseApiColumnsType = {
   category: string;
   product_name: string;
   shop_name: string;
-  supplier_id: string;
+  supplier_name: string;
   invoice_number: string;
   received_date: string;
   quantity_ordered: number;

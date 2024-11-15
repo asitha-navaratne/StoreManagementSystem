@@ -3,7 +3,7 @@ type PurchaseGridColumnsType = {
   category: string;
   productName: string;
   shopName: string;
-  supplierId: string;
+  supplierName: string;
   invoiceNumber: string;
   receivedDate: string;
   quantityOrdered: number;

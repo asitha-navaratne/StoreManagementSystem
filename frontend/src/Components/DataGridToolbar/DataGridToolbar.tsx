@@ -37,23 +37,27 @@ const DataGridToolbar = (props: PropTypes) => {
           sx={{
             width: "100%",
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: props.isAddButtonShown
+              ? "space-between"
+              : "flex-end",
           }}
         >
-          <Button
-            variant="text"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={props.handleAddButtonClicked}
-            disabled={props.isAddButtonDisabled}
-            sx={{
-              "&.Mui-disabled": {
-                color: "#555",
-              },
-            }}
-          >
-            Add record
-          </Button>
+          {props.isAddButtonShown && (
+            <Button
+              variant="text"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={props.handleAddButtonClicked}
+              disabled={props.isAddButtonDisabled}
+              sx={{
+                "&.Mui-disabled": {
+                  color: "#555",
+                },
+              }}
+            >
+              Add record
+            </Button>
+          )}
           <Box sx={{ mt: 1, mr: 1 }}>
             <GridToolbarQuickFilter />
           </Box>

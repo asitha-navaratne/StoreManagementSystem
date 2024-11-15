@@ -6,7 +6,7 @@ type SuppliersGridColumnsType = {
   number: string;
   supplierTin: string;
   email: string;
-  invoiceType: "local" | "foreign";
+  invoiceType: "Local" | "Foreign";
   paymentPeriod: number;
   active: string;
   createdBy: string;
