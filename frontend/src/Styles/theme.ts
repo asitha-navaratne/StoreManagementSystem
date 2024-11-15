@@ -8,12 +8,12 @@ const theme = createTheme({
     },
     secondary: {
       main: "#cd7f32",
-      light: "#EFD7BD",
+      light: "#efd7bd",
       contrastText: "#fff",
     },
     info: {
-      main: "#181A1E",
-      light: "#4D5A6A",
+      main: "#181a1e",
+      light: "#4d5a6a",
       dark: "#313943",
       contrastText: "#fff",
     },
@@ -26,7 +26,7 @@ const theme = createTheme({
     MuiTypography: {
       styleOverrides: {
         h4: {
-          color: "#EFD7BD",
+          color: "#efd7bd",
         },
       },
     },
@@ -63,6 +63,28 @@ const theme = createTheme({
       },
     },
     MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: "#fff",
+        },
+      },
+    },
+    MuiTable: {
+      styleOverrides: {
+        root: {
+          border: "2px solid #2a9d8f",
+          backgroundColor: "#181a1e",
+        },
+      },
+    },
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#4d5a6a",
+        },
+      },
+    },
+    MuiTableCell: {
       styleOverrides: {
         root: {
           color: "#fff",

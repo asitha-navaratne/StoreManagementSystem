@@ -10,17 +10,17 @@ const Service = () => {
     return AxiosInstance.get(config.api.suppliers.GetAllSuppliers);
   };
 
-  const AddSupplier = function (column: GridValidRowModel) {
+  const AddSupplier = function (row: GridValidRowModel) {
     return AxiosInstance.post(
       config.api.suppliers.AddSupplier,
-      processSupplierPayload(column)
+      processSupplierPayload(row)
     );
   };
 
-  const EditSupplier = function (column: GridValidRowModel) {
+  const EditSupplier = function (row: GridValidRowModel) {
     return AxiosInstance.patch(
       config.api.suppliers.EditSupplier,
-      processSupplierPayload(column)
+      processSupplierPayload(row)
     );
   };
 

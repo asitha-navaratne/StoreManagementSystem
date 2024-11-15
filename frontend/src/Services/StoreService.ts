@@ -10,17 +10,17 @@ const Service = () => {
     return AxiosInstance.get(config.api.stores.GetAllStores);
   };
 
-  const AddStore = function (column: GridValidRowModel) {
+  const AddStore = function (row: GridValidRowModel) {
     return AxiosInstance.post(
       config.api.stores.AddStore,
-      processStorePayload(column)
+      processStorePayload(row)
     );
   };
 
-  const EditStore = function (column: GridValidRowModel) {
+  const EditStore = function (row: GridValidRowModel) {
     return AxiosInstance.patch(
       config.api.stores.EditStore,
-      processStorePayload(column)
+      processStorePayload(row)
     );
   };
 

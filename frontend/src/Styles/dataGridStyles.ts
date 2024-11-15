@@ -1,6 +1,7 @@
 const dataGridStyles = {
   boxShadow: 2,
   border: 2,
+  borderRadius: "0px",
   borderColor: "primary.main",
   color: "primary.contrastText",
   backgroundColor: "info.main",

@@ -1,9 +1,27 @@
-import { useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
-import dayjs from "dayjs";
-import randomInteger from "random-int";
 import { useLoaderData } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import randomInteger from "random-int";
+import dayjs, { Dayjs } from "dayjs";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import {
+  Box,
+  InputAdornment,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Cancel";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -17,64 +35,62 @@ import {
   GridRowsProp,
   GridSlots,
 } from "@mui/x-data-grid";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import SaveIcon from "@mui/icons-material/Save";
-import CancelIcon from "@mui/icons-material/Cancel";
 
 import styles from "./PurchasesPage.module.scss";
 import dataGridStyles from "../../Styles/dataGridStyles";
 
-import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
+import PurchasesGridToolbar from "../../Components/PurchasesGridToolbar/PurchasesGridToolbar";
 import GridAutocompleteComponent from "../../Components/GridAutocompleteComponent/GridAutocompleteComponent";
 
-import LoaderDataType from "./types/LoaderDataType";
+import InvoicePayloadDataType from "./types/InvoicePayloadDataType";
+import SuppliersGridColumnsType from "../SuppliersPage/types/GridColumnsType";
+import PriceMasterGridColumnsType from "../PriceMasterPage/types/GridColumnsType";
+import PriceMasterApiColumnsType from "../PriceMasterPage/types/ApiColumnsType";
 import InitPurchaseRowValues from "../../Constants/InitPurchaseRowValues";
+import InitInvoiceData from "../../Constants/InitInvoiceData";
+import processPriceMasterColumns from "../../Helpers/processPriceMasterColumns";
 
-import Service from "../../Services/PurchaseService";
-import AlertWindow from "../../Components/AlertWindow/AlertWindow";
+import PurchasesService from "../../Services/PurchasesService";
+import PriceMasterService from "../../Services/PriceMasterService";
+import InvoicesService from "../../Services/InvoicesService";
 
-const { AddPurchase, EditPurchase, DeletePurchase } = Service();
+const { GetPurchasesForInvoice, AddPurchases } = PurchasesService();
+const { GetInvoiceByNumberAndSupplier, AddInvoice } = InvoicesService();
+const { GetPricesBySupplier } = PriceMasterService();
 
 const PurchasesPage = () => {
-  const payloadData = useLoaderData() as LoaderDataType;
+  const suppliersList = useLoaderData() as SuppliersGridColumnsType[];
 
-  const [rows, setRows] = useState<GridRowsProp>(payloadData.purchases);
+  const [selectedSupplier, setSelectedSupplier] = useState<string>("");
+  const [invoiceNumber, setInvoiceNumber] = useState<string>("");
+  const [priceItemsBySupplierList, setPriceItemsBySupplierList] = useState<
+    (PriceMasterGridColumnsType & { displayName: string })[]
+  >([]);
+  const [invoiceData, setInvoiceData] =
+    useState<InvoicePayloadDataType>(InitInvoiceData);
+  const [selectedInvoiceDate, setSelectedInvoiceDate] = useState<Dayjs | null>(
+    dayjs()
+  );
+  const [selectedReceivedDate, setSelectedReceivedDate] =
+    useState<Dayjs | null>(dayjs());
+  const [rows, setRows] = useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-  const [editedRow, setEditedRow] = useState<GridRowModel | null>(null);
-  const [addedRow, setAddedRow] = useState<GridRowModel | null>(null);
   const [isAddButtonClicked, setIsAddButtonClicked] = useState<boolean>(false);
-  const [deleteId, setDeleteId] = useState<number>(0);
-  const [isWindowOpen, setIsWindowOpen] = useState<boolean>(false);
+  const [isSaveButtonDisabled, setIsSaveButtonDisabled] =
+    useState<boolean>(true);
 
   const columns: GridColDef[] = [
     {
       field: "id",
-      headerName: "Purchase ID",
-      flex: 1,
+      headerName: "ID",
       type: "number",
       align: "left",
       headerAlign: "left",
     },
     {
-      field: "shopName",
-      headerName: "Shop Name",
+      field: "category",
+      headerName: "Category",
       flex: 1,
-      editable: true,
-      type: "singleSelect",
-      renderEditCell: (params) => (
-        <GridAutocompleteComponent
-          {...params}
-          options={payloadData.stores}
-          keyField="storeName"
-          handleValueChange={handleStoreValueChange}
-          getInitialValue={() =>
-            payloadData.stores.filter(
-              (option) => option.storeName === params.value
-            )[0] ?? null
-          }
-        />
-      ),
       align: "left",
       headerAlign: "left",
     },
@@ -87,14 +103,12 @@ const PurchasesPage = () => {
       renderEditCell: (params) => (
         <GridAutocompleteComponent
           {...params}
-          options={payloadData.products.filter(
-            (product) => product.shopName === params.row.shopName
-          )}
-          keyField="brand"
+          options={priceItemsBySupplierList}
+          keyField="displayName"
           handleValueChange={handleProductValueChange}
           getInitialValue={() =>
-            payloadData.products.filter(
-              (option) => option.brand === params.value
+            priceItemsBySupplierList.filter(
+              (option) => option.displayName === params.value
             )[0] ?? null
           }
         />
@@ -103,60 +117,47 @@ const PurchasesPage = () => {
       headerAlign: "left",
     },
     {
-      field: "supplierName",
-      headerName: "Supplier Name",
+      field: "bottleSize",
+      headerName: "Size",
       flex: 1,
+      type: "number",
+      valueFormatter: (value) => `${value}L`,
       align: "left",
       headerAlign: "left",
-    },
-    {
-      field: "orderDate",
-      headerName: "Order Date",
-      flex: 1,
-      type: "date",
-      editable: true,
-      align: "left",
-      headerAlign: "left",
-      valueFormatter: (value) =>
-        value ? dayjs(value).format("YYYY-MM-DD") : null,
-    },
-    {
-      field: "expectedDate",
-      headerName: "Expected Date",
-      flex: 1,
-      type: "date",
-      editable: true,
-      align: "left",
-      headerAlign: "left",
-      valueFormatter: (value) =>
-        value ? dayjs(value).format("YYYY-MM-DD") : null,
-    },
-    {
-      field: "receivedDate",
-      headerName: "Received Date",
-      flex: 1,
-      type: "date",
-      editable: true,
-      align: "left",
-      headerAlign: "left",
-      valueFormatter: (value) =>
-        value ? dayjs(value).format("YYYY-MM-DD") : null,
     },
     {
       field: "quantityOrdered",
-      headerName: "Quantity Ordered",
+      headerName: "Quantity",
+      type: "number",
       flex: 1,
       editable: true,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "price",
+      headerName: "Price",
       type: "number",
+      valueFormatter: (value) => `Rs. ${value}`,
+      flex: 1,
       align: "left",
       headerAlign: "left",
     },
     {
       field: "quantityReceived",
-      headerName: "Quantity Received",
-      flex: 1,
-      editable: true,
+      headerName: "Received Item Amount",
       type: "number",
+      editable: true,
+      flex: 1,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "payableAmount",
+      headerName: "Payable Amount",
+      type: "number",
+      valueFormatter: (value) => `Rs. ${value}`,
+      flex: 1,
       align: "left",
       headerAlign: "left",
     },
@@ -213,6 +214,7 @@ const PurchasesPage = () => {
             <GridActionsCellItem
               icon={<CancelIcon />}
               label="Cancel"
+              className="textPrimary"
               onClick={handleCancelButtonClick(id)}
               sx={{
                 color: "error.main",
@@ -225,17 +227,10 @@ const PurchasesPage = () => {
           <GridActionsCellItem
             icon={<EditIcon />}
             label="Edit"
+            className="textPrimary"
             onClick={handleEditButtonClick(id)}
             sx={{
               color: "primary.main",
-            }}
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteButtonClick(id)}
-            sx={{
-              color: "error.main",
             }}
           />,
         ];
@@ -244,65 +239,84 @@ const PurchasesPage = () => {
   ];
 
   useEffect(() => {
-    if (addedRow) {
-      AddPurchase({
-        ...addedRow,
-      })
+    if (selectedSupplier) {
+      GetPricesBySupplier(selectedSupplier)
+        .then((res) =>
+          setPriceItemsBySupplierList(
+            res.data.map((column: PriceMasterApiColumnsType) => ({
+              ...processPriceMasterColumns(column),
+              displayName: `${column.brand} (${column.shop_name})`,
+            }))
+          )
+        )
         .catch((err) => {
           // TODO: Handle errors properly
           console.error(err);
-        })
-        .finally(() => {
-          setAddedRow(null);
         });
     }
-  }, [addedRow]);
+  }, [selectedSupplier]);
 
   useEffect(() => {
-    if (editedRow) {
-      EditPurchase({
-        ...editedRow,
-      })
-        .catch((err) => {
+    const getData = async function () {
+      if (invoiceNumber && selectedSupplier) {
+        try {
+          const invoiceResult = await GetInvoiceByNumberAndSupplier(
+            invoiceNumber,
+            selectedSupplier
+          );
+
+          if (invoiceResult.data) {
+            const purchasesResult = await GetPurchasesForInvoice(invoiceNumber);
+
+            setRows(purchasesResult.data);
+          }
+        } catch (err) {
           // TODO: Handle errors properly
           console.error(err);
-        })
-        .finally(() => {
-          setEditedRow(null);
-        });
-    }
-  }, [editedRow]);
-
-  useEffect(() => {
-    if (deleteId !== 0 && !isWindowOpen) {
-      DeletePurchase(deleteId)
-        .catch((err) => {
-          // TODO: Handle errors properly
-          console.error(err);
-        })
-        .finally(() => {
-          setDeleteId(0);
-        });
-    }
-  }, [deleteId, isWindowOpen]);
-
-  const handleStoreValueChange = useCallback(function (
-    id: GridRowId,
-    newValue: { [key: string]: unknown } | null
-  ) {
-    setRows((oldRows) =>
-      oldRows.map((row) => {
-        if (row.id === id) {
-          return {
-            ...row,
-            shopName: newValue?.storeName,
-          };
         }
-        return row;
-      })
-    );
-  },
-  []);
+      }
+    };
+
+    getData();
+  }, [invoiceNumber, selectedSupplier]);
+
+  const calculateQuantityAndValueOfPurchases = useCallback(
+    function () {
+      const total = rows.reduce(
+        (accumulator, row) => [
+          accumulator[0] + row.quantityReceived,
+          accumulator[1] + row.payableAmount,
+        ],
+        [0, 0]
+      );
+
+      setInvoiceData((prev) => ({
+        ...prev,
+        quantity: total[0],
+        valueOfPurchases: total[1],
+        totalPayable: total[1] * (prev.vat / 100) + total[1],
+      }));
+    },
+    [rows]
+  );
+
+  useEffect(() => {
+    if (rows.length > 0 && !isAddButtonClicked) {
+      calculateQuantityAndValueOfPurchases();
+      setIsSaveButtonDisabled(false);
+    } else {
+      setIsSaveButtonDisabled(true);
+    }
+  }, [calculateQuantityAndValueOfPurchases, isAddButtonClicked, rows]);
+
+  const handleInvoiceFieldsChange = function (
+    e: ChangeEvent<HTMLInputElement> | SelectChangeEvent
+  ) {
+    setInvoiceData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    if (e.target.name === "vat") {
+      calculateQuantityAndValueOfPurchases();
+    }
+  };
 
   const handleProductValueChange = useCallback(function (
     id: GridRowId,
@@ -313,8 +327,11 @@ const PurchasesPage = () => {
         if (row.id === id) {
           return {
             ...row,
+            category: newValue?.category,
             productName: newValue?.brand,
+            bottleSize: newValue?.bottleSize,
             supplierName: newValue?.companyName,
+            price: newValue?.price,
           };
         }
         return row;
@@ -363,33 +380,28 @@ const PurchasesPage = () => {
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
+    const newPayableAmount = newRow.price * newRow.quantityReceived;
+
     if (isAddButtonClicked) {
-      const addRow = { ...newRow, isNew: false };
+      const addRow = {
+        ...newRow,
+        payableAmount: newPayableAmount,
+        isNew: false,
+      };
       setRows(rows.map((row) => (row.id === newRow.id ? addRow : row)));
-      setAddedRow({ ...newRow });
       setIsAddButtonClicked(false);
       return addRow;
     } else {
       const updatedRow = {
         ...newRow,
+        payableAmount: newPayableAmount,
         updatedBy: "AsithaN",
         updatedOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         isNew: false,
       };
       setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-      setEditedRow({ ...updatedRow });
       return updatedRow;
     }
-  };
-
-  const handleDeleteButtonClick = (id: GridRowId) => () => {
-    setIsWindowOpen(true);
-    setDeleteId(id as number);
-  };
-
-  const handleDeletePurchase = function () {
-    setRows(rows.filter((row) => row.id !== deleteId));
-    setIsWindowOpen(false);
   };
 
   const handleSaveButtonClick = (id: GridRowId) => () => {
@@ -414,9 +426,33 @@ const PurchasesPage = () => {
     }
   };
 
-  const handleAlertWindowClose = function () {
-    setDeleteId(0);
-    setIsWindowOpen(false);
+  const handleSaveAllButtonClick = function () {
+    const id = randomInteger(2 ** 16, 2 ** 17);
+    AddInvoice({
+      id,
+      ...invoiceData,
+      supplierId: selectedSupplier,
+      invoiceNumber: invoiceNumber,
+      createdBy: "AsithaN",
+    })
+      .then(() => {
+        AddPurchases(
+          rows.map((row) => ({
+            ...row,
+            invoiceNumber: invoiceNumber,
+            receivedDate: selectedReceivedDate?.format("YYYY-MM-DD"),
+            createdBy: "AsithaN",
+            createdOn: dayjs().format("YYYY-MM-DD"),
+            updatedBy: null,
+            updatedOn: null,
+          })),
+          selectedSupplier
+        );
+      })
+      .catch((err) => {
+        // TODO: Handle errors properly
+        console.error(err);
+      });
   };
 
   return (
@@ -426,7 +462,214 @@ const PurchasesPage = () => {
           Purchases
         </Typography>
       </Box>
-      <Box className={styles["purchases-page__grid-container"]}>
+      <Box className={styles["purchases-page__invoice-grid"]}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Supplier Name</TableCell>
+              <TableCell>Invoice Date</TableCell>
+              <TableCell>Invoice Number</TableCell>
+              <TableCell>Quantity</TableCell>
+              <TableCell>Value of Purchase</TableCell>
+              <TableCell>VAT Amount</TableCell>
+              <TableCell>Total Purchases</TableCell>
+              <TableCell>Received Date</TableCell>
+              <TableCell>Invoice Type</TableCell>
+              <TableCell>Payment</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell>
+                <Select
+                  id="select-supplier-name"
+                  sx={(theme) => ({
+                    border: `1px solid ${theme.palette.primary.main}`,
+                    width: "10vw",
+                  })}
+                  value={selectedSupplier}
+                  onChange={(e) => setSelectedSupplier(e.target.value)}
+                >
+                  {suppliersList.map((supplier) => (
+                    <MenuItem key={supplier.id} value={supplier.id}>
+                      {supplier.companyName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </TableCell>
+              <TableCell>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DesktopDatePicker
+                    disableFuture
+                    value={selectedInvoiceDate}
+                    onChange={(value) => setSelectedInvoiceDate(value)}
+                    slotProps={{
+                      textField: {
+                        color: "secondary",
+                        sx: {
+                          svg: { color: "#fff" },
+                          input: { color: "#fff" },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              </TableCell>
+              <TableCell>
+                <TextField
+                  id="input-invoice-number"
+                  type="number"
+                  value={invoiceNumber}
+                  onChange={(e) => setInvoiceNumber(e.target.value)}
+                  color="primary"
+                  sx={(theme) => ({
+                    border: `1px solid ${theme.palette.primary.main}`,
+                    "& fieldset": {
+                      borderRadius: "0px",
+                    },
+                    input: {
+                      color: "#fff",
+                    },
+                  })}
+                />
+              </TableCell>
+              <TableCell>
+                <TextField
+                  id="input-quantity"
+                  type="number"
+                  value={invoiceData["quantity"]}
+                  color="primary"
+                  sx={(theme) => ({
+                    border: `1px solid ${theme.palette.primary.main}`,
+                    "& fieldset": {
+                      borderRadius: "0px",
+                    },
+                    input: {
+                      color: "#fff",
+                    },
+                  })}
+                />
+              </TableCell>
+              <TableCell>
+                <TextField
+                  id="input-value-of-purchase"
+                  type="number"
+                  value={invoiceData["valueOfPurchases"]}
+                  color="primary"
+                  sx={(theme) => ({
+                    border: `1px solid ${theme.palette.primary.main}`,
+                    "& fieldset": {
+                      borderRadius: "0px",
+                    },
+                    input: {
+                      color: "#fff",
+                    },
+                  })}
+                />
+              </TableCell>
+              <TableCell>
+                <TextField
+                  id="input-vat-amount"
+                  type="number"
+                  name="vat"
+                  value={invoiceData["vat"]}
+                  onChange={(e) =>
+                    handleInvoiceFieldsChange(
+                      e as ChangeEvent<HTMLInputElement>
+                    )
+                  }
+                  color="primary"
+                  sx={(theme) => ({
+                    border: `1px solid ${theme.palette.primary.main}`,
+                    "& fieldset": {
+                      borderRadius: "0px",
+                    },
+                    "& .MuiInputAdornment-root p": {
+                      color: "#fff",
+                    },
+                    input: {
+                      color: "#fff",
+                    },
+                  })}
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">%</InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+              </TableCell>
+              <TableCell>
+                <TextField
+                  id="input-total-payable"
+                  type="number"
+                  value={invoiceData["totalPayable"]}
+                  color="primary"
+                  sx={(theme) => ({
+                    border: `1px solid ${theme.palette.primary.main}`,
+                    "& fieldset": {
+                      borderRadius: "0px",
+                    },
+                    input: {
+                      color: "#fff",
+                    },
+                  })}
+                />
+              </TableCell>
+              <TableCell>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DesktopDatePicker
+                    disableFuture
+                    value={selectedReceivedDate}
+                    onChange={(value) => setSelectedReceivedDate(value)}
+                    slotProps={{
+                      textField: {
+                        color: "secondary",
+                        sx: {
+                          svg: { color: "#fff" },
+                          input: { color: "#fff" },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              </TableCell>
+              <TableCell>
+                <Select
+                  id="select-invoice-type"
+                  name="invoiceType"
+                  value={invoiceData["invoiceType"]}
+                  onChange={handleInvoiceFieldsChange}
+                  sx={(theme) => ({
+                    border: `1px solid ${theme.palette.primary.main}`,
+                    width: "7vw",
+                  })}
+                >
+                  <MenuItem value="local">Local</MenuItem>
+                  <MenuItem value="foreign">Foreign</MenuItem>
+                </Select>
+              </TableCell>
+              <TableCell>
+                <Select
+                  id="select-payment"
+                  name="payment"
+                  value={invoiceData["payment"]}
+                  onChange={handleInvoiceFieldsChange}
+                  sx={(theme) => ({
+                    border: `1px solid ${theme.palette.primary.main}`,
+                    width: "7vw",
+                  })}
+                >
+                  <MenuItem value="paid">Paid</MenuItem>
+                  <MenuItem value="free">Free</MenuItem>
+                </Select>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </Box>
+      <Box className={styles["purchases-page__purchases-grid"]}>
         <DataGrid
           rows={rows}
           columns={columns}
@@ -447,26 +690,22 @@ const PurchasesPage = () => {
             },
           }}
           slots={{
-            toolbar: DataGridToolbar as GridSlots["toolbar"],
+            toolbar: PurchasesGridToolbar as GridSlots["toolbar"],
           }}
           slotProps={{
             toolbar: {
-              isAddButtonDisabled: isAddButtonClicked,
+              isAddButtonDisabled:
+                isAddButtonClicked ||
+                selectedSupplier === "" ||
+                invoiceNumber === "",
               handleAddButtonClicked,
-              showQuickFilter: true,
+              isSaveButtonDisabled,
+              handleSaveAllButtonClick,
             },
           }}
           sx={dataGridStyles}
         />
       </Box>
-      <AlertWindow
-        isWindowOpen={isWindowOpen}
-        handleClose={handleAlertWindowClose}
-        handleAgreeAction={handleDeletePurchase}
-        handleDisagreeAction={handleAlertWindowClose}
-        windowTitle="Delete Purchase"
-        description="Are you sure you want to delete this purchase permanently?"
-      />
     </Box>
   );
 };

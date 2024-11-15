@@ -3,27 +3,27 @@ import { GridValidRowModel } from "@mui/x-data-grid";
 import PriceMasterApiColumnsType from "../Views/PriceMasterPage/types/ApiColumnsType";
 
 const processPriceMasterPayload = function (
-  column: GridValidRowModel
+  row: GridValidRowModel
 ): PriceMasterApiColumnsType {
   return {
-    id: column.id,
-    shop_name: column.shopName,
-    company_name: column.companyName,
-    brand: column.brand,
-    brand_code: column.brandCode,
-    category: column.category,
-    bottle_size: column.bottleSize,
-    container_size: column.containerSize,
-    tax_price: column.taxPrice,
-    cost: column.cost,
-    price: column.price,
-    commissions: column.commissions,
-    margin: column.margin,
-    active: column.active,
-    created_by: column.createdBy,
-    created_on: column.createdOn,
-    updated_by: column.updatedBy,
-    updated_on: column.updatedOn,
+    id: row.id,
+    shop_name: row.shopName,
+    company_name: row.companyName,
+    brand: row.brand,
+    brand_code: row.brandCode,
+    category: row.category,
+    bottle_size: row.bottleSize,
+    container_size: row.containerSize,
+    tax_price: row.taxPrice,
+    cost: row.cost,
+    price: row.price,
+    commissions: row.commissions,
+    margin: row.margin,
+    active: row.active,
+    created_by: row.createdBy,
+    created_on: row.createdOn,
+    updated_by: row.updatedBy,
+    updated_on: row.updatedOn,
   };
 };
 

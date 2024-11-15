@@ -16,7 +16,8 @@ const AlcoholCategories: string[] = [
   "Sparkling Wine",
   "Sake",
   "Absinthe",
-  "Liqueurs",
+  "Liqueur",
+  "Toddy",
 ];
 
 export default AlcoholCategories;

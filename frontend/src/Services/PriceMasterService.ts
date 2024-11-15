@@ -10,17 +10,17 @@ const Service = () => {
     return AxiosInstance.get(config.api.priceMaster.GetAllPrices);
   };
 
-  const AddPriceItem = function (column: GridValidRowModel) {
+  const AddPriceItem = function (row: GridValidRowModel) {
     return AxiosInstance.post(
       config.api.priceMaster.AddPrice,
-      processPriceMasterPayload(column)
+      processPriceMasterPayload(row)
     );
   };
 
-  const EditPriceItem = function (column: GridValidRowModel) {
+  const EditPriceItem = function (row: GridValidRowModel) {
     return AxiosInstance.patch(
       config.api.priceMaster.EditPrice,
-      processPriceMasterPayload(column)
+      processPriceMasterPayload(row)
     );
   };
 
@@ -28,11 +28,18 @@ const Service = () => {
     return AxiosInstance.delete(`${config.api.priceMaster.DeletePrice}/${id}`);
   };
 
+  const GetPricesBySupplier = function (supplierId: string) {
+    return AxiosInstance.get(
+      `${config.api.priceMaster.GetPricesBySupplier}?supplier=${supplierId}`
+    );
+  };
+
   return {
     GetPriceItems,
     AddPriceItem,
     EditPriceItem,
     DeletePriceItem,
+    GetPricesBySupplier,
   };
 };
 

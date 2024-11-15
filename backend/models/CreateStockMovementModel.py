@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 
 class CreateStockMovementModel(BaseModel):
@@ -12,5 +13,5 @@ class CreateStockMovementModel(BaseModel):
     in_hand: int
     current_in_hand: int
     purchased_amount: int
-    sold: int
+    sold: Optional[int] = None
     updated_by: str

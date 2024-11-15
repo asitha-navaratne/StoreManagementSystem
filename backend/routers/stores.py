@@ -26,15 +26,15 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
-@router.get('/')
+@router.get('')
 def get_all_stores(db: db_dependency):
     return get_stores(db)
 
-@router.post('/', status_code=status.HTTP_201_CREATED)
+@router.post('', status_code=status.HTTP_201_CREATED)
 def add_store(store: CreateStoreModel, db: db_dependency):
     return create_store(store=store, db=db)
 
-@router.patch('/')
+@router.patch('')
 def update_store(store: CreateStoreModel, db: db_dependency):
     return edit_store(store=store, db=db)
 

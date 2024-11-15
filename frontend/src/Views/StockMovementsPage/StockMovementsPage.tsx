@@ -7,7 +7,6 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent,
   Typography,
 } from "@mui/material";
 import {
@@ -279,14 +278,6 @@ const StockMovementsPage = () => {
     }
   }, [selectedStore, selectedDate]);
 
-  const handleStoreChange = function (e: SelectChangeEvent) {
-    setSelectedStore(e.target.value);
-  };
-
-  const handleDateChange = function (value: Dayjs | null) {
-    setSelectedDate(value);
-  };
-
   const handleRowEditStart = function () {
     setIsSaveButtonDisabled(true);
   };
@@ -358,7 +349,7 @@ const StockMovementsPage = () => {
             id="select-store"
             value={selectedStore}
             label="Store"
-            onChange={handleStoreChange}
+            onChange={(e) => setSelectedStore(e.target.value)}
             sx={{ minWidth: "15vw" }}
           >
             {storesList.map((store) => (
@@ -372,7 +363,7 @@ const StockMovementsPage = () => {
           <DesktopDatePicker
             label="Select Date"
             value={selectedDate}
-            onChange={handleDateChange}
+            onChange={(value) => setSelectedDate(value)}
             disableFuture
             slotProps={{
               textField: {

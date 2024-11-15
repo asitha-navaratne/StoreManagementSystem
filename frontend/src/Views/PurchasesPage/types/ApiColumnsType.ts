@@ -1,10 +1,10 @@
 type PurchaseApiColumnsType = {
   id: number;
-  shop_name: string;
+  category: string;
   product_name: string;
-  supplier_name: string;
-  order_date: string;
-  expected_date: string;
+  shop_name: string;
+  supplier_id: string;
+  invoice_number: string;
   received_date: string;
   quantity_ordered: number;
   quantity_received: number;

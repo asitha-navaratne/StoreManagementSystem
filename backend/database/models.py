@@ -29,8 +29,7 @@ class Purchases(Base):
     store_id: Mapped[int] = mapped_column(ForeignKey('stores.id'), index=True, nullable=False)
     product_id: Mapped[int] = mapped_column(ForeignKey('price_master.id'), index=True, nullable=False)
     supplier_id: Mapped[int] = mapped_column(ForeignKey('suppliers.id'), index=True, nullable=False)
-    order_date: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True))
-    expected_date: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True))
+    invoice_id: Mapped[int] = mapped_column(ForeignKey('invoices.id'), index=True, nullable=False)
     received_date: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True))
     quantity_ordered: Mapped[int]
     quantity_received: Mapped[int]
@@ -41,6 +40,28 @@ class Purchases(Base):
 
     created_user: Mapped["Users"] = relationship("Users", foreign_keys="Purchases.created_by")
     updated_user: Mapped[Optional["Users"]] = relationship("Users", foreign_keys="Purchases.updated_by")
+
+class Invoices(Base):
+    __tablename__ = 'invoices'
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    invoice_date: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True))
+    supplier_id: Mapped[int] = mapped_column(ForeignKey('suppliers.id'), index=True, nullable=False)
+    invoice_number: Mapped[int] = mapped_column(nullable=False)
+    description: Mapped[str]
+    value_of_purchases: Mapped[int] = mapped_column(nullable=False)
+    vat: Mapped[int] = mapped_column(nullable=False)
+    total_payable: Mapped[int] = mapped_column(nullable=False)
+    invoice_type: Mapped[str] = mapped_column(nullable=False)
+    received_date: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    payment_date: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_by: Mapped[int] = mapped_column(ForeignKey('users.id'), nullable=False)
+    created_on: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_by: Mapped[int] = mapped_column(ForeignKey('users.id'), nullable=True)
+    updated_on: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    created_user: Mapped["Users"] = relationship("Users", foreign_keys="Invoices.created_by")
+    updated_user: Mapped[Optional["Users"]] = relationship("Users", foreign_keys="Invoices.updated_by")
 
 class Users(Base):
     __tablename__ = 'users'

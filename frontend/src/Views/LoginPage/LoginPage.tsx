@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import {
@@ -25,22 +25,6 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
 
-  const handleUsernameChange = function (
-    e: ChangeEvent<HTMLInputElement>
-  ): void {
-    setUsername(e.target.value);
-  };
-
-  const handlePasswordChange = function (
-    e: ChangeEvent<HTMLInputElement>
-  ): void {
-    setPassword(e.target.value);
-  };
-
-  const handleShowPasswordButtonClick = function (): void {
-    setIsPasswordShown((prev) => !prev);
-  };
-
   const handleSubmitButtonClick = function (): void {
     navigate("/");
   };
@@ -63,7 +47,7 @@ const LoginPage = () => {
             <TextField
               sx={{ mt: 2, width: "100%" }}
               value={username}
-              onChange={handleUsernameChange}
+              onChange={(e) => setUsername(e.target.value)}
               slotProps={{
                 input: {
                   startAdornment: (
@@ -77,7 +61,7 @@ const LoginPage = () => {
             <TextField
               sx={{ mt: 2, width: "100%" }}
               value={password}
-              onChange={handlePasswordChange}
+              onChange={(e) => setPassword(e.target.value)}
               type={isPasswordShown ? "text" : "password"}
               slotProps={{
                 input: {
@@ -90,7 +74,7 @@ const LoginPage = () => {
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="toggle password visibility"
-                        onClick={handleShowPasswordButtonClick}
+                        onClick={() => setIsPasswordShown((prev) => !prev)}
                         edge="end"
                       >
                         {isPasswordShown ? <VisibilityOff /> : <Visibility />}

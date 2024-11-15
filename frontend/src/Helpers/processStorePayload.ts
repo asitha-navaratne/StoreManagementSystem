@@ -3,17 +3,17 @@ import { GridValidRowModel } from "@mui/x-data-grid";
 import StoreApiColumnsType from "../Views/StoresPage/types/ApiColumnsType";
 
 const processStorePayload = function (
-  column: GridValidRowModel
+  row: GridValidRowModel
 ): StoreApiColumnsType {
   return {
-    id: column.id,
-    store_name: column.storeName,
-    store_address: column.storeAddress,
-    active: column.active,
-    created_by: column.createdBy,
-    created_on: column.createdOn,
-    updated_by: column.updatedBy,
-    updated_on: column.updatedOn,
+    id: row.id,
+    store_name: row.storeName,
+    store_address: row.storeAddress,
+    active: row.active,
+    created_by: row.createdBy,
+    created_on: row.createdOn,
+    updated_by: row.updatedBy,
+    updated_on: row.updatedOn,
   };
 };
 

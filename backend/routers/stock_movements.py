@@ -24,10 +24,10 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
-@router.get('/')
+@router.get('')
 def get_all_stock_movements(store: str, date: str, db: db_dependency):
     return get_stock_movements(store, date, db)
 
-@router.patch('/')
+@router.patch('')
 def update_stock_movement_records(stock_movements: list[CreateStockMovementModel], db: db_dependency):
     return update_stock_movements(stock_movements=stock_movements, db=db)

@@ -26,15 +26,15 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
-@router.get('/')
+@router.get('')
 def get_all_suppliers(db: db_dependency):
     return get_suppliers(db)
 
-@router.post('/', status_code=status.HTTP_201_CREATED)
+@router.post('', status_code=status.HTTP_201_CREATED)
 def add_supplier(supplier: CreateSupplierModel, db: db_dependency):
     return create_supplier(supplier=supplier, db=db)
 
-@router.patch('/')
+@router.patch('')
 def update_supplier(supplier: CreateSupplierModel, db: db_dependency):
     return edit_supplier(supplier=supplier, db=db)
 

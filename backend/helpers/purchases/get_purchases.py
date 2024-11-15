@@ -9,10 +9,10 @@ def get_purchases(db: Session):
     user_alias_2 = aliased(Users, name="user_alias_2")
 
     stmt = (
-        select(Purchases, Stores.store_name, PriceMaster.brand, Suppliers.company_name, user_alias_1.username, user_alias_2.username)
+        select(Purchases, Stores.store_name, PriceMaster, Suppliers.company_name, user_alias_1.username, user_alias_2.username)
         .join(Stores, Purchases.store_id == Stores.id, isouter=True)
         .join(PriceMaster, Purchases.product_id == PriceMaster.id, isouter=True)
-        .join(Suppliers, Purchases.supplier_id == Suppliers.id, isouter=True)
+        .join(Suppliers, Purchases.supplier_id == Purchases.id, isouter=True)
         .join(user_alias_1, Purchases.created_by == user_alias_1.id, isouter=True)
         .join(user_alias_2, Purchases.updated_by == user_alias_2.id, isouter=True)
         .order_by(Purchases.received_date)
@@ -23,11 +23,11 @@ def get_purchases(db: Session):
     for result in results:
         result_dict = {
             'id': result[0].id,
+            'category': result[2].category,
             'shop_name': result[1],
-            'product_name': result[2],
+            'product_name': result[2].brand,
             'supplier_name': result[3],
-            'order_date': result[0].order_date,
-            'expected_date': result[0].expected_date,
+            'invoice_id': result[0].invoice_id,
             'received_date': result[0].received_date,
             'quantity_ordered': result[0].quantity_ordered,
             'quantity_received': result[0].quantity_received,

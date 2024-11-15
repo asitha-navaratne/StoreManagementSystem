@@ -1,13 +1,16 @@
 .purchases-page {
   padding: 10px;
   height: 96vh;
+  display: flex;
+  flex-direction: column;
 
   &__title-section {
     height: 5%;
   }
 
-  &__grid-container {
-    height: 95%;
+  &__purchases-grid {
+    flex-grow: 1;
+    height: 50%;
     width: 100%;
   }
 }
