@@ -6,7 +6,7 @@ import config from "../Configs/urls.config";
 import processPurchasePayload from "../Helpers/processPurchasePayload";
 
 const Service = function () {
-  const GetPurchasesForInvoice = function (invoice: string) {
+  const GetPurchasesForInvoice = function (invoice: number) {
     return AxiosInstance.get(
       `${config.api.purchases.GetPurchasesForInvoice}?invoice=${invoice}`
     );

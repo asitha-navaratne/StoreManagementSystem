@@ -3,7 +3,7 @@ import { GridValidRowModel } from "@mui/x-data-grid";
 import AxiosInstance from "../Utils/Axios";
 import config from "../Configs/urls.config";
 
-import InvoicePayloadDataType from "../Views/PurchasesPage/types/InvoicePayloadDataType";
+import InvoiceGridColumnsType from "../Views/InvoicesPage/types/GridColumnsType";
 import processInvoicePayload from "../Helpers/processInvoicePayload";
 
 const Service = () => {
@@ -11,7 +11,7 @@ const Service = () => {
     return AxiosInstance.get(config.api.invoices.GetAllInvoices);
   };
 
-  const AddInvoice = function (row: InvoicePayloadDataType) {
+  const AddInvoice = function (row: InvoiceGridColumnsType) {
     return AxiosInstance.post(
       config.api.invoices.AddInvoice,
       processInvoicePayload(row)
@@ -30,7 +30,7 @@ const Service = () => {
   };
 
   const GetInvoiceByNumberAndSupplier = function (
-    invoiceNumber: string,
+    invoiceNumber: number,
     supplierName: string
   ) {
     return AxiosInstance.get(

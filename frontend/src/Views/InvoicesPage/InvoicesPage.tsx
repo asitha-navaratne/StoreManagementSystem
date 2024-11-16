@@ -24,10 +24,10 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import styles from "./InvoicesPage.module.scss";
 import dataGridStyles from "../../Styles/dataGridStyles";
 
+import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
 import AlertWindow from "../../Components/AlertWindow/AlertWindow";
 
 import Service from "../../Services/InvoicesService";
-import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
 
 const { EditInvoice, DeleteInvoice } = Service();
 

@@ -313,7 +313,7 @@ const SuppliersPage = () => {
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
-    const paymentPeriodValue = newRow.invoiceType === "local" ? 7 : 30;
+    const paymentPeriodValue = newRow.invoiceType === "Local" ? 7 : 30;
 
     if (isAddButtonClicked) {
       const addRow = {

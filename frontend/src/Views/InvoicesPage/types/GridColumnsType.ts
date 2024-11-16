@@ -1,8 +1,7 @@
 type InvoiceGridColumnsType = {
   id: number;
   invoiceDate: string;
-  supplierId?: number;
-  supplierName?: string;
+  supplierName: string;
   invoiceNumber: number;
   description: string;
   valueOfPurchases: number;
@@ -10,11 +9,11 @@ type InvoiceGridColumnsType = {
   totalPayable: number;
   invoiceType: string;
   receivedDate: string;
-  paymentDate: string;
+  paymentDate: string | null;
   createdBy: string;
   createdOn: string;
-  updatedBy: string;
-  updatedOn: string;
+  updatedBy: string | null;
+  updatedOn: string | null;
 };
 
 export default InvoiceGridColumnsType;

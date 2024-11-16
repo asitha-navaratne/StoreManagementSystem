@@ -42,7 +42,7 @@ import dataGridStyles from "../../Styles/dataGridStyles";
 import PurchasesGridToolbar from "../../Components/PurchasesGridToolbar/PurchasesGridToolbar";
 import GridAutocompleteComponent from "../../Components/GridAutocompleteComponent/GridAutocompleteComponent";
 
-import InvoicePayloadDataType from "./types/InvoicePayloadDataType";
+import InvoiceGridColumnsType from "../InvoicesPage/types/GridColumnsType";
 import SuppliersGridColumnsType from "../SuppliersPage/types/GridColumnsType";
 import PriceMasterGridColumnsType from "../PriceMasterPage/types/GridColumnsType";
 import PriceMasterApiColumnsType from "../PriceMasterPage/types/ApiColumnsType";
@@ -62,19 +62,23 @@ const PurchasesPage = () => {
   const suppliersList = useLoaderData() as SuppliersGridColumnsType[];
 
   const [selectedSupplier, setSelectedSupplier] = useState<string>("");
-  const [invoiceNumber, setInvoiceNumber] = useState<string>("");
+  const [invoiceNumber, setInvoiceNumber] = useState<number>(0);
   const [priceItemsBySupplierList, setPriceItemsBySupplierList] = useState<
     (PriceMasterGridColumnsType & { displayName: string })[]
   >([]);
+  const [rows, setRows] = useState<GridRowsProp>([]);
+  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const [invoiceData, setInvoiceData] =
-    useState<InvoicePayloadDataType>(InitInvoiceData);
+    useState<InvoiceGridColumnsType>(InitInvoiceData);
   const [selectedInvoiceDate, setSelectedInvoiceDate] = useState<Dayjs | null>(
     dayjs()
   );
   const [selectedReceivedDate, setSelectedReceivedDate] =
     useState<Dayjs | null>(dayjs());
-  const [rows, setRows] = useState<GridRowsProp>([]);
-  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+  const [quantity, setQuantity] = useState<number>(0);
+  const [selectedPayment, setSelectedPayment] = useState<"Paid" | "Free">(
+    "Paid"
+  );
   const [isAddButtonClicked, setIsAddButtonClicked] = useState<boolean>(false);
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] =
     useState<boolean>(true);
@@ -269,6 +273,8 @@ const PurchasesPage = () => {
             const purchasesResult = await GetPurchasesForInvoice(invoiceNumber);
 
             setRows(purchasesResult.data);
+          } else {
+            setRows([]);
           }
         } catch (err) {
           // TODO: Handle errors properly
@@ -290,9 +296,9 @@ const PurchasesPage = () => {
         [0, 0]
       );
 
+      setQuantity(total[0]);
       setInvoiceData((prev) => ({
         ...prev,
-        quantity: total[0],
         valueOfPurchases: total[1],
         totalPayable: total[1] * (prev.vat / 100) + total[1],
       }));
@@ -312,9 +318,16 @@ const PurchasesPage = () => {
   const handleInvoiceFieldsChange = function (
     e: ChangeEvent<HTMLInputElement> | SelectChangeEvent
   ) {
-    setInvoiceData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     if (e.target.name === "vat") {
-      calculateQuantityAndValueOfPurchases();
+      const vatRate = Number(e.target.value);
+      setInvoiceData((prev) => ({
+        ...prev,
+        vat: vatRate,
+        totalPayable:
+          prev.valueOfPurchases * (prev.vat / 100) + prev.valueOfPurchases,
+      }));
+    } else {
+      setInvoiceData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     }
   };
 
@@ -427,10 +440,10 @@ const PurchasesPage = () => {
   };
 
   const handleSaveAllButtonClick = function () {
-    const id = randomInteger(2 ** 16, 2 ** 17);
+    const newInvoiceId = randomInteger(2 ** 16, 2 ** 17);
     AddInvoice({
-      id,
       ...invoiceData,
+      id: newInvoiceId,
       supplierName: selectedSupplier,
       invoiceNumber: invoiceNumber,
       createdBy: "AsithaN",
@@ -518,9 +531,9 @@ const PurchasesPage = () => {
               <TableCell>
                 <TextField
                   id="input-invoice-number"
-                  type="number"
+                  type="Number"
                   value={invoiceNumber}
-                  onChange={(e) => setInvoiceNumber(e.target.value)}
+                  onChange={(e) => setInvoiceNumber(Number(e.target.value))}
                   color="primary"
                   sx={(theme) => ({
                     border: `1px solid ${theme.palette.primary.main}`,
@@ -536,8 +549,7 @@ const PurchasesPage = () => {
               <TableCell>
                 <TextField
                   id="input-quantity"
-                  type="number"
-                  value={invoiceData["quantity"]}
+                  defaultValue={quantity}
                   color="primary"
                   sx={(theme) => ({
                     border: `1px solid ${theme.palette.primary.main}`,
@@ -548,6 +560,7 @@ const PurchasesPage = () => {
                       color: "#fff",
                     },
                   })}
+                  slotProps={{ input: { readOnly: true } }}
                 />
               </TableCell>
               <TableCell>
@@ -570,9 +583,10 @@ const PurchasesPage = () => {
               <TableCell>
                 <TextField
                   id="input-vat-amount"
-                  type="number"
+                  type="Number"
                   name="vat"
                   value={invoiceData["vat"]}
+                  onFocus={(e) => e.target.select()}
                   onChange={(e) =>
                     handleInvoiceFieldsChange(
                       e as ChangeEvent<HTMLInputElement>
@@ -653,16 +667,17 @@ const PurchasesPage = () => {
               <TableCell>
                 <Select
                   id="select-payment"
-                  name="payment"
-                  value={invoiceData["payment"]}
-                  onChange={handleInvoiceFieldsChange}
+                  value={selectedPayment}
+                  onChange={(e) =>
+                    setSelectedPayment(e.target.value as "Paid" | "Free")
+                  }
                   sx={(theme) => ({
                     border: `1px solid ${theme.palette.primary.main}`,
                     width: "7vw",
                   })}
                 >
-                  <MenuItem value="paid">Paid</MenuItem>
-                  <MenuItem value="free">Free</MenuItem>
+                  <MenuItem value="Paid">Paid</MenuItem>
+                  <MenuItem value="Free">Free</MenuItem>
                 </Select>
               </TableCell>
             </TableRow>
@@ -697,7 +712,7 @@ const PurchasesPage = () => {
               isAddButtonDisabled:
                 isAddButtonClicked ||
                 selectedSupplier === "" ||
-                invoiceNumber === "",
+                invoiceNumber === 0,
               handleAddButtonClicked,
               isSaveButtonDisabled,
               handleSaveAllButtonClick,

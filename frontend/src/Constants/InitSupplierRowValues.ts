@@ -5,7 +5,7 @@ const InitSupplierRowValues = {
   number: "",
   supplierTin: "",
   email: "",
-  invoiceType: "local",
+  invoiceType: "Local",
   paymentPeriod: 0,
   active: true,
 };

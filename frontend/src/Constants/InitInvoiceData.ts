@@ -1,17 +1,16 @@
 import dayjs from "dayjs";
 
 const InitInvoiceData = {
+  id: 0,
   invoiceDate: dayjs().format("YYYY-MM-DD"),
-  invoiceNumber: "",
-  quantity: 0,
+  supplierName: "",
+  invoiceNumber: 0,
+  description: "",
   valueOfPurchases: 0,
   vat: 0,
   totalPayable: 0,
+  invoiceType: "Local",
   receivedDate: dayjs().format("YYYY-MM-DD"),
-  invoiceType: "local",
-  payment: "paid",
-  supplierName: "",
-  description: "",
   paymentDate: null,
   createdBy: "",
   createdOn: dayjs().format("YYYY-MM-DD"),
