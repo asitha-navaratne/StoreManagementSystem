@@ -30,7 +30,6 @@ import StoreGridColumnsType from "../StoresPage/types/GridColumnsType";
 import StockMovementsApiColumnsType from "./types/ApiColumnsType";
 import StockMovementsGridColumnsType from "./types/GridColumnsType";
 
-import processStockMovementsColumns from "../../Helpers/processStockMovementsColumns";
 import getCurrentInHandAmount from "../../Helpers/getCurrentInHandAmount";
 import getHeadersForGroupedColumns from "../../Helpers/getHeadersForGroupedColumns";
 
@@ -258,11 +257,7 @@ const StockMovementsPage = () => {
       setIsGridDataLoading(true);
       GetStockMovements(selectedStore, selectedDate.format("YYYY-MM-DD"))
         .then((res) => {
-          setRows(
-            res.data.map((column: StockMovementsApiColumnsType) =>
-              processStockMovementsColumns(column)
-            )
-          );
+          setRows(res);
 
           const isSoldColumnNull = res.data.some(
             (row: StockMovementsApiColumnsType) => row.sold === null
@@ -315,11 +310,7 @@ const StockMovementsPage = () => {
         return GetStockMovements(selectedStore, dayjs().format("YYYY-MM-DD"));
       })
       .then((res) => {
-        setRows(
-          res.data.map((column: StockMovementsApiColumnsType) =>
-            processStockMovementsColumns(column)
-          )
-        );
+        setRows(res);
 
         const isSoldColumnNull = res.data.some(
           (row: StockMovementsApiColumnsType) => row.sold === null

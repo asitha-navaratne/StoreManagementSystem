@@ -3,25 +3,25 @@ import { GridValidRowModel } from "@mui/x-data-grid";
 import InvoiceApiColumnsType from "../Views/InvoicesPage/types/ApiColumnsType";
 
 const processInvoicePayload = function (
-  payload: GridValidRowModel
+  row: GridValidRowModel
 ): InvoiceApiColumnsType {
   return {
-    id: payload.id,
-    invoice_date: payload.invoiceDate,
-    supplier_name: payload.supplierName,
-    store_name: payload.storeName,
-    invoice_number: payload.invoiceNumber,
-    description: payload.description,
-    value_of_purchases: payload.valueOfPurchases,
-    vat: payload.vat,
-    total_payable: payload.totalPayable,
-    invoice_type: payload.invoiceType,
-    received_date: payload.receivedDate,
-    payment_date: payload.paymentDate,
-    created_by: payload.createdBy,
-    created_on: payload.createdOn,
-    updated_by: payload.updatedBy,
-    updated_on: payload.updatedOn,
+    id: row.id,
+    invoice_date: row.invoiceDate,
+    supplier_name: row.supplierName,
+    store_name: row.storeName,
+    invoice_number: row.invoiceNumber,
+    description: row.description,
+    value_of_purchases: row.valueOfPurchases,
+    vat: row.vat,
+    total_payable: row.totalPayable,
+    invoice_type: row.invoiceType,
+    received_date: row.receivedDate,
+    payment_date: row.paymentDate,
+    created_by: row.createdBy,
+    created_on: row.createdOn,
+    updated_by: row.updatedBy,
+    updated_on: row.updatedOn,
   };
 };
 

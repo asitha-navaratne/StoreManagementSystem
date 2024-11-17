@@ -3,11 +3,17 @@ import { GridValidRowModel } from "@mui/x-data-grid";
 import AxiosInstance from "../Utils/Axios";
 import config from "../Configs/urls.config";
 
+import SuppliersApiColumnsType from "../Views/SuppliersPage/types/ApiColumnsType";
+import processSupplierColumns from "../Helpers/processSupplierColumns";
 import processSupplierPayload from "../Helpers/processSupplierPayload";
 
 const Service = () => {
-  const GetSuppliers = function () {
-    return AxiosInstance.get(config.api.suppliers.GetAllSuppliers);
+  const GetSuppliers = async function () {
+    return AxiosInstance.get(config.api.suppliers.GetAllSuppliers).then((res) =>
+      res.data.map((row: SuppliersApiColumnsType) =>
+        processSupplierColumns(row)
+      )
+    );
   };
 
   const AddSupplier = function (row: GridValidRowModel) {

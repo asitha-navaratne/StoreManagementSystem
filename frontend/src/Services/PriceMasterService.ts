@@ -3,11 +3,17 @@ import { GridValidRowModel } from "@mui/x-data-grid";
 import AxiosInstance from "../Utils/Axios";
 import config from "../Configs/urls.config";
 
+import PriceMasterApiColumnsType from "../Views/PriceMasterPage/types/ApiColumnsType";
 import processPriceMasterPayload from "../Helpers/processPriceMasterPayload";
+import processPriceMasterColumns from "../Helpers/processPriceMasterColumns";
 
 const Service = () => {
-  const GetPriceItems = function () {
-    return AxiosInstance.get(config.api.priceMaster.GetAllPrices);
+  const GetPriceItems = async function () {
+    return AxiosInstance.get(config.api.priceMaster.GetAllPrices).then((res) =>
+      res.data.map((row: PriceMasterApiColumnsType) =>
+        processPriceMasterColumns(row)
+      )
+    );
   };
 
   const AddPriceItem = function (row: GridValidRowModel) {

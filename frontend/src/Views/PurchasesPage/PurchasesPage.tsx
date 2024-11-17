@@ -44,7 +44,7 @@ import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
 import LoaderDataType from "./types/LoaderDataType";
 import InvoiceGridColumnsType from "../InvoicesPage/types/GridColumnsType";
 import PriceMasterApiColumnsType from "../PriceMasterPage/types/ApiColumnsType";
-import PurchaseApiColumnsType from "./types/ApiColumnsType";
+import PurchaseGridColumnsType from "./types/GridColumnsType";
 import InitInvoiceData from "../../Constants/InitInvoiceData";
 
 import PurchasesService from "../../Services/PurchasesService";
@@ -262,27 +262,10 @@ const PurchasesPage = () => {
         selectedStore
       )
         .then((res) => {
-          if (res.data) {
-            setInvoiceData({
-              id: res.data.id,
-              invoiceDate: res.data.invoice_date,
-              supplierName: res.data.supplier_name,
-              storeName: res.data.store_name,
-              invoiceNumber: res.data.invoice_number,
-              description: res.data.description,
-              valueOfPurchases: res.data.value_of_purchases,
-              vat: res.data.vat,
-              totalPayable: res.data.total_payable,
-              invoiceType: res.data.invoice_type,
-              receivedDate: res.data.received_date,
-              paymentDate: res.data.payment_date,
-              createdBy: res.data.created_by,
-              createdOn: res.data.created_on,
-              updatedBy: res.data.updated_by,
-              updatedOn: res.data.updated_by,
-            });
-            setSelectedInvoiceDate(dayjs(res.data.invoice_date));
-            setSelectedReceivedDate(dayjs(res.data.received_date));
+          if (res) {
+            setInvoiceData(res);
+            setSelectedInvoiceDate(dayjs(res.invoiceDate));
+            setSelectedReceivedDate(dayjs(res.receivedDate));
             setIsSaveButtonDisabled(false);
 
             return GetPurchasesForInvoiceNumber(
@@ -299,19 +282,19 @@ const PurchasesPage = () => {
           }
         })
         .then((res) => {
-          if (res?.data.length) {
+          if (res) {
             setRows((prev) =>
               prev.map((row) => {
-                const match = res.data.find(
-                  (purchase: PurchaseApiColumnsType) =>
-                    purchase.product_name === row.productName
+                const match = res.find(
+                  (purchase: PurchaseGridColumnsType) =>
+                    purchase.productName === row.productName
                 );
                 if (match) {
                   const newRow = {
                     ...row,
-                    quantityOrdered: match.quantity_ordered,
-                    quantityReceived: match.quantity_received,
-                    payableAmount: match.quantity_received * row.price,
+                    quantityOrdered: match.quantityOrdered,
+                    quantityReceived: match.quantityReceived,
+                    payableAmount: match.quantityReceived * row.price,
                   };
                   return newRow;
                 }

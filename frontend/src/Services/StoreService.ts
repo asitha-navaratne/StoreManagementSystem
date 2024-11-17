@@ -3,11 +3,15 @@ import { GridValidRowModel } from "@mui/x-data-grid";
 import AxiosInstance from "../Utils/Axios";
 import config from "../Configs/urls.config";
 
+import StoreApiColumnsType from "../Views/StoresPage/types/ApiColumnsType";
+import processStoreColumns from "../Helpers/processStoreColumns";
 import processStorePayload from "../Helpers/processStorePayload";
 
 const Service = () => {
-  const GetStores = function () {
-    return AxiosInstance.get(config.api.stores.GetAllStores);
+  const GetStores = async function () {
+    return AxiosInstance.get(config.api.stores.GetAllStores).then((res) =>
+      res.data.map((row: StoreApiColumnsType) => processStoreColumns(row))
+    );
   };
 
   const AddStore = function (row: GridValidRowModel) {
