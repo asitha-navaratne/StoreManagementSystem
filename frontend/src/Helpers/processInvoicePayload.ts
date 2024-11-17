@@ -9,6 +9,7 @@ const processInvoicePayload = function (
     id: payload.id,
     invoice_date: payload.invoiceDate,
     supplier_name: payload.supplierName,
+    store_name: payload.storeName,
     invoice_number: payload.invoiceNumber,
     description: payload.description,
     value_of_purchases: payload.valueOfPurchases,

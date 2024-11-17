@@ -7,6 +7,7 @@ class CreateInvoiceModel(BaseModel):
     id: int
     invoice_date: datetime
     supplier_name: str
+    store_name: str
     invoice_number: int
     description: str
     value_of_purchases: int

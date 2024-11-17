@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 import { useLoaderData } from "react-router-dom";
 import randomInteger from "random-int";
@@ -39,33 +39,29 @@ import {
 import styles from "./PurchasesPage.module.scss";
 import dataGridStyles from "../../Styles/dataGridStyles";
 
-import PurchasesGridToolbar from "../../Components/PurchasesGridToolbar/PurchasesGridToolbar";
-import GridAutocompleteComponent from "../../Components/GridAutocompleteComponent/GridAutocompleteComponent";
+import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
 
+import LoaderDataType from "./types/LoaderDataType";
 import InvoiceGridColumnsType from "../InvoicesPage/types/GridColumnsType";
-import SuppliersGridColumnsType from "../SuppliersPage/types/GridColumnsType";
-import PriceMasterGridColumnsType from "../PriceMasterPage/types/GridColumnsType";
 import PriceMasterApiColumnsType from "../PriceMasterPage/types/ApiColumnsType";
-import InitPurchaseRowValues from "../../Constants/InitPurchaseRowValues";
+import PurchaseApiColumnsType from "./types/ApiColumnsType";
 import InitInvoiceData from "../../Constants/InitInvoiceData";
-import processPriceMasterColumns from "../../Helpers/processPriceMasterColumns";
 
 import PurchasesService from "../../Services/PurchasesService";
 import PriceMasterService from "../../Services/PriceMasterService";
 import InvoicesService from "../../Services/InvoicesService";
 
-const { GetPurchasesForInvoice, AddPurchases } = PurchasesService();
-const { GetInvoiceByNumberAndSupplier, AddInvoice } = InvoicesService();
-const { GetPricesBySupplier } = PriceMasterService();
+const { GetPurchasesForInvoiceNumber, AddPurchases } = PurchasesService();
+const { GetInvoiceByNumberSupplierAndStore, AddInvoice } = InvoicesService();
+const { GetPricesBySupplierAndStore } = PriceMasterService();
 
 const PurchasesPage = () => {
-  const suppliersList = useLoaderData() as SuppliersGridColumnsType[];
+  const { suppliers: suppliersList, stores: storesList } =
+    useLoaderData() as LoaderDataType;
 
   const [selectedSupplier, setSelectedSupplier] = useState<string>("");
+  const [selectedStore, setSelectedStore] = useState<string>("");
   const [invoiceNumber, setInvoiceNumber] = useState<number>(0);
-  const [priceItemsBySupplierList, setPriceItemsBySupplierList] = useState<
-    (PriceMasterGridColumnsType & { displayName: string })[]
-  >([]);
   const [rows, setRows] = useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const [invoiceData, setInvoiceData] =
@@ -79,7 +75,6 @@ const PurchasesPage = () => {
   const [selectedPayment, setSelectedPayment] = useState<"Paid" | "Free">(
     "Paid"
   );
-  const [isAddButtonClicked, setIsAddButtonClicked] = useState<boolean>(false);
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] =
     useState<boolean>(true);
 
@@ -102,21 +97,6 @@ const PurchasesPage = () => {
       field: "productName",
       headerName: "Product Name",
       flex: 1,
-      editable: true,
-      type: "singleSelect",
-      renderEditCell: (params) => (
-        <GridAutocompleteComponent
-          {...params}
-          options={priceItemsBySupplierList}
-          keyField="displayName"
-          handleValueChange={handleProductValueChange}
-          getInitialValue={() =>
-            priceItemsBySupplierList.filter(
-              (option) => option.displayName === params.value
-            )[0] ?? null
-          }
-        />
-      ),
       align: "left",
       headerAlign: "left",
     },
@@ -243,14 +223,28 @@ const PurchasesPage = () => {
   ];
 
   useEffect(() => {
-    if (selectedSupplier) {
-      GetPricesBySupplier(selectedSupplier)
+    if (selectedSupplier && selectedStore) {
+      GetPricesBySupplierAndStore(selectedSupplier, selectedStore)
         .then((res) =>
-          setPriceItemsBySupplierList(
-            res.data.map((column: PriceMasterApiColumnsType) => ({
-              ...processPriceMasterColumns(column),
-              displayName: `${column.brand} (${column.shop_name})`,
-            }))
+          setRows(
+            res.data.map((row: PriceMasterApiColumnsType) => {
+              const id = randomInteger(2 ** 16, 2 ** 17);
+
+              return {
+                id,
+                category: row.category,
+                productName: row.brand,
+                bottleSize: row.bottle_size,
+                quantityOrdered: 0,
+                price: row.price,
+                quantityReceived: 0,
+                payableAmount: 0,
+                createdBy: null,
+                createdOn: null,
+                updatedBy: null,
+                updatedOn: null,
+              };
+            })
           )
         )
         .catch((err) => {
@@ -258,36 +252,92 @@ const PurchasesPage = () => {
           console.error(err);
         });
     }
-  }, [selectedSupplier]);
+  }, [selectedSupplier, selectedStore]);
 
   useEffect(() => {
-    const getData = async function () {
-      if (invoiceNumber && selectedSupplier) {
-        try {
-          const invoiceResult = await GetInvoiceByNumberAndSupplier(
-            invoiceNumber,
-            selectedSupplier
-          );
+    if (invoiceNumber && selectedSupplier && selectedStore) {
+      GetInvoiceByNumberSupplierAndStore(
+        invoiceNumber,
+        selectedSupplier,
+        selectedStore
+      )
+        .then((res) => {
+          if (res.data) {
+            setInvoiceData({
+              id: res.data.id,
+              invoiceDate: res.data.invoice_date,
+              supplierName: res.data.supplier_name,
+              storeName: res.data.store_name,
+              invoiceNumber: res.data.invoice_number,
+              description: res.data.description,
+              valueOfPurchases: res.data.value_of_purchases,
+              vat: res.data.vat,
+              totalPayable: res.data.total_payable,
+              invoiceType: res.data.invoice_type,
+              receivedDate: res.data.received_date,
+              paymentDate: res.data.payment_date,
+              createdBy: res.data.created_by,
+              createdOn: res.data.created_on,
+              updatedBy: res.data.updated_by,
+              updatedOn: res.data.updated_by,
+            });
+            setSelectedInvoiceDate(dayjs(res.data.invoice_date));
+            setSelectedReceivedDate(dayjs(res.data.received_date));
+            setIsSaveButtonDisabled(false);
 
-          if (invoiceResult.data) {
-            const purchasesResult = await GetPurchasesForInvoice(invoiceNumber);
-
-            setRows(purchasesResult.data);
+            return GetPurchasesForInvoiceNumber(
+              invoiceNumber,
+              selectedSupplier,
+              selectedStore
+            );
           } else {
-            setRows([]);
+            setInvoiceData(InitInvoiceData);
+            setQuantity(0);
+            setSelectedInvoiceDate(dayjs());
+            setSelectedReceivedDate(dayjs());
+            setIsSaveButtonDisabled(true);
           }
-        } catch (err) {
+        })
+        .then((res) => {
+          if (res?.data.length) {
+            setRows((prev) =>
+              prev.map((row) => {
+                const match = res.data.find(
+                  (purchase: PurchaseApiColumnsType) =>
+                    purchase.product_name === row.productName
+                );
+                if (match) {
+                  const newRow = {
+                    ...row,
+                    quantityOrdered: match.quantity_ordered,
+                    quantityReceived: match.quantity_received,
+                    payableAmount: match.quantity_received * row.price,
+                  };
+                  return newRow;
+                }
+                return row;
+              })
+            );
+          } else {
+            setRows((prev) =>
+              prev.map((row) => ({
+                ...row,
+                quantityOrdered: 0,
+                quantityReceived: 0,
+                payableAmount: 0,
+              }))
+            );
+          }
+        })
+        .catch((err) => {
           // TODO: Handle errors properly
           console.error(err);
-        }
-      }
-    };
+        });
+    }
+  }, [invoiceNumber, selectedSupplier, selectedStore]);
 
-    getData();
-  }, [invoiceNumber, selectedSupplier]);
-
-  const calculateQuantityAndValueOfPurchases = useCallback(
-    function () {
+  useEffect(() => {
+    if (rows.length > 0) {
       const total = rows.reduce(
         (accumulator, row) => [
           accumulator[0] + row.quantityReceived,
@@ -295,25 +345,14 @@ const PurchasesPage = () => {
         ],
         [0, 0]
       );
-
       setQuantity(total[0]);
       setInvoiceData((prev) => ({
         ...prev,
         valueOfPurchases: total[1],
         totalPayable: total[1] * (prev.vat / 100) + total[1],
       }));
-    },
-    [rows]
-  );
-
-  useEffect(() => {
-    if (rows.length > 0 && !isAddButtonClicked) {
-      calculateQuantityAndValueOfPurchases();
-      setIsSaveButtonDisabled(false);
-    } else {
-      setIsSaveButtonDisabled(true);
     }
-  }, [calculateQuantityAndValueOfPurchases, isAddButtonClicked, rows]);
+  }, [rows]);
 
   const handleInvoiceFieldsChange = function (
     e: ChangeEvent<HTMLInputElement> | SelectChangeEvent
@@ -324,59 +363,17 @@ const PurchasesPage = () => {
         ...prev,
         vat: vatRate,
         totalPayable:
-          prev.valueOfPurchases * (prev.vat / 100) + prev.valueOfPurchases,
+          prev.valueOfPurchases * (vatRate / 100) + prev.valueOfPurchases,
       }));
     } else {
       setInvoiceData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     }
   };
 
-  const handleProductValueChange = useCallback(function (
-    id: GridRowId,
-    newValue: { [key: string]: unknown } | null
-  ) {
-    setRows((oldRows) =>
-      oldRows.map((row) => {
-        if (row.id === id) {
-          return {
-            ...row,
-            category: newValue?.category,
-            productName: newValue?.brand,
-            bottleSize: newValue?.bottleSize,
-            supplierName: newValue?.companyName,
-            price: newValue?.price,
-          };
-        }
-        return row;
-      })
-    );
-  },
-  []);
-
   const handleRowModesModelChange = function (
     newRowModesModel: GridRowModesModel
   ) {
     setRowModesModel(newRowModesModel);
-  };
-
-  const handleAddButtonClicked = function () {
-    setIsAddButtonClicked(true);
-    const id = randomInteger(2 ** 16, 2 ** 17);
-    setRows((oldRows) => [
-      ...oldRows,
-      {
-        id,
-        ...InitPurchaseRowValues,
-        createdBy: "AsithaN",
-        createdOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
-        updatedBy: null,
-        updatedOn: null,
-      },
-    ]);
-    setRowModesModel((oldModel) => ({
-      ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "shopName" },
-    }));
   };
 
   const handleRowEditStop: GridEventListener<"rowEditStop"> = function (
@@ -395,26 +392,13 @@ const PurchasesPage = () => {
   const processRowUpdate = (newRow: GridRowModel) => {
     const newPayableAmount = newRow.price * newRow.quantityReceived;
 
-    if (isAddButtonClicked) {
-      const addRow = {
-        ...newRow,
-        payableAmount: newPayableAmount,
-        isNew: false,
-      };
-      setRows(rows.map((row) => (row.id === newRow.id ? addRow : row)));
-      setIsAddButtonClicked(false);
-      return addRow;
-    } else {
-      const updatedRow = {
-        ...newRow,
-        payableAmount: newPayableAmount,
-        updatedBy: "AsithaN",
-        updatedOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
-        isNew: false,
-      };
-      setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-      return updatedRow;
-    }
+    const updatedRow = {
+      ...newRow,
+      payableAmount: newPayableAmount,
+      isNew: false,
+    };
+    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+    return updatedRow;
   };
 
   const handleSaveButtonClick = (id: GridRowId) => () => {
@@ -422,16 +406,10 @@ const PurchasesPage = () => {
   };
 
   const handleCancelButtonClick = (id: GridRowId) => () => {
-    if (isAddButtonClicked) {
-      setIsAddButtonClicked(false);
-      const prevRows = rows.filter((row) => row.id !== id);
-      setRows(prevRows);
-    } else {
-      setRowModesModel({
-        ...rowModesModel,
-        [id]: { mode: GridRowModes.View, ignoreModifications: true },
-      });
-    }
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
 
     const changedRow = rows.find((row) => row.id === id);
     if (changedRow!.isNew) {
@@ -444,7 +422,10 @@ const PurchasesPage = () => {
     AddInvoice({
       ...invoiceData,
       id: newInvoiceId,
+      invoiceDate: selectedInvoiceDate!.format("YYYY-MM-DD"),
+      receivedDate: selectedReceivedDate!.format("YYYY-MM-DD"),
       supplierName: selectedSupplier,
+      storeName: selectedStore,
       invoiceNumber: invoiceNumber,
       createdBy: "AsithaN",
     })
@@ -459,7 +440,8 @@ const PurchasesPage = () => {
             updatedBy: null,
             updatedOn: null,
           })),
-          selectedSupplier
+          selectedSupplier,
+          selectedStore
         );
       })
       .catch((err) => {
@@ -480,6 +462,7 @@ const PurchasesPage = () => {
           <TableHead>
             <TableRow>
               <TableCell>Supplier Name</TableCell>
+              <TableCell>Store Name</TableCell>
               <TableCell>Invoice Date</TableCell>
               <TableCell>Invoice Number</TableCell>
               <TableCell>Quantity</TableCell>
@@ -498,7 +481,7 @@ const PurchasesPage = () => {
                   id="select-supplier-name"
                   sx={(theme) => ({
                     border: `1px solid ${theme.palette.primary.main}`,
-                    width: "10vw",
+                    width: "8vw",
                   })}
                   value={selectedSupplier}
                   onChange={(e) => setSelectedSupplier(e.target.value)}
@@ -506,6 +489,23 @@ const PurchasesPage = () => {
                   {suppliersList.map((supplier) => (
                     <MenuItem key={supplier.id} value={supplier.companyName}>
                       {supplier.companyName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </TableCell>
+              <TableCell>
+                <Select
+                  id="select-store-name"
+                  sx={(theme) => ({
+                    border: `1px solid ${theme.palette.primary.main}`,
+                    width: "8vw",
+                  })}
+                  value={selectedStore}
+                  onChange={(e) => setSelectedStore(e.target.value)}
+                >
+                  {storesList.map((store) => (
+                    <MenuItem key={store.id} value={store.storeName}>
+                      {store.storeName}
                     </MenuItem>
                   ))}
                 </Select>
@@ -549,7 +549,7 @@ const PurchasesPage = () => {
               <TableCell>
                 <TextField
                   id="input-quantity"
-                  defaultValue={quantity}
+                  value={quantity}
                   color="primary"
                   sx={(theme) => ({
                     border: `1px solid ${theme.palette.primary.main}`,
@@ -566,7 +566,6 @@ const PurchasesPage = () => {
               <TableCell>
                 <TextField
                   id="input-value-of-purchase"
-                  type="number"
                   value={invoiceData["valueOfPurchases"]}
                   color="primary"
                   sx={(theme) => ({
@@ -578,6 +577,7 @@ const PurchasesPage = () => {
                       color: "#fff",
                     },
                   })}
+                  slotProps={{ input: { readOnly: true } }}
                 />
               </TableCell>
               <TableCell>
@@ -617,7 +617,6 @@ const PurchasesPage = () => {
               <TableCell>
                 <TextField
                   id="input-total-payable"
-                  type="number"
                   value={invoiceData["totalPayable"]}
                   color="primary"
                   sx={(theme) => ({
@@ -629,6 +628,7 @@ const PurchasesPage = () => {
                       color: "#fff",
                     },
                   })}
+                  slotProps={{ input: { readOnly: true } }}
                 />
               </TableCell>
               <TableCell>
@@ -705,17 +705,12 @@ const PurchasesPage = () => {
             },
           }}
           slots={{
-            toolbar: PurchasesGridToolbar as GridSlots["toolbar"],
+            toolbar: DataGridToolbar as GridSlots["toolbar"],
           }}
           slotProps={{
             toolbar: {
-              isAddButtonDisabled:
-                isAddButtonClicked ||
-                selectedSupplier === "" ||
-                invoiceNumber === 0,
-              handleAddButtonClicked,
-              isSaveButtonDisabled,
-              handleSaveAllButtonClick,
+              isSaveButtonDisabled: isSaveButtonDisabled,
+              handleSaveButtonClick: handleSaveAllButtonClick,
             },
           }}
           sx={dataGridStyles}

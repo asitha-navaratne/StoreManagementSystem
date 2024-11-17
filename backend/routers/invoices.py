@@ -10,7 +10,7 @@ from helpers.invoices.get_invoices import get_invoices
 from helpers.invoices.create_invoice import create_invoice
 from helpers.invoices.edit_invoice import edit_invoice
 from helpers.invoices.delete_invoice import delete_invoice
-from helpers.invoices.get_invoice_by_invoice_number_and_supplier import get_invoice_by_invoice_number_and_supplier
+from helpers.invoices.get_invoice_by_invoice_number_supplier_and_store import get_invoice_by_invoice_number_supplier_and_store
 
 
 router = APIRouter(
@@ -44,5 +44,5 @@ def remove_invoice(id: int, db: db_dependency):
     return delete_invoice(id=id, db=db)
 
 @router.get('/')
-def get_invoice_by_number_and_supplier(invoice: int, supplier: str, db: db_dependency):
-    return get_invoice_by_invoice_number_and_supplier(invoice, supplier, db)
+def get_invoice_by_number_supplier_and_store(invoice: int, supplier: str, store: str, db: db_dependency):
+    return get_invoice_by_invoice_number_supplier_and_store(invoice, supplier, store, db)

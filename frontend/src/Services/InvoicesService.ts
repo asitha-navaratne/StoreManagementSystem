@@ -29,12 +29,13 @@ const Service = () => {
     return AxiosInstance.delete(`${config.api.invoices.DeleteInvoice}/${id}`);
   };
 
-  const GetInvoiceByNumberAndSupplier = function (
+  const GetInvoiceByNumberSupplierAndStore = function (
     invoiceNumber: number,
-    supplierName: string
+    supplierName: string,
+    storeName: string
   ) {
     return AxiosInstance.get(
-      `${config.api.invoices.GetInvoiceByNumberAndSupplier}?invoice=${invoiceNumber}&supplier=${supplierName}`
+      `${config.api.invoices.GetInvoiceByNumberSupplierAndStore}?invoice=${invoiceNumber}&supplier=${supplierName}&store=${storeName}`
     );
   };
 
@@ -43,7 +44,7 @@ const Service = () => {
     AddInvoice,
     EditInvoice,
     DeleteInvoice,
-    GetInvoiceByNumberAndSupplier,
+    GetInvoiceByNumberSupplierAndStore,
   };
 };
 

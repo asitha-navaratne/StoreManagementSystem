@@ -11,6 +11,7 @@ const loader = async function () {
         id: row.id,
         invoiceDate: row.invoice_date,
         supplierName: row.supplier_name,
+        storeName: row.store_name,
         invoiceNumber: row.invoice_number,
         description: row.description,
         valueOfPurchases: row.value_of_purchases,

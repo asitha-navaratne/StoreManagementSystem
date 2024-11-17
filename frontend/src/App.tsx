@@ -11,6 +11,7 @@ import SuppliersPage from "./Views/SuppliersPage/SuppliersPage";
 import StockMovementsPage from "./Views/StockMovementsPage/StockMovementsPage";
 
 import priceMasterLoader from "./Views/PriceMasterPage/PriceMasterLoader";
+import purchasesLoader from "./Views/PurchasesPage/PurchasesLoader";
 import invoicesLoader from "./Views/InvoicesPage/InvoicesLoader";
 import storesLoader from "./Views/StoresPage/StoresLoader";
 import suppliersLoader from "./Views/SuppliersPage/SuppliersLoader";
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
       {
         path: "purchases",
         element: <PurchasesPage />,
-        loader: suppliersLoader,
+        loader: purchasesLoader,
       },
       {
         path: "invoices",

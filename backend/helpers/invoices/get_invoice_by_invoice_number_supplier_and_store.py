@@ -1,24 +1,28 @@
-from sqlalchemy import select
+from sqlalchemy import select, and_
 from sqlalchemy.orm import Session, aliased
 
 from database.models import Invoices, Suppliers, Stores, Users
 
 
-def get_invoices(db: Session):
+def get_invoice_by_invoice_number_supplier_and_store(invoice_number: int, supplier_name: str, store_name: str, db: Session):
     user_alias_1 = aliased(Users, name="user_alias_1")
     user_alias_2 = aliased(Users, name="user_alias_2")
 
+    supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.company_name == supplier_name)).first()
+    store_id = db.scalars(select(Stores.id).where(Stores.store_name == store_name)).first()
+
     stmt = (
-        select(Invoices, Suppliers, Stores, user_alias_1.username, user_alias_2.username)
+        select(Invoices, Suppliers, Stores, user_alias_1, user_alias_2)
         .join(Suppliers, Invoices.supplier_id == Suppliers.id, isouter=True)
         .join(Stores, Invoices.store_id == Stores.id, isouter=True)
         .join(user_alias_1, Invoices.created_by == user_alias_1.id, isouter=True)
         .join(user_alias_2, Invoices.updated_by == user_alias_2.id, isouter=True)
+        .where(and_(Invoices.invoice_number == invoice_number, Invoices.supplier_id == supplier_id, Invoices.store_id == store_id))
     )
-    results = db.execute(stmt).all()
 
-    processed_results = []
-    for result in results:
+    result = db.execute(stmt).first()
+
+    if result:
         result_dict = {
             'id': result[0].id,
             'invoice_date': result[0].invoice_date,
@@ -39,7 +43,7 @@ def get_invoices(db: Session):
             result_dict = {**result_dict, 'updated_by': None, 'updated_on': None}
         else:
             result_dict = {**result_dict, 'updated_by': result[4], 'updated_on': result[0].updated_on}
-        
-        processed_results.append(result_dict)
 
-    return processed_results
+        return result_dict
+    
+    return None

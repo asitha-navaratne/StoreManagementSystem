@@ -69,6 +69,14 @@ const InvoicesPage = () => {
       headerAlign: "left",
     },
     {
+      field: "storeName",
+      headerName: "Store Name",
+      flex: 1,
+      editable: true,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
       field: "invoiceNumber",
       headerName: "Invoice Number",
       flex: 1,

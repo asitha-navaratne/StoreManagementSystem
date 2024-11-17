@@ -4,19 +4,14 @@ import PurchaseApiColumnsType from "../Views/PurchasesPage/types/ApiColumnsType"
 
 const processPurchasePayload = function (
   row: GridValidRowModel,
-  supplierName: string
+  supplierName: string,
+  storeName: string
 ): PurchaseApiColumnsType {
-  const regex = /^(.+?) \((.+?)\)$/;
-  const match = row.productName.match(regex);
-
-  const productName = match[1];
-  const shopName = match[2];
-
   return {
     id: row.id,
     category: row.category,
-    shop_name: shopName,
-    product_name: productName,
+    shop_name: storeName,
+    product_name: row.productName,
     supplier_name: supplierName,
     invoice_number: row.invoiceNumber,
     received_date: row.receivedDate,

@@ -7,7 +7,7 @@ const config = {
       AddPrice: "/price-master",
       EditPrice: "/price-master",
       DeletePrice: "/price-master",
-      GetPricesBySupplier: "/price-master/",
+      GetPricesBySupplierAndStore: "/price-master/",
     },
     stores: {
       GetAllStores: "/stores",
@@ -16,7 +16,7 @@ const config = {
       DeleteStore: "/stores",
     },
     purchases: {
-      GetPurchasesForInvoice: "/purchases",
+      GetPurchasesForInvoiceNumber: "/purchases",
       AddPurchase: "/purchases",
     },
     invoices: {
@@ -24,7 +24,7 @@ const config = {
       AddInvoice: "/invoices",
       EditInvoice: "/invoices",
       DeleteInvoice: "/invoices",
-      GetInvoiceByNumberAndSupplier: "/invoices/",
+      GetInvoiceByNumberSupplierAndStore: "/invoices/",
     },
     suppliers: {
       GetAllSuppliers: "/suppliers",

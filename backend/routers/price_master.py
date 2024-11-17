@@ -10,7 +10,7 @@ from helpers.price_master.get_price_items import get_price_items
 from helpers.price_master.create_price_item import create_price_item
 from helpers.price_master.edit_price_item import edit_price_item
 from helpers.price_master.delete_price_item import delete_price_item
-from helpers.price_master.get_price_items_by_supplier import get_price_items_by_supplier
+from helpers.price_master.get_price_items_by_supplier_and_store import get_price_items_by_supplier_and_store
 
 
 router = APIRouter(
@@ -44,5 +44,5 @@ def remove_price_item(id: int, db: db_dependency):
     return delete_price_item(id=id, db=db)
 
 @router.get('/')
-def get_prices_by_supplier(supplier: str, db: db_dependency):
-    return get_price_items_by_supplier(supplier, db)
+def get_prices_by_supplier_and_store(supplier: str, store: str, db: db_dependency):
+    return get_price_items_by_supplier_and_store(supplier, store, db)

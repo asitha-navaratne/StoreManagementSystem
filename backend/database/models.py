@@ -47,6 +47,7 @@ class Invoices(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     invoice_date: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True))
     supplier_id: Mapped[int] = mapped_column(ForeignKey('suppliers.id'), index=True, nullable=False)
+    store_id: Mapped[int] = mapped_column(ForeignKey('stores.id'), index=True, nullable=False)
     invoice_number: Mapped[int] = mapped_column(nullable=False)
     description: Mapped[str]
     value_of_purchases: Mapped[int] = mapped_column(nullable=False)

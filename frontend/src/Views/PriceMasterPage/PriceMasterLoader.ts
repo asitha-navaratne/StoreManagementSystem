@@ -1,7 +1,7 @@
+import LoaderDataType from "./types/LoaderType";
 import PriceMasterApiColumnsType from "./types/ApiColumnsType";
 import StoreApiColumnsType from "../StoresPage/types/ApiColumnsType";
 import SuppliersApiColumnsType from "../SuppliersPage/types/ApiColumnsType";
-import LoaderDataType from "./types/LoaderType";
 
 import PriceMasterService from "../../Services/PriceMasterService";
 import StoreService from "../../Services/StoreService";

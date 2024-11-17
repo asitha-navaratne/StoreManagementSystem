@@ -4,12 +4,14 @@ from sqlalchemy.orm import Session
 from database.models import PriceMaster, Suppliers, Stores
 
 
-def get_price_items_by_supplier(supplier_name: str, db: Session):
+def get_price_items_by_supplier_and_store(supplier_name: str, store_name: str, db: Session):
     supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.company_name == supplier_name)).first()
+    store_id = db.scalars(select(Stores.id).where(Stores.store_name == store_name)).first()
 
     stmt = (
-        select(PriceMaster, Stores)
-        .join(Stores, PriceMaster.store_id == Stores.id, isouter=True).where(PriceMaster.supplier_id == supplier_id)
+        select(PriceMaster)
+        .where(PriceMaster.supplier_id == supplier_id)
+        .where(PriceMaster.store_id == store_id)
     )
     results = db.execute(stmt).all()
 
@@ -17,7 +19,7 @@ def get_price_items_by_supplier(supplier_name: str, db: Session):
     for result in results:
         result_dict = {
             'id': result[0].id,
-            'shop_name': result[1].store_name,
+            'store_id': result[0].store_id,
             'supplier_id': result[0].supplier_id,
             'brand': result[0].brand,
             'brand_code': result[0].brand_code,

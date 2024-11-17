@@ -4,6 +4,7 @@ const InitInvoiceData = {
   id: 0,
   invoiceDate: dayjs().format("YYYY-MM-DD"),
   supplierName: "",
+  storeName: "",
   invoiceNumber: 0,
   description: "",
   valueOfPurchases: 0,

@@ -1,12 +1,16 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session, aliased
 
-from database.models import Purchases, Stores, PriceMaster, Suppliers, Users
+from database.models import Purchases, Stores, PriceMaster, Suppliers, Invoices, Users
 
 
-def get_purchases(db: Session):
+def get_purchases_for_invoice(invoice_number: int, supplier_name: str, store_name: str, db: Session):
     user_alias_1 = aliased(Users, name="user_alias_1")
     user_alias_2 = aliased(Users, name="user_alias_2")
+    
+    invoice_id = db.scalars(select(Invoices.id).where(Invoices.invoice_number == invoice_number)).first()
+    supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.company_name == supplier_name)).first()
+    store_id = db.scalars(select(Stores.id).where(Stores.store_name == store_name)).first()
 
     stmt = (
         select(Purchases, Stores.store_name, PriceMaster, Suppliers.company_name, user_alias_1.username, user_alias_2.username)
@@ -15,6 +19,9 @@ def get_purchases(db: Session):
         .join(Suppliers, Purchases.supplier_id == Purchases.id, isouter=True)
         .join(user_alias_1, Purchases.created_by == user_alias_1.id, isouter=True)
         .join(user_alias_2, Purchases.updated_by == user_alias_2.id, isouter=True)
+        .where(Purchases.invoice_id == invoice_id)
+        .where(Purchases.supplier_id == supplier_id)
+        .where(Purchases.store_id == store_id)
         .order_by(Purchases.received_date)
     )
     results = db.execute(stmt).all()
