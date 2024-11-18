@@ -12,7 +12,7 @@ def get_invoice_by_invoice_number_supplier_and_store(invoice_number: int, suppli
     store_id = db.scalars(select(Stores.id).where(Stores.store_name == store_name)).first()
 
     stmt = (
-        select(Invoices, Suppliers, Stores, user_alias_1, user_alias_2)
+        select(Invoices, Suppliers, Stores, user_alias_1.username, user_alias_2.username)
         .join(Suppliers, Invoices.supplier_id == Suppliers.id, isouter=True)
         .join(Stores, Invoices.store_id == Stores.id, isouter=True)
         .join(user_alias_1, Invoices.created_by == user_alias_1.id, isouter=True)

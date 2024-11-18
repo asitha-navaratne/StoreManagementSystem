@@ -38,9 +38,22 @@ const Service = function () {
     return AxiosInstance.post(config.api.purchases.AddPurchase, payload);
   };
 
+  const EditPurchase = function (
+    rows: GridValidRowModel[],
+    supplierName: string,
+    storeName: string
+  ) {
+    const payload = rows.map((row) =>
+      processPurchasePayload(row, supplierName, storeName)
+    );
+
+    return AxiosInstance.patch(config.api.purchases.EditPurchase, payload);
+  };
+
   return {
     GetPurchasesForInvoiceNumber,
     AddPurchases,
+    EditPurchase,
   };
 };
 

@@ -8,6 +8,7 @@ from models.CreatePurchaseModel import CreatePurchaseModel
 
 from helpers.purchases.get_purchases_for_invoice import get_purchases_for_invoice
 from helpers.purchases.create_purchases import create_purchases
+from helpers.purchases.edit_purchases import edit_purchases
 
 
 router = APIRouter(
@@ -31,3 +32,7 @@ def get_all_purchases_for_invoice(invoice: int, supplier: str, store: str, db: d
 @router.post('', status_code=status.HTTP_201_CREATED)
 def add_purchases(purchases: list[CreatePurchaseModel], db: db_dependency):
     return create_purchases(purchases, db)
+
+@router.patch('')
+def update_purchases(purchases: list[CreatePurchaseModel], db: db_dependency):
+    return edit_purchases(purchases, db)

@@ -18,6 +18,7 @@ const config = {
     purchases: {
       GetPurchasesForInvoiceNumber: "/purchases",
       AddPurchase: "/purchases",
+      EditPurchase: "/purchases",
     },
     invoices: {
       GetAllInvoices: "/invoices",

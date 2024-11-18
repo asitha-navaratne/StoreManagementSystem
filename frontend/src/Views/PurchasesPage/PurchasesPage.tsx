@@ -51,8 +51,10 @@ import PurchasesService from "../../Services/PurchasesService";
 import PriceMasterService from "../../Services/PriceMasterService";
 import InvoicesService from "../../Services/InvoicesService";
 
-const { GetPurchasesForInvoiceNumber, AddPurchases } = PurchasesService();
-const { GetInvoiceByNumberSupplierAndStore, AddInvoice } = InvoicesService();
+const { GetPurchasesForInvoiceNumber, AddPurchases, EditPurchase } =
+  PurchasesService();
+const { GetInvoiceByNumberSupplierAndStore, AddInvoice, EditInvoice } =
+  InvoicesService();
 const { GetPricesBySupplierAndStore } = PriceMasterService();
 
 const PurchasesPage = () => {
@@ -75,17 +77,12 @@ const PurchasesPage = () => {
   const [selectedPayment, setSelectedPayment] = useState<"Paid" | "Free">(
     "Paid"
   );
+  const [isExistingPurchaseRecord, setIsExistingPurchaseRecord] =
+    useState<boolean>(false);
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] =
     useState<boolean>(true);
 
   const columns: GridColDef[] = [
-    {
-      field: "id",
-      headerName: "ID",
-      type: "number",
-      align: "left",
-      headerAlign: "left",
-    },
     {
       field: "category",
       headerName: "Category",
@@ -295,15 +292,21 @@ const PurchasesPage = () => {
                 if (match) {
                   const newRow = {
                     ...row,
+                    id: match.id,
                     quantityOrdered: match.quantityOrdered,
                     quantityReceived: match.quantityReceived,
                     payableAmount: match.quantityReceived * row.price,
+                    createdBy: match.createdBy,
+                    createdOn: match.createdOn,
+                    updatedBy: match.updatedBy,
+                    updatedOn: match.updatedOn,
                   };
                   return newRow;
                 }
                 return row;
               })
             );
+            setIsExistingPurchaseRecord(true);
           } else {
             setRows((prev) =>
               prev.map((row) => ({
@@ -313,6 +316,7 @@ const PurchasesPage = () => {
                 payableAmount: 0,
               }))
             );
+            setIsExistingPurchaseRecord(false);
           }
         })
         .catch((err) => {
@@ -383,6 +387,7 @@ const PurchasesPage = () => {
       payableAmount: newPayableAmount,
       isNew: false,
     };
+
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
@@ -404,36 +409,76 @@ const PurchasesPage = () => {
   };
 
   const handleSaveAllButtonClick = function () {
-    const newInvoiceId = randomInteger(2 ** 16, 2 ** 17);
-    AddInvoice({
-      ...invoiceData,
-      id: newInvoiceId,
-      invoiceDate: selectedInvoiceDate!.format("YYYY-MM-DD"),
-      receivedDate: selectedReceivedDate!.format("YYYY-MM-DD"),
-      supplierName: selectedSupplier,
-      storeName: selectedStore,
-      invoiceNumber: invoiceNumber,
-      createdBy: "AsithaN",
-    })
-      .then(() => {
-        AddPurchases(
-          rows.map((row) => ({
-            ...row,
+    if (isExistingPurchaseRecord) {
+      const payload = rows.filter((row) => row.isNew === false);
+      EditPurchase(
+        payload.map((row) => ({
+          ...row,
+          invoiceNumber: invoiceNumber,
+          receivedDate: selectedReceivedDate?.format("YYYY-MM-DD"),
+          updatedBy: "AsithaN",
+          updatedOn: dayjs().format("YYYY-MM-DD"),
+        })),
+        selectedSupplier,
+        selectedStore
+      )
+        .then(() => {
+          EditInvoice({
+            ...invoiceData,
+            invoiceDate: selectedInvoiceDate!.format("YYYY-MM-DD"),
+            receivedDate: selectedReceivedDate!.format("YYYY-MM-DD"),
+            supplierName: selectedSupplier,
+            storeName: selectedStore,
             invoiceNumber: invoiceNumber,
-            receivedDate: selectedReceivedDate?.format("YYYY-MM-DD"),
-            createdBy: "AsithaN",
-            createdOn: dayjs().format("YYYY-MM-DD"),
-            updatedBy: null,
-            updatedOn: null,
-          })),
-          selectedSupplier,
-          selectedStore
-        );
+            updatedBy: "AsithaN",
+            updatedOn: dayjs().format("YYYY-MM-DD"),
+          });
+        })
+        .catch((err) => {
+          // TODO: Handle errors properly
+          console.error(err);
+        });
+    } else {
+      const newInvoiceId = randomInteger(2 ** 16, 2 ** 17);
+      AddInvoice({
+        ...invoiceData,
+        id: newInvoiceId,
+        invoiceDate: selectedInvoiceDate!.format("YYYY-MM-DD"),
+        receivedDate: selectedReceivedDate!.format("YYYY-MM-DD"),
+        supplierName: selectedSupplier,
+        storeName: selectedStore,
+        invoiceNumber: invoiceNumber,
+        createdBy: "AsithaN",
       })
-      .catch((err) => {
-        // TODO: Handle errors properly
-        console.error(err);
-      });
+        .then(() => {
+          AddPurchases(
+            rows
+              .filter(
+                (row) => row.quantityOrdered !== 0 && row.quantityReceived !== 0
+              )
+              .map((row) => {
+                const id = randomInteger(2 ** 16, 2 ** 17);
+
+                return {
+                  ...row,
+                  id,
+                  invoiceNumber: invoiceNumber,
+                  receivedDate: selectedReceivedDate?.format("YYYY-MM-DD"),
+                  createdBy: "AsithaN",
+                  createdOn: dayjs().format("YYYY-MM-DD"),
+                  updatedBy: null,
+                  updatedOn: null,
+                };
+              }),
+            selectedSupplier,
+            selectedStore
+          );
+        })
+        .catch((err) => {
+          // TODO: Handle errors properly
+          console.error(err);
+        });
+    }
   };
 
   return (
@@ -682,7 +727,6 @@ const PurchasesPage = () => {
           initialState={{
             columns: {
               columnVisibilityModel: {
-                id: false,
                 createdBy: false,
                 createdOn: false,
                 updatedBy: false,
