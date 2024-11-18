@@ -225,7 +225,7 @@ const PurchasesPage = () => {
   useEffect(() => {
     if (selectedSupplier && selectedStore) {
       GetPricesBySupplierAndStore(selectedSupplier, selectedStore)
-        .then((res) =>
+        .then((res) => {
           setRows(
             res.data.map((row: PriceMasterApiColumnsType) => {
               const id = randomInteger(2 ** 16, 2 ** 17);
@@ -245,8 +245,13 @@ const PurchasesPage = () => {
                 updatedOn: null,
               };
             })
-          )
-        )
+          );
+          if (res.data.length > 0) {
+            setIsSaveButtonDisabled(false);
+          } else {
+            setIsSaveButtonDisabled(true);
+          }
+        })
         .catch((err) => {
           // TODO: Handle errors properly
           console.error(err);
@@ -266,7 +271,6 @@ const PurchasesPage = () => {
             setInvoiceData(res);
             setSelectedInvoiceDate(dayjs(res.invoiceDate));
             setSelectedReceivedDate(dayjs(res.receivedDate));
-            setIsSaveButtonDisabled(false);
 
             return GetPurchasesForInvoiceNumber(
               invoiceNumber,
@@ -278,7 +282,6 @@ const PurchasesPage = () => {
             setQuantity(0);
             setSelectedInvoiceDate(dayjs());
             setSelectedReceivedDate(dayjs());
-            setIsSaveButtonDisabled(true);
           }
         })
         .then((res) => {
