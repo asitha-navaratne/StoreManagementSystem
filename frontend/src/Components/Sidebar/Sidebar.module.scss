@@ -1,13 +1,20 @@
+@use "../../styles/variables";
+
 .sidebar {
   padding: 0 2vw 0 1vw;
 
   &__link {
     color: #333;
     text-decoration: none;
+    transition: 0.3s;
 
     &--active {
       color: #fff;
       text-decoration: none;
+    }
+
+    &:hover {
+      color: variables.$secondary-color-light;
     }
   }
 }
