@@ -1,0 +1,13 @@
+.sidebar {
+  padding: 0 2vw 0 1vw;
+
+  &__link {
+    color: #333;
+    text-decoration: none;
+
+    &--active {
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+}

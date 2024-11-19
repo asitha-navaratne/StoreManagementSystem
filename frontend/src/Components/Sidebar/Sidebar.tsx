@@ -5,50 +5,74 @@ import {
   Icon,
   List,
   ListItem,
-  ListItemButton,
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+
+import styles from "./Sidebar.module.scss";
 
 import { menuConfig, settingsConfig } from "../../Configs/menu.config";
 
 import PropTypes from "./types/PropTypes";
 
 const Sidebar = (props: PropTypes) => {
-  const navigate = useNavigate();
-
-  const handleLinkClick = function (url: string): void {
-    navigate(url);
+  const handleLinkClick = function () {
     props.handleClose();
   };
 
   return (
     <Drawer open={props.isOpen} onClose={props.handleClose}>
-      <Box>
+      <Box className={styles["sidebar"]}>
         <List>
           {menuConfig.map((menuItem) => (
-            <ListItem key={menuItem.key} disablePadding sx={{ mt: 2, mr: 2 }}>
-              <ListItemButton onClick={() => handleLinkClick(menuItem.url)}>
-                <ListItemIcon>
-                  <Icon>{menuItem.icon}</Icon>
-                </ListItemIcon>
-                <ListItemText primary={menuItem.title} />
-              </ListItemButton>
-            </ListItem>
+            <NavLink
+              key={menuItem.key}
+              to={menuItem.url}
+              onClick={handleLinkClick}
+              className={({ isActive }) =>
+                isActive
+                  ? styles["sidebar__link--active"]
+                  : styles["sidebar__link"]
+              }
+            >
+              {({ isActive }) => (
+                <ListItem disablePadding sx={{ mt: 3 }}>
+                  <ListItemIcon>
+                    <Icon sx={{ color: isActive ? "#fff" : "#333" }}>
+                      {menuItem.icon}
+                    </Icon>
+                  </ListItemIcon>
+                  <ListItemText primary={menuItem.title} />
+                </ListItem>
+              )}
+            </NavLink>
           ))}
         </List>
-        <Divider />
+        <Divider sx={{ mt: 3 }} />
         <List>
           {settingsConfig.map((menuItem) => (
-            <ListItem key={menuItem.key} disablePadding sx={{ mt: 2 }}>
-              <ListItemButton onClick={() => handleLinkClick(menuItem.url)}>
-                <ListItemIcon>
-                  <Icon>{menuItem.icon}</Icon>
-                </ListItemIcon>
-                <ListItemText primary={menuItem.title} />
-              </ListItemButton>
-            </ListItem>
+            <NavLink
+              key={menuItem.key}
+              to={menuItem.url}
+              onClick={handleLinkClick}
+              className={({ isActive }) =>
+                isActive
+                  ? styles["sidebar__link--active"]
+                  : styles["sidebar__link"]
+              }
+            >
+              {({ isActive }) => (
+                <ListItem disablePadding sx={{ mt: 3 }}>
+                  <ListItemIcon>
+                    <Icon sx={{ color: isActive ? "#fff" : "#333" }}>
+                      {menuItem.icon}
+                    </Icon>
+                  </ListItemIcon>
+                  <ListItemText primary={menuItem.title} />
+                </ListItem>
+              )}
+            </NavLink>
           ))}
         </List>
       </Box>
