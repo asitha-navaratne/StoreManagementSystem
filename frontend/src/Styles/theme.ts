@@ -18,6 +18,7 @@ const colors = {
   },
   error: {
     main: "#d32f2f",
+    light: "#ff7171",
     contrastText: "#fff",
   },
 };
@@ -76,13 +77,6 @@ const theme = createTheme({
         },
       },
     },
-    MuiDrawer: {
-      styleOverrides: {
-        paper: {
-          backgroundColor: colors.primary.main,
-        },
-      },
-    },
     MuiSelect: {
       styleOverrides: {
         root: {
@@ -120,6 +114,24 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           color: colors.primary.contrastText,
+        },
+      },
+    },
+    MuiListItem: {
+      styleOverrides: {
+        root: {
+          backgroundColor: colors.error.light,
+        },
+      },
+    },
+    MuiListItemText: {
+      styleOverrides: {
+        root: {
+          color: colors.error.contrastText,
+        },
+        secondary: {
+          color: colors.error.contrastText,
+          fontSize: "80%",
         },
       },
     },

@@ -10,7 +10,7 @@ const InitPriceRowValues = {
   cost: 0,
   price: 0,
   commissions: 0,
-  margin: "",
+  margin: 0,
   active: true,
 };
 

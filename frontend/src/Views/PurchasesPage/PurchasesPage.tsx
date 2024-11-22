@@ -386,6 +386,7 @@ const PurchasesPage = () => {
       ...newRow,
       payableAmount: newPayableAmount,
       isNew: false,
+      isEdited: true,
     };
 
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
@@ -410,7 +411,7 @@ const PurchasesPage = () => {
 
   const handleSaveAllButtonClick = function () {
     if (isExistingPurchaseRecord) {
-      const payload = rows.filter((row) => row.isNew === false);
+      const payload = rows.filter((row) => row.isEdited);
       EditPurchase(
         payload.map((row) => ({
           ...row,

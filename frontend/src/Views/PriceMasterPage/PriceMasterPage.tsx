@@ -31,7 +31,10 @@ import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
 import GridAutocompleteComponent from "../../Components/GridAutocompleteComponent/GridAutocompleteComponent";
 import AlertWindow from "../../Components/AlertWindow/AlertWindow";
 
+import useErrorContext from "../../Hooks/useErrorContext";
+
 import LoaderDataType from "./types/LoaderType";
+
 import InitPriceRowValues from "../../Constants/InitPriceRowValues";
 import AlcoholCategories from "../../Constants/AlcoholCategories";
 
@@ -49,6 +52,8 @@ const PriceMasterPage = () => {
   const [isAddButtonClicked, setIsAddButtonClicked] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<number>(0);
   const [isWindowOpen, setIsWindowOpen] = useState<boolean>(false);
+
+  const { handlePushError } = useErrorContext();
 
   const columns: GridColDef[] = [
     {
@@ -307,14 +312,20 @@ const PriceMasterPage = () => {
         ...addedRow,
       })
         .catch((err) => {
-          // TODO: Handle errors properly
-          console.error(err);
+          const id = randomInteger(2 ** 9, 2 ** 10);
+          handlePushError({
+            id: id,
+            type: "error",
+            description: err.response.data.detail,
+            component: "Price Master Page",
+          });
+          setRows((prev) =>
+            prev.filter((row) => row.id !== err.response.data.id)
+          );
         })
-        .finally(() => {
-          setAddedRow(null);
-        });
+        .finally(() => setAddedRow(null));
     }
-  }, [addedRow]);
+  }, [addedRow, handlePushError]);
 
   useEffect(() => {
     if (editedRow) {
@@ -322,27 +333,37 @@ const PriceMasterPage = () => {
         ...editedRow,
       })
         .catch((err) => {
-          // TODO: Handle errors properly
-          console.error(err);
+          const id = randomInteger(2 ** 9, 2 ** 10);
+          handlePushError({
+            id: id,
+            type: "error",
+            description: err.message,
+            component: "Price Master Page",
+          });
         })
         .finally(() => {
           setEditedRow(null);
         });
     }
-  }, [editedRow]);
+  }, [editedRow, handlePushError]);
 
   useEffect(() => {
     if (deleteId !== 0 && !isWindowOpen) {
       DeletePriceItem(deleteId)
         .catch((err) => {
-          // TODO: Handle errors properly
-          console.error(err);
+          const id = randomInteger(2 ** 9, 2 ** 10);
+          handlePushError({
+            id: id,
+            type: "error",
+            description: err.message,
+            component: "Price Master Page",
+          });
         })
         .finally(() => {
           setDeleteId(0);
         });
     }
-  }, [deleteId, isWindowOpen]);
+  }, [deleteId, handlePushError, isWindowOpen]);
 
   const handleStoreValueChange = useCallback(function (
     id: GridRowId,

@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Root from "./Components/Root/Root";
+import ErrorProvider from "./Contexts/ErrorProvider";
 
 import LoginPage from "./Views/LoginPage/LoginPage";
 import ErrorPage from "./Views/ErrorPage/ErrorPage";
@@ -62,7 +63,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <ErrorProvider>
+      <RouterProvider router={router} />
+    </ErrorProvider>
+  );
 }
 
 export default App;

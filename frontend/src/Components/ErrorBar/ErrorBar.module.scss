@@ -1,0 +1,39 @@
+@use "../../styles/variables";
+
+.error-bar {
+  height: 100%;
+  width: 20vw;
+  padding-top: 2vh;
+  background-color: variables.$secondary-color-light;
+
+  &__list-footer {
+    margin-top: 1vh;
+    padding-right: 1vw;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__empty-label {
+    margin-top: 2vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__clear-icon {
+    animation: 1.5s appear;
+  }
+}
+
+@keyframes appear {
+  from {
+    translate: 0 2vh;
+    opacity: 0%;
+  }
+
+  to {
+    translate: 0 0;
+    opacity: 100%;
+  }
+}

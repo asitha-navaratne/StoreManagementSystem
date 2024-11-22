@@ -1,3 +1,6 @@
+from fastapi import HTTPException, status
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -11,6 +14,22 @@ def create_price_item(price_item: CreatePriceModel, db: Session):
 
     store_id = db.scalars(select(Stores.id).where(Stores.store_name == price_item.shop_name)).first()
     supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.company_name == price_item.company_name)).first()
+
+    item_exists = db.scalars(
+        select(PriceMaster.id)
+        .where(PriceMaster.store_id == store_id)
+        .where(PriceMaster.supplier_id == supplier_id)
+        .where(PriceMaster.brand == price_item.brand)
+    ).first() is not None
+
+    if item_exists:
+        return JSONResponse(
+            status_code=status.HTTP_409_CONFLICT, 
+            content=jsonable_encoder({
+                "detail": "A record with similar data already exists!",
+                "id": price_item.id
+            })
+        )
 
     db_price = PriceMaster(
         id = price_item.id,

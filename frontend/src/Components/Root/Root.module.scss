@@ -1,5 +1,7 @@
 .root {
   &__button-container {
     height: 4vh;
+    display: flex;
+    justify-content: space-between;
   }
 }

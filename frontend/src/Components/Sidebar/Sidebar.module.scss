@@ -1,7 +1,9 @@
 @use "../../styles/variables";
 
 .sidebar {
+  background-color: variables.$light-tile-color;
   padding: 0 2vw 0 1vw;
+  height: 100%;
 
   &__link {
     color: #333;
