@@ -42,6 +42,7 @@ const theme = createTheme({
     },
     error: {
       main: colors.error.main,
+      light: colors.error.light,
       contrastText: colors.error.contrastText,
     },
   },
@@ -114,13 +115,6 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           color: colors.primary.contrastText,
-        },
-      },
-    },
-    MuiListItem: {
-      styleOverrides: {
-        root: {
-          backgroundColor: colors.error.light,
         },
       },
     },

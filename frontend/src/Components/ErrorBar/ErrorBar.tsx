@@ -39,7 +39,10 @@ const ErrorBar = (props: PropTypes) => {
                       <ClearIcon />
                     </IconButton>
                   }
-                  sx={{ mt: 2 }}
+                  sx={(theme) => ({
+                    mt: 2,
+                    backgroundColor: theme.palette.error.light,
+                  })}
                 >
                   <ListItemAvatar>
                     <Avatar>
