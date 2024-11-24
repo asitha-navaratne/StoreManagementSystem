@@ -47,6 +47,7 @@ const ErrorBar = (props: PropTypes) => {
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
+                    sx={{ color: "#fff" }}
                     primary={
                       error.description.length > 64
                         ? error.description.slice(0, 60) + "..."

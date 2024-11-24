@@ -2,7 +2,7 @@ import { GridValidRowModel } from "@mui/x-data-grid";
 
 import PriceMasterApiColumnsType from "../Views/PriceMasterPage/types/ApiColumnsType";
 
-const processPriceMasterPayload = function (
+function processPriceMasterPayload(
   row: GridValidRowModel
 ): PriceMasterApiColumnsType {
   return {
@@ -25,6 +25,6 @@ const processPriceMasterPayload = function (
     updated_by: row.updatedBy,
     updated_on: row.updatedOn,
   };
-};
+}
 
 export default processPriceMasterPayload;

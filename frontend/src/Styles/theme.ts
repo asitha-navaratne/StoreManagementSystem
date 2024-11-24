@@ -126,11 +126,7 @@ const theme = createTheme({
     },
     MuiListItemText: {
       styleOverrides: {
-        root: {
-          color: colors.error.contrastText,
-        },
         secondary: {
-          color: colors.error.contrastText,
           fontSize: "80%",
         },
       },

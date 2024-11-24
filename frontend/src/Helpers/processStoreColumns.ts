@@ -1,7 +1,7 @@
 import StoreApiColumnsType from "../Views/StoresPage/types/ApiColumnsType";
 import StoreGridColumnsType from "../Views/StoresPage/types/GridColumnsType";
 
-const processStoreColumns = function (
+function processStoreColumns(
   payload: StoreApiColumnsType
 ): StoreGridColumnsType {
   return {
@@ -14,6 +14,6 @@ const processStoreColumns = function (
     updatedBy: payload.updated_by,
     updatedOn: payload.updated_on,
   };
-};
+}
 
 export default processStoreColumns;

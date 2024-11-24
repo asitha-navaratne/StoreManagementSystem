@@ -1,8 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 
-import database.models as models
 from database.config import engine
+import database.models as models
 
 from routers import price_master, purchases, stores, suppliers, stock_movements, invoices
 
@@ -22,6 +24,17 @@ app.add_middleware(
 )
 
 models.Base.metadata.create_all(bind=engine)
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(_: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={
+            "message": 'Validation error occurred',
+            "errors": exc.errors(),
+            "body": exc.body
+        }
+    )
 
 app.include_router(price_master.router)
 app.include_router(purchases.router)

@@ -2,7 +2,7 @@ import { GridValidRowModel } from "@mui/x-data-grid";
 
 import PurchaseApiColumnsType from "../Views/PurchasesPage/types/ApiColumnsType";
 
-const processPurchasePayload = function (
+function processPurchasePayload(
   row: GridValidRowModel,
   supplierName: string,
   storeName: string
@@ -22,6 +22,6 @@ const processPurchasePayload = function (
     updated_by: row.updatedBy,
     updated_on: row.updatedOn,
   };
-};
+}
 
 export default processPurchasePayload;

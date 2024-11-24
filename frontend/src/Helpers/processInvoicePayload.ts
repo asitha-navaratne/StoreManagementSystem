@@ -2,9 +2,7 @@ import { GridValidRowModel } from "@mui/x-data-grid";
 
 import InvoiceApiColumnsType from "../Views/InvoicesPage/types/ApiColumnsType";
 
-const processInvoicePayload = function (
-  row: GridValidRowModel
-): InvoiceApiColumnsType {
+function processInvoicePayload(row: GridValidRowModel): InvoiceApiColumnsType {
   return {
     id: row.id,
     invoice_date: row.invoiceDate,
@@ -23,6 +21,6 @@ const processInvoicePayload = function (
     updated_by: row.updatedBy,
     updated_on: row.updatedOn,
   };
-};
+}
 
 export default processInvoicePayload;

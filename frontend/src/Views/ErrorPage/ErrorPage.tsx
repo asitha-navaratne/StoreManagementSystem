@@ -1,18 +1,18 @@
+import { Link } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 
 import styles from "./ErrorPage.module.scss";
-import { Link } from "react-router-dom";
 
 const ErrorPage = () => {
   return (
     <Box className={styles["error-page"]}>
-      <Typography variant="h1">404 - Not Found</Typography>
+      <Typography variant="h1">An Error Occurred!</Typography>
       <Typography variant="body2" sx={{ mb: 2 }}>
-        The content you requested is currently under development or not
-        available.
+        An error occurred when accessing the content you requested.
       </Typography>
       <Typography variant="body2" sx={{ mb: 5 }}>
-        Please return to the home page and navigate through the left menu.
+        Please try refreshing the page or return to the home page and navigate
+        through the left menu.
       </Typography>
       <Link to="/" className={styles["error-page__link-button"]}>
         Home

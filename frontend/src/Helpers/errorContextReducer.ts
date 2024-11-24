@@ -3,7 +3,7 @@ import {
   ErrorContextActionType,
 } from "../Types/ErrorContextType";
 
-const errorContextReducer = function (
+function errorContextReducer(
   state: ErrorContextStateType,
   action: ErrorContextActionType
 ): ErrorContextStateType {
@@ -23,6 +23,6 @@ const errorContextReducer = function (
     default:
       return { ...state };
   }
-};
+}
 
 export default errorContextReducer;

@@ -1,7 +1,7 @@
 import PriceMasterApiColumnsType from "../Views/PriceMasterPage/types/ApiColumnsType";
 import PriceMasterGridColumnsType from "../Views/PriceMasterPage/types/GridColumnsType";
 
-const processPriceMasterColumns = function (
+function processPriceMasterColumns(
   payload: PriceMasterApiColumnsType
 ): PriceMasterGridColumnsType {
   return {
@@ -24,6 +24,6 @@ const processPriceMasterColumns = function (
     updatedBy: payload.updated_by,
     updatedOn: payload.updated_on,
   };
-};
+}
 
 export default processPriceMasterColumns;

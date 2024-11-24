@@ -119,12 +119,12 @@ class PriceMaster(Base):
     supplier_id: Mapped[int] = mapped_column(ForeignKey('suppliers.id'), index=True, nullable=False)
     brand: Mapped[str] = mapped_column(nullable=False)
     brand_code: Mapped[str] = mapped_column(nullable=False)
-    category: Mapped[str]
-    bottle_size: Mapped[int]
+    category: Mapped[str] = mapped_column(nullable=False)
+    bottle_size: Mapped[int] = mapped_column(nullable=False)
     container_size: Mapped[int]
-    tax_price: Mapped[int]
-    cost: Mapped[int]
-    price: Mapped[int]
+    tax_price: Mapped[int] = mapped_column(nullable=False)
+    cost: Mapped[int] = mapped_column(nullable=False)
+    price: Mapped[int] = mapped_column(nullable=False)
     commissions:Mapped[int]
     margin:Mapped[int]
     active: Mapped[bool] = mapped_column(nullable=False)

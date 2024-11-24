@@ -1,7 +1,7 @@
 import StockMovementsGridColumnsType from "../Views/StockMovementsPage/types/GridColumnsType";
 import StockMovementsApiColumnsType from "../Views/StockMovementsPage/types/ApiColumnsType";
 
-const processStockMovementsColumns = function (
+function processStockMovementsColumns(
   payload: StockMovementsApiColumnsType
 ): StockMovementsGridColumnsType {
   return {
@@ -32,6 +32,6 @@ const processStockMovementsColumns = function (
     sold: payload.sold,
     updatedBy: payload.updated_by,
   };
-};
+}
 
 export default processStockMovementsColumns;

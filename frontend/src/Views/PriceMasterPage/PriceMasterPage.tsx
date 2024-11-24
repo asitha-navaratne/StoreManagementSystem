@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import randomInteger from "random-int";
 import { useLoaderData } from "react-router-dom";
+import { AxiosError } from "axios";
 import { Box, Typography } from "@mui/material";
 import {
   DataGrid,
@@ -34,9 +35,13 @@ import AlertWindow from "../../Components/AlertWindow/AlertWindow";
 import useErrorContext from "../../Hooks/useErrorContext";
 
 import LoaderDataType from "./types/LoaderType";
+import PriceMasterApiColumnsType from "./types/ApiColumnsType";
+import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
 
 import InitPriceRowValues from "../../Constants/InitPriceRowValues";
 import AlcoholCategories from "../../Constants/AlcoholCategories";
+
+import handleErrors from "../../Helpers/handleErrors";
 
 import Service from "../../Services/PriceMasterService";
 
@@ -311,18 +316,17 @@ const PriceMasterPage = () => {
       AddPriceItem({
         ...addedRow,
       })
-        .catch((err) => {
-          const id = randomInteger(2 ** 9, 2 ** 10);
-          handlePushError({
-            id: id,
-            type: "error",
-            description: err.response.data.detail,
-            component: "Price Master Page",
-          });
-          setRows((prev) =>
-            prev.filter((row) => row.id !== err.response.data.id)
-          );
-        })
+        .catch(
+          (
+            err: AxiosError<
+              StoreManagementSystemErrorType<PriceMasterApiColumnsType>
+            >
+          ) => {
+            const { errorObject, id } = handleErrors(err, "Price Master Page");
+            handlePushError(errorObject);
+            setRows((prev) => prev.filter((row) => row.id !== id));
+          }
+        )
         .finally(() => setAddedRow(null));
     }
   }, [addedRow, handlePushError]);

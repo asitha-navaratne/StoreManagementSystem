@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 
 import StockMovementsGridColumnsType from "../Views/StockMovementsPage/types/GridColumnsType";
 
-const getHeadersForGroupedColumns = function (
+function getHeadersForGroupedColumns(
   row: StockMovementsGridColumnsType | null
 ): string[] {
   const firstRecordDate = row?.recordDate ? dayjs(row?.recordDate) : dayjs();
@@ -25,6 +25,6 @@ const getHeadersForGroupedColumns = function (
     thirdRecordDate.format("YYYY-MM-DD"),
     fourthRecordDate.format("YYYY-MM-DD"),
   ];
-};
+}
 
 export default getHeadersForGroupedColumns;

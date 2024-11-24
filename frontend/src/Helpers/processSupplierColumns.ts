@@ -1,7 +1,7 @@
 import SuppliersApiColumnsType from "../Views/SuppliersPage/types/ApiColumnsType";
 import SuppliersGridColumnsType from "../Views/SuppliersPage/types/GridColumnsType";
 
-const processSupplierColumns = function (
+function processSupplierColumns(
   row: SuppliersApiColumnsType
 ): SuppliersGridColumnsType {
   return {
@@ -20,6 +20,6 @@ const processSupplierColumns = function (
     updatedBy: row.updated_by,
     updatedOn: row.updated_on,
   };
-};
+}
 
 export default processSupplierColumns;

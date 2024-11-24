@@ -2,7 +2,7 @@ import { GridValidRowModel } from "@mui/x-data-grid";
 
 import StockMovementsApiColumnsType from "../Views/StockMovementsPage/types/ApiColumnsType";
 
-const processStockMovementsPayload = function (
+function processStockMovementsPayload(
   row: GridValidRowModel
 ): StockMovementsApiColumnsType {
   return {
@@ -33,6 +33,6 @@ const processStockMovementsPayload = function (
     sold: row.sold,
     updated_by: "AsithaN",
   };
-};
+}
 
 export default processStockMovementsPayload;

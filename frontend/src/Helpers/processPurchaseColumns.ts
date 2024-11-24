@@ -1,7 +1,7 @@
 import PurchaseApiColumnsType from "../Views/PurchasesPage/types/ApiColumnsType";
 import PurchaseGridColumnsType from "../Views/PurchasesPage/types/GridColumnsType";
 
-const processPurchaseColumns = function (
+function processPurchaseColumns(
   payload: PurchaseApiColumnsType
 ): PurchaseGridColumnsType {
   return {
@@ -19,6 +19,6 @@ const processPurchaseColumns = function (
     updatedBy: payload.updated_by,
     updatedOn: payload.updated_on,
   };
-};
+}
 
 export default processPurchaseColumns;

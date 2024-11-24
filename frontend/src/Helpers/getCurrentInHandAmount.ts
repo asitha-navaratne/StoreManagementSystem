@@ -1,4 +1,4 @@
-const getCurrentInHandAmount = function (
+function getCurrentInHandAmount(
   enteredAmount: number | string | null,
   previousStockAmount: number,
   purchasedAmount: number
@@ -10,6 +10,6 @@ const getCurrentInHandAmount = function (
   } else {
     return enteredAmount;
   }
-};
+}
 
 export default getCurrentInHandAmount;

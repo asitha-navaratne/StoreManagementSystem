@@ -1,7 +1,7 @@
 import InvoiceApiColumnsType from "../Views/InvoicesPage/types/ApiColumnsType";
 import InvoiceGridColumnsType from "../Views/InvoicesPage/types/GridColumnsType";
 
-const processInvoiceColumns = function (
+function processInvoiceColumns(
   payload: InvoiceApiColumnsType
 ): InvoiceGridColumnsType {
   return {
@@ -22,6 +22,6 @@ const processInvoiceColumns = function (
     updatedBy: payload.updated_by,
     updatedOn: payload.updated_on,
   };
-};
+}
 
 export default processInvoiceColumns;

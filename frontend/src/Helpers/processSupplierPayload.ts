@@ -2,7 +2,7 @@ import { GridValidRowModel } from "@mui/x-data-grid";
 
 import SuppliersApiColumnsType from "../Views/SuppliersPage/types/ApiColumnsType";
 
-const processSupplierPayload = function (
+function processSupplierPayload(
   row: GridValidRowModel
 ): SuppliersApiColumnsType {
   return {
@@ -21,6 +21,6 @@ const processSupplierPayload = function (
     updated_by: row.updatedBy,
     updated_on: row.updatedOn,
   };
-};
+}
 
 export default processSupplierPayload;
