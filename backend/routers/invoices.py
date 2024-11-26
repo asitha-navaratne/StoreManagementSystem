@@ -33,7 +33,7 @@ def get_all_invoices(db: db_dependency):
 
 @router.post('', status_code=status.HTTP_201_CREATED)
 def add_invoice(invoice: CreateInvoiceModel, db: db_dependency):
-    return create_invoice(invoice, db)
+    return create_invoice(invoice=invoice, db=db)
 
 @router.patch('')
 def update_invoice(invoice: CreateInvoiceModel, db: db_dependency):
@@ -45,4 +45,4 @@ def remove_invoice(id: int, db: db_dependency):
 
 @router.get('/')
 def get_invoice_by_number_supplier_and_store(invoice: int, supplier: str, store: str, db: db_dependency):
-    return get_invoice_by_invoice_number_supplier_and_store(invoice, supplier, store, db)
+    return get_invoice_by_invoice_number_supplier_and_store(invoice_number=invoice, supplier_name=supplier, store_name=store, db=db)

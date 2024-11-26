@@ -27,12 +27,12 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 @router.get('')
 def get_all_purchases_for_invoice(invoice: int, supplier: str, store: str, db: db_dependency):
-    return get_purchases_for_invoice(invoice, supplier, store, db)
+    return get_purchases_for_invoice(invoice_number=invoice, supplier_name=supplier, store_name=store, db=db)
 
 @router.post('', status_code=status.HTTP_201_CREATED)
 def add_purchases(purchases: list[CreatePurchaseModel], db: db_dependency):
-    return create_purchases(purchases, db)
+    return create_purchases(purchases=purchases, db=db)
 
 @router.patch('')
 def update_purchases(purchases: list[CreatePurchaseModel], db: db_dependency):
-    return edit_purchases(purchases, db)
+    return edit_purchases(purchases=purchases, db=db)

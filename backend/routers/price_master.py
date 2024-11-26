@@ -37,7 +37,7 @@ def add_price_item(price: CreatePriceModel, db: db_dependency):
 
 @router.patch('')
 def update_price_item(price: CreatePriceModel, db: db_dependency):
-    return edit_price_item(price=price, db=db)
+    return edit_price_item(price_item=price, db=db)
 
 @router.delete('/{id}')
 def remove_price_item(id: int, db: db_dependency):
@@ -45,4 +45,4 @@ def remove_price_item(id: int, db: db_dependency):
 
 @router.get('/')
 def get_prices_by_supplier_and_store(supplier: str, store: str, db: db_dependency):
-    return get_price_items_by_supplier_and_store(supplier, store, db)
+    return get_price_items_by_supplier_and_store(supplier_name=supplier, store_name=store, db=db)

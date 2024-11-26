@@ -28,8 +28,7 @@ const loader = async function () {
       return payload;
     })
     .catch((err) => {
-      // TODO: Handle errors properly
-      console.error(err);
+      throw err;
     });
 };
 

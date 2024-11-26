@@ -1,5 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react";
 
+import { AxiosError } from "axios";
 import { useLoaderData } from "react-router-dom";
 import randomInteger from "random-int";
 import dayjs, { Dayjs } from "dayjs";
@@ -41,15 +42,22 @@ import dataGridStyles from "../../Styles/dataGridStyles";
 
 import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
 
+import useErrorContext from "../../Hooks/useErrorContext";
+
 import LoaderDataType from "./types/LoaderDataType";
+import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
 import InvoiceGridColumnsType from "../InvoicesPage/types/GridColumnsType";
 import PriceMasterApiColumnsType from "../PriceMasterPage/types/ApiColumnsType";
 import PurchaseGridColumnsType from "./types/GridColumnsType";
+
 import InitInvoiceData from "../../Constants/InitInvoiceData";
+
+import handleErrors from "../../Helpers/handleErrors";
 
 import PurchasesService from "../../Services/PurchasesService";
 import PriceMasterService from "../../Services/PriceMasterService";
 import InvoicesService from "../../Services/InvoicesService";
+import PurchaseApiColumnsType from "./types/ApiColumnsType";
 
 const { GetPurchasesForInvoiceNumber, AddPurchases, EditPurchase } =
   PurchasesService();
@@ -81,6 +89,8 @@ const PurchasesPage = () => {
     useState<boolean>(false);
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] =
     useState<boolean>(true);
+
+  const { handlePushError } = useErrorContext();
 
   const columns: GridColDef[] = [
     {
@@ -249,12 +259,14 @@ const PurchasesPage = () => {
             setIsSaveButtonDisabled(true);
           }
         })
-        .catch((err) => {
-          // TODO: Handle errors properly
-          console.error(err);
-        });
+        .catch(
+          (err: AxiosError<StoreManagementSystemErrorType<{ id: number }>>) => {
+            const { errorObject } = handleErrors(err, "Purchases Page");
+            handlePushError(errorObject);
+          }
+        );
     }
-  }, [selectedSupplier, selectedStore]);
+  }, [selectedSupplier, selectedStore, handlePushError]);
 
   useEffect(() => {
     if (invoiceNumber && selectedSupplier && selectedStore) {
@@ -319,12 +331,19 @@ const PurchasesPage = () => {
             setIsExistingPurchaseRecord(false);
           }
         })
-        .catch((err) => {
-          // TODO: Handle errors properly
-          console.error(err);
-        });
+        .catch(
+          async (
+            err: AxiosError<
+              StoreManagementSystemErrorType<PurchaseApiColumnsType>
+            >
+          ) => {
+            const { errorObject } = handleErrors(err, "Purchases Page");
+            handlePushError(errorObject);
+            setRows([]);
+          }
+        );
     }
-  }, [invoiceNumber, selectedSupplier, selectedStore]);
+  }, [invoiceNumber, selectedSupplier, selectedStore, handlePushError]);
 
   useEffect(() => {
     if (rows.length > 0) {
@@ -412,33 +431,93 @@ const PurchasesPage = () => {
   const handleSaveAllButtonClick = function () {
     if (isExistingPurchaseRecord) {
       const payload = rows.filter((row) => row.isEdited);
-      EditPurchase(
-        payload.map((row) => ({
-          ...row,
-          invoiceNumber: invoiceNumber,
-          receivedDate: selectedReceivedDate?.format("YYYY-MM-DD"),
-          updatedBy: "AsithaN",
-          updatedOn: dayjs().format("YYYY-MM-DD"),
-        })),
-        selectedSupplier,
-        selectedStore
-      )
+      EditInvoice({
+        ...invoiceData,
+        invoiceDate: selectedInvoiceDate!.format("YYYY-MM-DD"),
+        receivedDate: selectedReceivedDate!.format("YYYY-MM-DD"),
+        supplierName: selectedSupplier,
+        storeName: selectedStore,
+        invoiceNumber: invoiceNumber,
+        updatedBy: "AsithaN",
+        updatedOn: dayjs().format("YYYY-MM-DD"),
+      })
         .then(() => {
-          EditInvoice({
-            ...invoiceData,
-            invoiceDate: selectedInvoiceDate!.format("YYYY-MM-DD"),
-            receivedDate: selectedReceivedDate!.format("YYYY-MM-DD"),
-            supplierName: selectedSupplier,
-            storeName: selectedStore,
-            invoiceNumber: invoiceNumber,
-            updatedBy: "AsithaN",
-            updatedOn: dayjs().format("YYYY-MM-DD"),
-          });
+          EditPurchase(
+            payload.map((row) => ({
+              ...row,
+              invoiceNumber: invoiceNumber,
+              receivedDate: selectedReceivedDate?.format("YYYY-MM-DD"),
+              updatedBy: "AsithaN",
+              updatedOn: dayjs().format("YYYY-MM-DD"),
+            })),
+            selectedSupplier,
+            selectedStore
+          );
         })
-        .catch((err) => {
-          // TODO: Handle errors properly
-          console.error(err);
-        });
+        .catch(
+          async (
+            err: AxiosError<
+              StoreManagementSystemErrorType<PurchaseApiColumnsType>
+            >
+          ) => {
+            const { errorObject } = handleErrors(err, "Purchases Page");
+            handlePushError(errorObject);
+
+            const initialRows = await GetPricesBySupplierAndStore(
+              selectedSupplier,
+              selectedStore
+            );
+            setRows(
+              initialRows.data.map((row: PriceMasterApiColumnsType) => {
+                const id = randomInteger(2 ** 16, 2 ** 17);
+
+                return {
+                  id,
+                  category: row.category,
+                  productName: row.brand,
+                  bottleSize: row.bottle_size,
+                  quantityOrdered: 0,
+                  price: row.price,
+                  quantityReceived: 0,
+                  payableAmount: 0,
+                  createdBy: null,
+                  createdOn: null,
+                  updatedBy: null,
+                  updatedOn: null,
+                };
+              })
+            );
+
+            const purchases = await GetPurchasesForInvoiceNumber(
+              invoiceNumber,
+              selectedSupplier,
+              selectedStore
+            );
+            setRows((prev) =>
+              prev.map((row) => {
+                const match = purchases.find(
+                  (purchase: PurchaseGridColumnsType) =>
+                    purchase.productName === row.productName
+                );
+                if (match) {
+                  const newRow = {
+                    ...row,
+                    id: match.id,
+                    quantityOrdered: match.quantityOrdered,
+                    quantityReceived: match.quantityReceived,
+                    payableAmount: match.quantityReceived * row.price,
+                    createdBy: match.createdBy,
+                    createdOn: match.createdOn,
+                    updatedBy: match.updatedBy,
+                    updatedOn: match.updatedOn,
+                  };
+                  return newRow;
+                }
+                return row;
+              })
+            );
+          }
+        );
     } else {
       const newInvoiceId = randomInteger(2 ** 16, 2 ** 17);
       AddInvoice({
@@ -475,10 +554,41 @@ const PurchasesPage = () => {
             selectedStore
           );
         })
-        .catch((err) => {
-          // TODO: Handle errors properly
-          console.error(err);
-        });
+        .catch(
+          async (
+            err: AxiosError<
+              StoreManagementSystemErrorType<PurchaseApiColumnsType>
+            >
+          ) => {
+            const { errorObject } = handleErrors(err, "Purchases Page");
+            handlePushError(errorObject);
+
+            const initialRows = await GetPricesBySupplierAndStore(
+              selectedSupplier,
+              selectedStore
+            );
+            setRows(
+              initialRows.data.map((row: PriceMasterApiColumnsType) => {
+                const id = randomInteger(2 ** 16, 2 ** 17);
+
+                return {
+                  id,
+                  category: row.category,
+                  productName: row.brand,
+                  bottleSize: row.bottle_size,
+                  quantityOrdered: 0,
+                  price: row.price,
+                  quantityReceived: 0,
+                  payableAmount: 0,
+                  createdBy: null,
+                  createdOn: null,
+                  updatedBy: null,
+                  updatedOn: null,
+                };
+              })
+            );
+          }
+        );
     }
   };
 
@@ -518,11 +628,17 @@ const PurchasesPage = () => {
                   value={selectedSupplier}
                   onChange={(e) => setSelectedSupplier(e.target.value)}
                 >
-                  {suppliersList.map((supplier) => (
-                    <MenuItem key={supplier.id} value={supplier.companyName}>
-                      {supplier.companyName}
+                  {suppliersList.length > 0 ? (
+                    suppliersList.map((supplier) => (
+                      <MenuItem key={supplier.id} value={supplier.companyName}>
+                        {supplier.companyName}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem value="">
+                      <em>No Suppliers</em>
                     </MenuItem>
-                  ))}
+                  )}
                 </Select>
               </TableCell>
               <TableCell>
@@ -535,11 +651,17 @@ const PurchasesPage = () => {
                   value={selectedStore}
                   onChange={(e) => setSelectedStore(e.target.value)}
                 >
-                  {storesList.map((store) => (
-                    <MenuItem key={store.id} value={store.storeName}>
-                      {store.storeName}
+                  {storesList.length > 0 ? (
+                    storesList.map((store) => (
+                      <MenuItem key={store.id} value={store.storeName}>
+                        {store.storeName}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem value="">
+                      <em>No Stores</em>
                     </MenuItem>
-                  ))}
+                  )}
                 </Select>
               </TableCell>
               <TableCell>

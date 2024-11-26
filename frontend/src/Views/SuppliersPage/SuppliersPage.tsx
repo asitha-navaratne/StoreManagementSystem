@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import randomInteger from "random-int";
 import { useLoaderData } from "react-router-dom";
@@ -30,11 +31,18 @@ import dataGridStyles from "../../Styles/dataGridStyles";
 import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
 import AlertWindow from "../../Components/AlertWindow/AlertWindow";
 
+import useErrorContext from "../../Hooks/useErrorContext";
+
+import SuppliersApiColumnsType from "./types/ApiColumnsType";
+import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
+
 import InitSupplierRowValues from "../../Constants/InitSupplierRowValues";
+
+import handleErrors from "../../Helpers/handleErrors";
 
 import Service from "../../Services/SupplierService";
 
-const { AddSupplier, EditSupplier, DeleteSupplier } = Service();
+const { GetSuppliers, AddSupplier, EditSupplier, DeleteSupplier } = Service();
 
 const SuppliersPage = () => {
   const [rows, setRows] = useState<GridRowsProp>(
@@ -46,6 +54,8 @@ const SuppliersPage = () => {
   const [isAddButtonClicked, setIsAddButtonClicked] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<number>(0);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState<boolean>(false);
+
+  const { handlePushError } = useErrorContext();
 
   const columns: GridColDef[] = [
     {
@@ -235,43 +245,62 @@ const SuppliersPage = () => {
       AddSupplier({
         ...addedRow,
       })
-        .catch((err) => {
-          // TODO: Handle errors properly
-          console.error(err);
-        })
+        .catch(
+          (
+            err: AxiosError<
+              StoreManagementSystemErrorType<SuppliersApiColumnsType>
+            >
+          ) => {
+            const { errorObject, id } = handleErrors(err, "Suppliers Page");
+            handlePushError(errorObject);
+            setRows((prev) => prev.filter((row) => row.id !== id));
+          }
+        )
         .finally(() => {
           setAddedRow(null);
         });
     }
-  }, [addedRow]);
+  }, [addedRow, handlePushError]);
 
   useEffect(() => {
     if (editedRow) {
       EditSupplier({
         ...editedRow,
       })
-        .catch((err) => {
-          // TODO: Handle errors properly
-          console.error(err);
-        })
+        .catch(
+          async (
+            err: AxiosError<
+              StoreManagementSystemErrorType<SuppliersApiColumnsType>
+            >
+          ) => {
+            const { errorObject } = handleErrors(err, "Suppliers Page");
+            handlePushError(errorObject);
+
+            const res = await GetSuppliers();
+            setRows(res);
+          }
+        )
         .finally(() => {
           setEditedRow(null);
         });
     }
-  }, [editedRow]);
+  }, [editedRow, handlePushError]);
 
   useEffect(() => {
     if (deleteId !== 0 && !isDeleteAlertOpen) {
       DeleteSupplier(deleteId)
-        .catch((err) => {
-          // TODO: Handle errors properly
-          console.error(err);
+        .catch(async (err) => {
+          const { errorObject } = handleErrors(err, "Suppliers Page");
+          handlePushError(errorObject);
+
+          const res = await GetSuppliers();
+          setRows(res);
         })
         .finally(() => {
           setDeleteId(0);
         });
     }
-  }, [deleteId, isDeleteAlertOpen]);
+  }, [deleteId, handlePushError, isDeleteAlertOpen]);
 
   const handleRowModesModelChange = function (
     newRowModesModel: GridRowModesModel

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { AxiosError } from "axios";
 import { useLoaderData } from "react-router-dom";
 import {
   Box,
@@ -26,10 +27,14 @@ import dataGridStyles from "../../Styles/dataGridStyles";
 
 import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
 
+import useErrorContext from "../../Hooks/useErrorContext";
+
 import StoreGridColumnsType from "../StoresPage/types/GridColumnsType";
 import StockMovementsApiColumnsType from "./types/ApiColumnsType";
 import StockMovementsGridColumnsType from "./types/GridColumnsType";
+import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
 
+import handleErrors from "../../Helpers/handleErrors";
 import getCurrentInHandAmount from "../../Helpers/getCurrentInHandAmount";
 import getHeadersForGroupedColumns from "../../Helpers/getHeadersForGroupedColumns";
 
@@ -47,6 +52,8 @@ const StockMovementsPage = () => {
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] =
     useState<boolean>(true);
   const [isGridDataLoading, setIsGridDataLoading] = useState<boolean>(false);
+
+  const { handlePushError } = useErrorContext();
 
   const columns = [
     {
@@ -259,19 +266,25 @@ const StockMovementsPage = () => {
         .then((res) => {
           setRows(res);
 
-          const isSoldColumnNull = res.data.some(
+          const isSoldColumnNull = res.some(
             (row: StockMovementsApiColumnsType) => row.sold === null
           );
           setIsGridEditable(isSoldColumnNull);
           setIsSaveButtonDisabled(!isSoldColumnNull);
         })
-        .catch((err) => {
-          // TODO: Handle errors properly
-          console.error(err);
-        })
+        .catch(
+          (
+            err: AxiosError<
+              StoreManagementSystemErrorType<StockMovementsApiColumnsType>
+            >
+          ) => {
+            const { errorObject } = handleErrors(err, "Stock Movements Page");
+            handlePushError(errorObject);
+          }
+        )
         .finally(() => setIsGridDataLoading(false));
     }
-  }, [selectedStore, selectedDate]);
+  }, [selectedStore, selectedDate, handlePushError]);
 
   const handleRowEditStart = function () {
     setIsSaveButtonDisabled(true);
@@ -312,16 +325,34 @@ const StockMovementsPage = () => {
       .then((res) => {
         setRows(res);
 
-        const isSoldColumnNull = res.data.some(
+        const isSoldColumnNull = res.some(
           (row: StockMovementsApiColumnsType) => row.sold === null
         );
         setIsGridEditable(isSoldColumnNull);
         setIsSaveButtonDisabled(!isSoldColumnNull);
       })
-      .catch((err) => {
-        // TODO: Handle errors properly
-        console.error(err);
-      })
+      .catch(
+        async (
+          err: AxiosError<
+            StoreManagementSystemErrorType<StockMovementsApiColumnsType>
+          >
+        ) => {
+          const { errorObject } = handleErrors(err, "Stock Movements Page");
+          handlePushError(errorObject);
+
+          const res = await GetStockMovements(
+            selectedStore,
+            selectedDate!.format("YYYY-MM-DD")
+          );
+          setRows(res);
+
+          const isSoldColumnNull = res.some(
+            (row: StockMovementsApiColumnsType) => row.sold === null
+          );
+          setIsGridEditable(isSoldColumnNull);
+          setIsSaveButtonDisabled(!isSoldColumnNull);
+        }
+      )
       .finally(() => setIsGridDataLoading(false));
   };
 
@@ -343,11 +374,17 @@ const StockMovementsPage = () => {
             onChange={(e) => setSelectedStore(e.target.value)}
             sx={{ minWidth: "15vw" }}
           >
-            {storesList.map((store) => (
-              <MenuItem key={store.id} value={store.storeName}>
-                {store.storeName}
+            {storesList.length > 0 ? (
+              storesList.map((store) => (
+                <MenuItem key={store.id} value={store.storeName}>
+                  {store.storeName}
+                </MenuItem>
+              ))
+            ) : (
+              <MenuItem value="">
+                <em>No Stores</em>
               </MenuItem>
-            ))}
+            )}
           </Select>
         </FormControl>
         <LocalizationProvider dateAdapter={AdapterDayjs}>

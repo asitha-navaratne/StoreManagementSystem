@@ -45,7 +45,8 @@ import handleErrors from "../../Helpers/handleErrors";
 
 import Service from "../../Services/PriceMasterService";
 
-const { AddPriceItem, EditPriceItem, DeletePriceItem } = Service();
+const { GetPriceItems, AddPriceItem, EditPriceItem, DeletePriceItem } =
+  Service();
 
 const PriceMasterPage = () => {
   const payloadData = useLoaderData() as LoaderDataType;
@@ -336,32 +337,34 @@ const PriceMasterPage = () => {
       EditPriceItem({
         ...editedRow,
       })
-        .catch((err) => {
-          const id = randomInteger(2 ** 9, 2 ** 10);
-          handlePushError({
-            id: id,
-            type: "error",
-            description: err.message,
-            component: "Price Master Page",
-          });
-        })
+        .catch(
+          async (
+            err: AxiosError<
+              StoreManagementSystemErrorType<PriceMasterApiColumnsType>
+            >
+          ) => {
+            const { errorObject } = handleErrors(err, "Price Master Page");
+            handlePushError(errorObject);
+
+            const res = await GetPriceItems();
+            setRows(res);
+          }
+        )
         .finally(() => {
           setEditedRow(null);
         });
     }
-  }, [editedRow, handlePushError]);
+  }, [editedRow, handlePushError, payloadData.products]);
 
   useEffect(() => {
     if (deleteId !== 0 && !isWindowOpen) {
       DeletePriceItem(deleteId)
-        .catch((err) => {
-          const id = randomInteger(2 ** 9, 2 ** 10);
-          handlePushError({
-            id: id,
-            type: "error",
-            description: err.message,
-            component: "Price Master Page",
-          });
+        .catch(async (err) => {
+          const { errorObject } = handleErrors(err, "Price Master Page");
+          handlePushError(errorObject);
+
+          const res = await GetPriceItems();
+          setRows(res);
         })
         .finally(() => {
           setDeleteId(0);

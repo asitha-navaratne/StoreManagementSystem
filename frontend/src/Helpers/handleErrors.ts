@@ -5,7 +5,7 @@ import { ErrorListItemType } from "../Types/ErrorContextType";
 import StoreManagementSystemErrorType from "../Types/StoreManagementSystemErrorType";
 
 function handleErrors<T extends { id: number }>(
-  err: AxiosError<StoreManagementSystemErrorType<T>>,
+  err: AxiosError<StoreManagementSystemErrorType<T>, T>,
   component: string
 ): { errorObject: ErrorListItemType; id: number } {
   const errorId = randomInteger(2 ** 9, 2 ** 10);
@@ -25,6 +25,8 @@ function handleErrors<T extends { id: number }>(
       '"';
   } else if (err.response?.data?.detail) {
     processedErrorObject["description"] = err.response.data.detail[0].msg;
+  } else if (err.message && typeof err.message === "string") {
+    processedErrorObject["description"] = err.message;
   } else {
     processedErrorObject["description"] =
       err.response?.data.message ??

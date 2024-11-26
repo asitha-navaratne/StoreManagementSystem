@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import { useLoaderData } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
@@ -27,9 +28,16 @@ import dataGridStyles from "../../Styles/dataGridStyles";
 import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
 import AlertWindow from "../../Components/AlertWindow/AlertWindow";
 
+import useErrorContext from "../../Hooks/useErrorContext";
+
+import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
+import InvoiceApiColumnsType from "./types/ApiColumnsType";
+
+import handleErrors from "../../Helpers/handleErrors";
+
 import Service from "../../Services/InvoicesService";
 
-const { EditInvoice, DeleteInvoice } = Service();
+const { GetInvoices, EditInvoice, DeleteInvoice } = Service();
 
 const InvoicesPage = () => {
   const [rows, setRows] = useState<GridRowsProp>(
@@ -39,6 +47,8 @@ const InvoicesPage = () => {
   const [editedRow, setEditedRow] = useState<GridRowModel | null>(null);
   const [deleteId, setDeleteId] = useState<number>(0);
   const [isWindowOpen, setIsWindowOpen] = useState<boolean>(false);
+
+  const { handlePushError } = useErrorContext();
 
   const columns: GridColDef[] = [
     {
@@ -235,28 +245,40 @@ const InvoicesPage = () => {
       EditInvoice({
         ...editedRow,
       })
-        .catch((err) => {
-          // TODO: Handle errors properly
-          console.error(err);
-        })
+        .catch(
+          async (
+            err: AxiosError<
+              StoreManagementSystemErrorType<InvoiceApiColumnsType>
+            >
+          ) => {
+            const { errorObject } = handleErrors(err, "Invoices Page");
+            handlePushError(errorObject);
+
+            const res = await GetInvoices();
+            setRows(res);
+          }
+        )
         .finally(() => {
           setEditedRow(null);
         });
     }
-  }, [editedRow]);
+  }, [editedRow, handlePushError]);
 
   useEffect(() => {
     if (deleteId !== 0 && !isWindowOpen) {
       DeleteInvoice(deleteId)
-        .catch((err) => {
-          // TODO: Handle errors properly
-          console.error(err);
+        .catch(async (err) => {
+          const { errorObject } = handleErrors(err, "Invoices Page");
+          handlePushError(errorObject);
+
+          const res = await GetInvoices();
+          setRows(res);
         })
         .finally(() => {
           setDeleteId(0);
         });
     }
-  }, [deleteId, isWindowOpen]);
+  }, [deleteId, handlePushError, isWindowOpen]);
 
   const handleRowModesModelChange = function (
     newRowModesModel: GridRowModesModel
