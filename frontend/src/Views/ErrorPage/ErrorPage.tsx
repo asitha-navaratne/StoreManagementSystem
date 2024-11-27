@@ -8,7 +8,29 @@ import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErr
 const ErrorPage = () => {
   const error = useRouteError() as {
     response: { data: StoreManagementSystemErrorType<{ id: number }> };
-  } & { message: string };
+    message: string;
+    data: string;
+    status: number;
+  };
+
+  const getHeadingText = function (): string {
+    if (error.status === 404) {
+      return error.data;
+    } else if (error?.response.data.message) {
+      return error.response.data.message;
+    } else if (error.message) {
+      return error.message;
+    }
+
+    return "";
+  };
+
+  const getBodyText = function (): string {
+    if (error?.response?.data.errors) {
+      return `at ${error?.response.data.errors[0].loc[0]} ${error?.response.data.errors[0].loc[1]}`;
+    }
+    return "";
+  };
 
   return (
     <Box className={styles["error-page"]}>
@@ -20,15 +42,13 @@ const ErrorPage = () => {
         variant="body2"
         sx={(theme) => ({ mt: 5, color: theme.palette.error.light })}
       >
-        {error?.response.data.message ?? error.message ?? ""}
+        {getHeadingText()}
       </Typography>
       <Typography
         variant="body2"
         sx={(theme) => ({ mb: 5, color: theme.palette.error.light })}
       >
-        {error?.response.data.errors
-          ? `at ${error?.response.data.errors[0].loc[0]} ${error?.response.data.errors[0].loc[1]}`
-          : ""}
+        {getBodyText()}
       </Typography>
       <Typography variant="body2" sx={{ mb: 5 }}>
         Please try refreshing the page or return to the home page and navigate
