@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.exceptions import RequestValidationError, HTTPException
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+import uvicorn
 
 from database.config import engine
 import database.models as models
@@ -42,3 +43,6 @@ app.include_router(stores.router)
 app.include_router(suppliers.router)
 app.include_router(stock_movements.router)
 app.include_router(invoices.router)
+
+if __name__ == '__main__':
+    uvicorn.run('main:app', host='0.0.0.0', port=8000)
