@@ -19,4 +19,4 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_STORE_MANAGEMENT_SYSTEM_ECD55 }}
           projectId: store-management-system-ecd55
-          entryPoint: ./frontend/firebase.json
+          entryPoint: ./firebase.json
