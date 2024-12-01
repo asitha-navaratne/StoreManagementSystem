@@ -34,6 +34,7 @@ import StoreGridColumnsType from "../StoresPage/types/GridColumnsType";
 import StockMovementsApiColumnsType from "./types/ApiColumnsType";
 import StockMovementsGridColumnsType from "./types/GridColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
+import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
 
 import handleErrors from "../../Helpers/handleErrors";
 import getCurrentInHandAmount from "../../Helpers/getCurrentInHandAmount";
@@ -444,7 +445,7 @@ const StockMovementsPage = () => {
                 toolbar: {
                   isSaveButtonDisabled: isSaveButtonDisabled,
                   handleSaveButtonClick: handleSaveButtonClick,
-                },
+                } as DataGridToolbarPropTypes,
                 loadingOverlay: {
                   variant: "skeleton",
                   noRowsVariant: "skeleton",

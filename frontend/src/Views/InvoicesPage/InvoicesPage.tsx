@@ -32,6 +32,7 @@ import useErrorContext from "../../Hooks/useErrorContext";
 
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
 import InvoiceApiColumnsType from "./types/ApiColumnsType";
+import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
 
 import handleErrors from "../../Helpers/handleErrors";
 
@@ -386,7 +387,7 @@ const InvoicesPage = () => {
                 toolbar: {
                   isAddButtonShown: false,
                   showQuickFilter: true,
-                },
+                } as DataGridToolbarPropTypes,
               }}
               sx={dataGridStyles}
             />

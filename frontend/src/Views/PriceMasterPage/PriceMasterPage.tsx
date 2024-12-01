@@ -37,6 +37,7 @@ import useErrorContext from "../../Hooks/useErrorContext";
 import LoaderDataType from "./types/LoaderType";
 import PriceMasterApiColumnsType from "./types/ApiColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
+import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
 
 import InitPriceRowValues from "../../Constants/InitPriceRowValues";
 import AlcoholCategories from "../../Constants/AlcoholCategories";
@@ -553,7 +554,7 @@ const PriceMasterPage = () => {
                   isAddButtonDisabled: isAddButtonClicked,
                   handleAddButtonClicked,
                   showQuickFilter: true,
-                },
+                } as DataGridToolbarPropTypes,
               }}
               sx={dataGridStyles}
             />

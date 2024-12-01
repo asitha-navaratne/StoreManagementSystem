@@ -35,6 +35,7 @@ import useErrorContext from "../../Hooks/useErrorContext";
 
 import SuppliersApiColumnsType from "./types/ApiColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
+import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
 
 import InitSupplierRowValues from "../../Constants/InitSupplierRowValues";
 
@@ -451,7 +452,7 @@ const SuppliersPage = () => {
                   isAddButtonDisabled: isAddButtonClicked,
                   handleAddButtonClicked,
                   showQuickFilter: true,
-                },
+                } as DataGridToolbarPropTypes,
               }}
               sx={dataGridStyles}
             />
