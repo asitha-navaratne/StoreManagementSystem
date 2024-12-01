@@ -18,3 +18,4 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_STORE_MANAGEMENT_SYSTEM_ECD55 }}
           channelId: live
           projectId: store-management-system-ecd55
+          entryPoint: frontend
