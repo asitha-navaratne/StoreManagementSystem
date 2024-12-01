@@ -6,6 +6,7 @@ import ErrorProvider from "./Contexts/ErrorProvider";
 
 import LoginPage from "./Views/LoginPage/LoginPage";
 import ErrorPage from "./Views/ErrorPage/ErrorPage";
+import Fallback from "./Components/Fallback/Fallback";
 import PriceMasterPage from "./Views/PriceMasterPage/PriceMasterPage";
 import PurchasesPage from "./Views/PurchasesPage/PurchasesPage";
 import InvoicesPage from "./Views/InvoicesPage/InvoicesPage";
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <Root />,
     errorElement: <ErrorPage />,
+    hydrateFallbackElement: <Fallback />,
     children: [
       {
         index: true,
