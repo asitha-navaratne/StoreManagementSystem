@@ -17,7 +17,7 @@ const Service = function () {
       `${config.api.purchases.GetPurchasesForInvoiceNumber}?invoice=${invoice}&supplier=${supplierName}&store=${storeName}`
     ).then((res) => {
       if (res?.data.length) {
-        return res.data.map((row: PurchaseApiColumnsType) =>
+        return res.data?.map((row: PurchaseApiColumnsType) =>
           processPurchaseColumns(row)
         );
       }

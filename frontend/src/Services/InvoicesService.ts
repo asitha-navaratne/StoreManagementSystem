@@ -11,7 +11,7 @@ import processInvoiceColumns from "../Helpers/processInvoiceColumns";
 const Service = () => {
   const GetInvoices = async function () {
     return AxiosInstance.get(config.api.invoices.GetAllInvoices).then((res) =>
-      res.data.map((row: InvoiceApiColumnsType) => processInvoiceColumns(row))
+      res.data?.map((row: InvoiceApiColumnsType) => processInvoiceColumns(row))
     );
   };
 

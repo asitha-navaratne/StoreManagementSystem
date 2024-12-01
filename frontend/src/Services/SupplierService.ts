@@ -10,7 +10,7 @@ import processSupplierPayload from "../Helpers/processSupplierPayload";
 const Service = () => {
   const GetSuppliers = async function () {
     return AxiosInstance.get(config.api.suppliers.GetAllSuppliers).then((res) =>
-      res.data.map((row: SuppliersApiColumnsType) =>
+      res.data?.map((row: SuppliersApiColumnsType) =>
         processSupplierColumns(row)
       )
     );

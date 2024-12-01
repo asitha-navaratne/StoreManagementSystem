@@ -10,7 +10,7 @@ import processStorePayload from "../Helpers/processStorePayload";
 const Service = () => {
   const GetStores = async function () {
     return AxiosInstance.get(config.api.stores.GetAllStores).then((res) =>
-      res.data.map((row: StoreApiColumnsType) => processStoreColumns(row))
+      res.data?.map((row: StoreApiColumnsType) => processStoreColumns(row))
     );
   };
 

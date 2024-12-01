@@ -10,7 +10,7 @@ import processPriceMasterColumns from "../Helpers/processPriceMasterColumns";
 const Service = () => {
   const GetPriceItems = async function () {
     return AxiosInstance.get(config.api.priceMaster.GetAllPrices).then((res) =>
-      res.data.map((row: PriceMasterApiColumnsType) =>
+      res.data?.map((row: PriceMasterApiColumnsType) =>
         processPriceMasterColumns(row)
       )
     );

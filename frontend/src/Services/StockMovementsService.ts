@@ -12,7 +12,7 @@ const Service = () => {
     return AxiosInstance.get(
       `${config.api.stockMovements.GetStockMovements}?store=${store}&date=${date}`
     ).then((res) =>
-      res.data.map((column: StockMovementsApiColumnsType) =>
+      res.data?.map((column: StockMovementsApiColumnsType) =>
         processStockMovementsColumns(column)
       )
     );
