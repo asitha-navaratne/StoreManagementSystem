@@ -13,7 +13,8 @@ from routers import price_master, purchases, stores, suppliers, stock_movements,
 app = FastAPI()
 
 origins = [
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "https://store-management-system-ecd55.web.app"
 ]
 
 app.add_middleware(
