@@ -16,8 +16,8 @@ const ErrorPage = () => {
   const getHeadingText = function (): string {
     if (error.status === 404) {
       return error.data;
-    } else if (error?.response.data.message) {
-      return error.response.data.message;
+    } else if (error?.response?.data.message) {
+      return error.response?.data.message;
     } else if (error.message) {
       return error.message;
     }
