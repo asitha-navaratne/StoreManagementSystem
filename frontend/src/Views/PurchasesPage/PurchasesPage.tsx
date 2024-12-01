@@ -51,6 +51,7 @@ import PurchaseGridColumnsType from "./types/GridColumnsType";
 import PurchaseApiColumnsType from "./types/ApiColumnsType";
 import InvoiceGridColumnsType from "../InvoicesPage/types/GridColumnsType";
 import PriceMasterApiColumnsType from "../PriceMasterPage/types/ApiColumnsType";
+import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
 
 import InitInvoiceData from "../../Constants/InitInvoiceData";
 
@@ -878,7 +879,7 @@ const PurchasesPage = () => {
                 toolbar: {
                   isSaveButtonDisabled: isSaveButtonDisabled,
                   handleSaveButtonClick: handleSaveAllButtonClick,
-                },
+                } as DataGridToolbarPropTypes,
               }}
               sx={dataGridStyles}
             />
