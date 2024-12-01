@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 
 import dayjs from "dayjs";
 import randomInteger from "random-int";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigation } from "react-router";
 import { AxiosError } from "axios";
-import { Box, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -49,6 +49,10 @@ const { GetPriceItems, AddPriceItem, EditPriceItem, DeletePriceItem } =
   Service();
 
 const PriceMasterPage = () => {
+  const navigation = useNavigation();
+
+  const isLoading = navigation.state === "loading";
+
   const payloadData = useLoaderData() as LoaderDataType;
 
   const [rows, setRows] = useState<GridRowsProp>(payloadData.products);
@@ -509,45 +513,53 @@ const PriceMasterPage = () => {
 
   return (
     <Box className={styles["price-master-page"]}>
-      <Box className={styles["price-master-page__title-section"]}>
-        <Typography variant="h4" component="h1">
-          Price Master
-        </Typography>
-      </Box>
-      <Box className={styles["price-master-page__grid-container"]}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          editMode="row"
-          rowModesModel={rowModesModel}
-          processRowUpdate={processRowUpdate}
-          onRowModesModelChange={handleRowModesModelChange}
-          onRowEditStop={handleRowEditStop}
-          initialState={{
-            columns: {
-              columnVisibilityModel: {
-                id: false,
-                createdBy: false,
-                createdOn: false,
-                updatedBy: false,
-                updatedOn: false,
-              },
-            },
-          }}
-          slots={{
-            toolbar: DataGridToolbar as GridSlots["toolbar"],
-          }}
-          slotProps={{
-            toolbar: {
-              isAddButtonShown: true,
-              isAddButtonDisabled: isAddButtonClicked,
-              handleAddButtonClicked,
-              showQuickFilter: true,
-            },
-          }}
-          sx={dataGridStyles}
-        />
-      </Box>
+      {isLoading ? (
+        <Box className={styles["price-master-page__loading-spinner"]}>
+          <CircularProgress size="15vw" />
+        </Box>
+      ) : (
+        <>
+          <Box className={styles["price-master-page__title-section"]}>
+            <Typography variant="h4" component="h1">
+              Price Master
+            </Typography>
+          </Box>
+          <Box className={styles["price-master-page__grid-container"]}>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              editMode="row"
+              rowModesModel={rowModesModel}
+              processRowUpdate={processRowUpdate}
+              onRowModesModelChange={handleRowModesModelChange}
+              onRowEditStop={handleRowEditStop}
+              initialState={{
+                columns: {
+                  columnVisibilityModel: {
+                    id: false,
+                    createdBy: false,
+                    createdOn: false,
+                    updatedBy: false,
+                    updatedOn: false,
+                  },
+                },
+              }}
+              slots={{
+                toolbar: DataGridToolbar as GridSlots["toolbar"],
+              }}
+              slotProps={{
+                toolbar: {
+                  isAddButtonShown: true,
+                  isAddButtonDisabled: isAddButtonClicked,
+                  handleAddButtonClicked,
+                  showQuickFilter: true,
+                },
+              }}
+              sx={dataGridStyles}
+            />
+          </Box>
+        </>
+      )}
       <AlertWindow
         isWindowOpen={isWindowOpen}
         handleClose={handleAlertWindowClose}

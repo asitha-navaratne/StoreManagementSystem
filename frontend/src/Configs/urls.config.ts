@@ -1,5 +1,5 @@
 const config = {
-  base: "http://localhost:8000",
+  base: import.meta.env.VITE_BASE_URL,
 
   api: {
     priceMaster: {

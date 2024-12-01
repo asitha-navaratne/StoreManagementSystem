@@ -1,4 +1,4 @@
-import { Link, useRouteError } from "react-router-dom";
+import { Link, useRouteError } from "react-router";
 import { Box, Typography } from "@mui/material";
 
 import styles from "./ErrorPage.module.scss";

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 import { Badge, Box, Button, IconButton, Snackbar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import WarningIcon from "@mui/icons-material/Warning";

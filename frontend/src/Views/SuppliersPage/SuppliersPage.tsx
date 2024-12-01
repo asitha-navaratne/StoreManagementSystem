@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import randomInteger from "random-int";
-import { useLoaderData } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import { useLoaderData, useNavigation } from "react-router";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -45,6 +45,10 @@ import Service from "../../Services/SupplierService";
 const { GetSuppliers, AddSupplier, EditSupplier, DeleteSupplier } = Service();
 
 const SuppliersPage = () => {
+  const navigation = useNavigation();
+
+  const isLoading = navigation.state === "loading";
+
   const [rows, setRows] = useState<GridRowsProp>(
     useLoaderData() as GridRowsProp
   );
@@ -407,45 +411,53 @@ const SuppliersPage = () => {
 
   return (
     <Box className={styles["suppliers-page"]}>
-      <Box className={styles["suppliers-page__title-section"]}>
-        <Typography variant="h4" component="h1">
-          Suppliers
-        </Typography>
-      </Box>
-      <Box className={styles["suppliers-page__grid-container"]}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          editMode="row"
-          rowModesModel={rowModesModel}
-          processRowUpdate={processRowUpdate}
-          onRowModesModelChange={handleRowModesModelChange}
-          onRowEditStop={handleRowEditStop}
-          initialState={{
-            columns: {
-              columnVisibilityModel: {
-                id: false,
-                createdBy: false,
-                createdOn: false,
-                updatedBy: false,
-                updatedOn: false,
-              },
-            },
-          }}
-          slots={{
-            toolbar: DataGridToolbar as GridSlots["toolbar"],
-          }}
-          slotProps={{
-            toolbar: {
-              isAddButtonShown: true,
-              isAddButtonDisabled: isAddButtonClicked,
-              handleAddButtonClicked,
-              showQuickFilter: true,
-            },
-          }}
-          sx={dataGridStyles}
-        />
-      </Box>
+      {isLoading ? (
+        <Box className={styles["suppliers-page__loading-spinner"]}>
+          <CircularProgress size="15vw" />
+        </Box>
+      ) : (
+        <>
+          <Box className={styles["suppliers-page__title-section"]}>
+            <Typography variant="h4" component="h1">
+              Suppliers
+            </Typography>
+          </Box>
+          <Box className={styles["suppliers-page__grid-container"]}>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              editMode="row"
+              rowModesModel={rowModesModel}
+              processRowUpdate={processRowUpdate}
+              onRowModesModelChange={handleRowModesModelChange}
+              onRowEditStop={handleRowEditStop}
+              initialState={{
+                columns: {
+                  columnVisibilityModel: {
+                    id: false,
+                    createdBy: false,
+                    createdOn: false,
+                    updatedBy: false,
+                    updatedOn: false,
+                  },
+                },
+              }}
+              slots={{
+                toolbar: DataGridToolbar as GridSlots["toolbar"],
+              }}
+              slotProps={{
+                toolbar: {
+                  isAddButtonShown: true,
+                  isAddButtonDisabled: isAddButtonClicked,
+                  handleAddButtonClicked,
+                  showQuickFilter: true,
+                },
+              }}
+              sx={dataGridStyles}
+            />
+          </Box>
+        </>
+      )}
       <AlertWindow
         isWindowOpen={isDeleteAlertOpen}
         handleClose={handleAlertWindowClose}

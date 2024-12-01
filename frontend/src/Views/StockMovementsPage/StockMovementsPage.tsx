@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 
 import { AxiosError } from "axios";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigation } from "react-router";
 import {
   Box,
+  CircularProgress,
   FormControl,
   InputLabel,
   MenuItem,
@@ -43,6 +44,10 @@ import Service from "../../Services/StockMovementsService";
 const { GetStockMovements, UpdateStockMovement } = Service();
 
 const StockMovementsPage = () => {
+  const navigation = useNavigation();
+
+  const isLoading = navigation.state === "loading";
+
   const storesList = useLoaderData() as StoreGridColumnsType[];
 
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
@@ -358,90 +363,98 @@ const StockMovementsPage = () => {
 
   return (
     <Box className={styles["stock-movements-page"]}>
-      <Box className={styles["stock-movements-page__title-section"]}>
-        <Typography variant="h4" component="h1">
-          Stock Movements
-        </Typography>
-      </Box>
-      <Box className={styles["stock-movements-page__selection-container"]}>
-        <FormControl sx={{ mr: 2 }}>
-          <InputLabel id="select-store-label">Store</InputLabel>
-          <Select
-            labelId="select-store-label"
-            id="select-store"
-            value={selectedStore}
-            label="Store"
-            onChange={(e) => setSelectedStore(e.target.value)}
-            sx={{ minWidth: "15vw" }}
-          >
-            {storesList.length > 0 ? (
-              storesList.map((store) => (
-                <MenuItem key={store.id} value={store.storeName}>
-                  {store.storeName}
-                </MenuItem>
-              ))
-            ) : (
-              <MenuItem value="">
-                <em>No Stores</em>
-              </MenuItem>
-            )}
-          </Select>
-        </FormControl>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DesktopDatePicker
-            label="Select Date"
-            value={selectedDate}
-            onChange={(value) => setSelectedDate(value)}
-            disableFuture
-            slotProps={{
-              textField: {
-                color: "secondary",
-                sx: {
-                  svg: { color: "#fff" },
-                  input: { color: "#fff" },
+      {isLoading ? (
+        <Box className={styles["stock-movements-page__loading-spinner"]}>
+          <CircularProgress size="15vw" />
+        </Box>
+      ) : (
+        <>
+          <Box className={styles["stock-movements-page__title-section"]}>
+            <Typography variant="h4" component="h1">
+              Stock Movements
+            </Typography>
+          </Box>
+          <Box className={styles["stock-movements-page__selection-container"]}>
+            <FormControl sx={{ mr: 2 }}>
+              <InputLabel id="select-store-label">Store</InputLabel>
+              <Select
+                labelId="select-store-label"
+                id="select-store"
+                value={selectedStore}
+                label="Store"
+                onChange={(e) => setSelectedStore(e.target.value)}
+                sx={{ minWidth: "15vw" }}
+              >
+                {storesList.length > 0 ? (
+                  storesList.map((store) => (
+                    <MenuItem key={store.id} value={store.storeName}>
+                      {store.storeName}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem value="">
+                    <em>No Stores</em>
+                  </MenuItem>
+                )}
+              </Select>
+            </FormControl>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DesktopDatePicker
+                label="Select Date"
+                value={selectedDate}
+                onChange={(value) => setSelectedDate(value)}
+                disableFuture
+                slotProps={{
+                  textField: {
+                    color: "secondary",
+                    sx: {
+                      svg: { color: "#fff" },
+                      input: { color: "#fff" },
+                    },
+                  },
+                }}
+              />
+            </LocalizationProvider>
+          </Box>
+          <Box className={styles["stock-movements-page__grid-container"]}>
+            <DataGrid
+              rows={rows}
+              columns={columns as GridColDef[]}
+              columnGroupingModel={columnGroupingModel}
+              editMode="row"
+              loading={isGridDataLoading}
+              processRowUpdate={processRowUpdate}
+              onRowEditStart={handleRowEditStart}
+              onRowEditStop={handleRowEditStop}
+              initialState={{
+                columns: {
+                  columnVisibilityModel: {
+                    id: false,
+                    createdBy: false,
+                    createdOn: false,
+                    updatedBy: false,
+                    updatedOn: false,
+                  },
                 },
-              },
-            }}
-          />
-        </LocalizationProvider>
-      </Box>
-      <Box className={styles["stock-movements-page__grid-container"]}>
-        <DataGrid
-          rows={rows}
-          columns={columns as GridColDef[]}
-          columnGroupingModel={columnGroupingModel}
-          editMode="row"
-          loading={isGridDataLoading}
-          processRowUpdate={processRowUpdate}
-          onRowEditStart={handleRowEditStart}
-          onRowEditStop={handleRowEditStop}
-          initialState={{
-            columns: {
-              columnVisibilityModel: {
-                id: false,
-                createdBy: false,
-                createdOn: false,
-                updatedBy: false,
-                updatedOn: false,
-              },
-            },
-          }}
-          slots={{
-            toolbar: DataGridToolbar as GridSlots["toolbar"],
-          }}
-          slotProps={{
-            toolbar: {
-              isSaveButtonDisabled: isSaveButtonDisabled,
-              handleSaveButtonClick: handleSaveButtonClick,
-            },
-            loadingOverlay: {
-              variant: "skeleton",
-              noRowsVariant: "skeleton",
-            },
-          }}
-          sx={dataGridStyles}
-        />
-      </Box>
+              }}
+              slots={{
+                toolbar: DataGridToolbar as GridSlots["toolbar"],
+              }}
+              slotProps={{
+                toolbar: {
+                  isSaveButtonDisabled: isSaveButtonDisabled,
+                  handleSaveButtonClick: handleSaveButtonClick,
+                },
+                loadingOverlay: {
+                  variant: "skeleton",
+                  noRowsVariant: "skeleton",
+                },
+              }}
+              sx={dataGridStyles}
+            />
+          </Box>
+        </>
+      )}
     </Box>
   );
 };

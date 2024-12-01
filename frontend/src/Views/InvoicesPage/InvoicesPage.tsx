@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 
 import { AxiosError } from "axios";
 import dayjs from "dayjs";
-import { useLoaderData } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import { useLoaderData, useNavigation } from "react-router";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -40,6 +40,10 @@ import Service from "../../Services/InvoicesService";
 const { GetInvoices, EditInvoice, DeleteInvoice } = Service();
 
 const InvoicesPage = () => {
+  const navigation = useNavigation();
+
+  const isLoading = navigation.state === "loading";
+
   const [rows, setRows] = useState<GridRowsProp>(
     useLoaderData() as GridRowsProp
   );
@@ -344,43 +348,51 @@ const InvoicesPage = () => {
 
   return (
     <Box className={styles["invoices-page"]}>
-      <Box className={styles["invoices-page__title-section"]}>
-        <Typography variant="h4" component="h1">
-          Invoices
-        </Typography>
-      </Box>
-      <Box className={styles["invoices-page__grid-container"]}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          editMode="row"
-          rowModesModel={rowModesModel}
-          processRowUpdate={processRowUpdate}
-          onRowModesModelChange={handleRowModesModelChange}
-          onRowEditStop={handleRowEditStop}
-          initialState={{
-            columns: {
-              columnVisibilityModel: {
-                id: false,
-                createdBy: false,
-                createdOn: false,
-                updatedBy: false,
-                updatedOn: false,
-              },
-            },
-          }}
-          slots={{
-            toolbar: DataGridToolbar as GridSlots["toolbar"],
-          }}
-          slotProps={{
-            toolbar: {
-              isAddButtonShown: false,
-              showQuickFilter: true,
-            },
-          }}
-          sx={dataGridStyles}
-        />
-      </Box>
+      {isLoading ? (
+        <Box className={styles["invoices-page__loading-spinner"]}>
+          <CircularProgress size="15vw" />
+        </Box>
+      ) : (
+        <>
+          <Box className={styles["invoices-page__title-section"]}>
+            <Typography variant="h4" component="h1">
+              Invoices
+            </Typography>
+          </Box>
+          <Box className={styles["invoices-page__grid-container"]}>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              editMode="row"
+              rowModesModel={rowModesModel}
+              processRowUpdate={processRowUpdate}
+              onRowModesModelChange={handleRowModesModelChange}
+              onRowEditStop={handleRowEditStop}
+              initialState={{
+                columns: {
+                  columnVisibilityModel: {
+                    id: false,
+                    createdBy: false,
+                    createdOn: false,
+                    updatedBy: false,
+                    updatedOn: false,
+                  },
+                },
+              }}
+              slots={{
+                toolbar: DataGridToolbar as GridSlots["toolbar"],
+              }}
+              slotProps={{
+                toolbar: {
+                  isAddButtonShown: false,
+                  showQuickFilter: true,
+                },
+              }}
+              sx={dataGridStyles}
+            />
+          </Box>
+        </>
+      )}
       <AlertWindow
         isWindowOpen={isWindowOpen}
         handleClose={handleAlertWindowClose}

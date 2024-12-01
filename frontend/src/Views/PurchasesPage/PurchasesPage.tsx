@@ -1,13 +1,14 @@
 import { ChangeEvent, useEffect, useState } from "react";
 
 import { AxiosError } from "axios";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigation } from "react-router";
 import randomInteger from "random-int";
 import dayjs, { Dayjs } from "dayjs";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {
   Box,
+  CircularProgress,
   InputAdornment,
   MenuItem,
   Select,
@@ -46,9 +47,10 @@ import useErrorContext from "../../Hooks/useErrorContext";
 
 import LoaderDataType from "./types/LoaderDataType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
+import PurchaseGridColumnsType from "./types/GridColumnsType";
+import PurchaseApiColumnsType from "./types/ApiColumnsType";
 import InvoiceGridColumnsType from "../InvoicesPage/types/GridColumnsType";
 import PriceMasterApiColumnsType from "../PriceMasterPage/types/ApiColumnsType";
-import PurchaseGridColumnsType from "./types/GridColumnsType";
 
 import InitInvoiceData from "../../Constants/InitInvoiceData";
 
@@ -57,7 +59,6 @@ import handleErrors from "../../Helpers/handleErrors";
 import PurchasesService from "../../Services/PurchasesService";
 import PriceMasterService from "../../Services/PriceMasterService";
 import InvoicesService from "../../Services/InvoicesService";
-import PurchaseApiColumnsType from "./types/ApiColumnsType";
 
 const { GetPurchasesForInvoiceNumber, AddPurchases, EditPurchase } =
   PurchasesService();
@@ -66,6 +67,10 @@ const { GetInvoiceByNumberSupplierAndStore, AddInvoice, EditInvoice } =
 const { GetPricesBySupplierAndStore } = PriceMasterService();
 
 const PurchasesPage = () => {
+  const navigation = useNavigation();
+
+  const isLoading = navigation.state === "loading";
+
   const { suppliers: suppliersList, stores: storesList } =
     useLoaderData() as LoaderDataType;
 
@@ -594,281 +599,292 @@ const PurchasesPage = () => {
 
   return (
     <Box className={styles["purchases-page"]}>
-      <Box className={styles["purchases-page__title-section"]}>
-        <Typography variant="h4" component="h1">
-          Purchases
-        </Typography>
-      </Box>
-      <Box className={styles["purchases-page__invoice-grid"]}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Supplier Name</TableCell>
-              <TableCell>Store Name</TableCell>
-              <TableCell>Invoice Date</TableCell>
-              <TableCell>Invoice Number</TableCell>
-              <TableCell>Quantity</TableCell>
-              <TableCell>Value of Purchase</TableCell>
-              <TableCell>VAT Amount</TableCell>
-              <TableCell>Total Purchases</TableCell>
-              <TableCell>Received Date</TableCell>
-              <TableCell>Invoice Type</TableCell>
-              <TableCell>Payment</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>
-                <Select
-                  id="select-supplier-name"
-                  sx={(theme) => ({
-                    border: `1px solid ${theme.palette.primary.main}`,
-                    width: "8vw",
-                  })}
-                  value={selectedSupplier}
-                  onChange={(e) => setSelectedSupplier(e.target.value)}
-                >
-                  {suppliersList.length > 0 ? (
-                    suppliersList.map((supplier) => (
-                      <MenuItem key={supplier.id} value={supplier.companyName}>
-                        {supplier.companyName}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem value="">
-                      <em>No Suppliers</em>
-                    </MenuItem>
-                  )}
-                </Select>
-              </TableCell>
-              <TableCell>
-                <Select
-                  id="select-store-name"
-                  sx={(theme) => ({
-                    border: `1px solid ${theme.palette.primary.main}`,
-                    width: "8vw",
-                  })}
-                  value={selectedStore}
-                  onChange={(e) => setSelectedStore(e.target.value)}
-                >
-                  {storesList.length > 0 ? (
-                    storesList.map((store) => (
-                      <MenuItem key={store.id} value={store.storeName}>
-                        {store.storeName}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem value="">
-                      <em>No Stores</em>
-                    </MenuItem>
-                  )}
-                </Select>
-              </TableCell>
-              <TableCell>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DesktopDatePicker
-                    disableFuture
-                    value={selectedInvoiceDate}
-                    onChange={(value) => setSelectedInvoiceDate(value)}
-                    slotProps={{
-                      textField: {
-                        color: "secondary",
-                        sx: {
-                          svg: { color: "#fff" },
-                          input: { color: "#fff" },
+      {isLoading ? (
+        <Box className={styles["purchases-page__loading-spinner"]}>
+          <CircularProgress size="15vw" />
+        </Box>
+      ) : (
+        <>
+          <Box className={styles["purchases-page__title-section"]}>
+            <Typography variant="h4" component="h1">
+              Purchases
+            </Typography>
+          </Box>
+          <Box className={styles["purchases-page__invoice-grid"]}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Supplier Name</TableCell>
+                  <TableCell>Store Name</TableCell>
+                  <TableCell>Invoice Date</TableCell>
+                  <TableCell>Invoice Number</TableCell>
+                  <TableCell>Quantity</TableCell>
+                  <TableCell>Value of Purchase</TableCell>
+                  <TableCell>VAT Amount</TableCell>
+                  <TableCell>Total Purchases</TableCell>
+                  <TableCell>Received Date</TableCell>
+                  <TableCell>Invoice Type</TableCell>
+                  <TableCell>Payment</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <Select
+                      id="select-supplier-name"
+                      sx={(theme) => ({
+                        border: `1px solid ${theme.palette.primary.main}`,
+                        width: "8vw",
+                      })}
+                      value={selectedSupplier}
+                      onChange={(e) => setSelectedSupplier(e.target.value)}
+                    >
+                      {suppliersList.length > 0 ? (
+                        suppliersList.map((supplier) => (
+                          <MenuItem
+                            key={supplier.id}
+                            value={supplier.companyName}
+                          >
+                            {supplier.companyName}
+                          </MenuItem>
+                        ))
+                      ) : (
+                        <MenuItem value="">
+                          <em>No Suppliers</em>
+                        </MenuItem>
+                      )}
+                    </Select>
+                  </TableCell>
+                  <TableCell>
+                    <Select
+                      id="select-store-name"
+                      sx={(theme) => ({
+                        border: `1px solid ${theme.palette.primary.main}`,
+                        width: "8vw",
+                      })}
+                      value={selectedStore}
+                      onChange={(e) => setSelectedStore(e.target.value)}
+                    >
+                      {storesList.length > 0 ? (
+                        storesList.map((store) => (
+                          <MenuItem key={store.id} value={store.storeName}>
+                            {store.storeName}
+                          </MenuItem>
+                        ))
+                      ) : (
+                        <MenuItem value="">
+                          <em>No Stores</em>
+                        </MenuItem>
+                      )}
+                    </Select>
+                  </TableCell>
+                  <TableCell>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DesktopDatePicker
+                        disableFuture
+                        value={selectedInvoiceDate}
+                        onChange={(value) => setSelectedInvoiceDate(value)}
+                        slotProps={{
+                          textField: {
+                            color: "secondary",
+                            sx: {
+                              svg: { color: "#fff" },
+                              input: { color: "#fff" },
+                            },
+                          },
+                        }}
+                      />
+                    </LocalizationProvider>
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      id="input-invoice-number"
+                      type="Number"
+                      value={invoiceNumber}
+                      onChange={(e) => setInvoiceNumber(Number(e.target.value))}
+                      color="primary"
+                      sx={(theme) => ({
+                        border: `1px solid ${theme.palette.primary.main}`,
+                        "& fieldset": {
+                          borderRadius: "0px",
                         },
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
-              </TableCell>
-              <TableCell>
-                <TextField
-                  id="input-invoice-number"
-                  type="Number"
-                  value={invoiceNumber}
-                  onChange={(e) => setInvoiceNumber(Number(e.target.value))}
-                  color="primary"
-                  sx={(theme) => ({
-                    border: `1px solid ${theme.palette.primary.main}`,
-                    "& fieldset": {
-                      borderRadius: "0px",
-                    },
-                    input: {
-                      color: "#fff",
-                    },
-                  })}
-                />
-              </TableCell>
-              <TableCell>
-                <TextField
-                  id="input-quantity"
-                  value={quantity}
-                  color="primary"
-                  sx={(theme) => ({
-                    border: `1px solid ${theme.palette.primary.main}`,
-                    "& fieldset": {
-                      borderRadius: "0px",
-                    },
-                    input: {
-                      color: "#fff",
-                    },
-                  })}
-                  slotProps={{ input: { readOnly: true } }}
-                />
-              </TableCell>
-              <TableCell>
-                <TextField
-                  id="input-value-of-purchase"
-                  value={invoiceData["valueOfPurchases"]}
-                  color="primary"
-                  sx={(theme) => ({
-                    border: `1px solid ${theme.palette.primary.main}`,
-                    "& fieldset": {
-                      borderRadius: "0px",
-                    },
-                    input: {
-                      color: "#fff",
-                    },
-                  })}
-                  slotProps={{ input: { readOnly: true } }}
-                />
-              </TableCell>
-              <TableCell>
-                <TextField
-                  id="input-vat-amount"
-                  type="Number"
-                  name="vat"
-                  value={invoiceData["vat"]}
-                  onFocus={(e) => e.target.select()}
-                  onChange={(e) =>
-                    handleInvoiceFieldsChange(
-                      e as ChangeEvent<HTMLInputElement>
-                    )
-                  }
-                  color="primary"
-                  sx={(theme) => ({
-                    border: `1px solid ${theme.palette.primary.main}`,
-                    "& fieldset": {
-                      borderRadius: "0px",
-                    },
-                    "& .MuiInputAdornment-root p": {
-                      color: "#fff",
-                    },
-                    input: {
-                      color: "#fff",
-                    },
-                  })}
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <InputAdornment position="end">%</InputAdornment>
-                      ),
-                    },
-                  }}
-                />
-              </TableCell>
-              <TableCell>
-                <TextField
-                  id="input-total-payable"
-                  value={invoiceData["totalPayable"]}
-                  color="primary"
-                  sx={(theme) => ({
-                    border: `1px solid ${theme.palette.primary.main}`,
-                    "& fieldset": {
-                      borderRadius: "0px",
-                    },
-                    input: {
-                      color: "#fff",
-                    },
-                  })}
-                  slotProps={{ input: { readOnly: true } }}
-                />
-              </TableCell>
-              <TableCell>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DesktopDatePicker
-                    disableFuture
-                    value={selectedReceivedDate}
-                    onChange={(value) => setSelectedReceivedDate(value)}
-                    slotProps={{
-                      textField: {
-                        color: "secondary",
-                        sx: {
-                          svg: { color: "#fff" },
-                          input: { color: "#fff" },
+                        input: {
+                          color: "#fff",
                         },
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
-              </TableCell>
-              <TableCell>
-                <Select
-                  id="select-invoice-type"
-                  name="invoiceType"
-                  value={invoiceData["invoiceType"]}
-                  onChange={handleInvoiceFieldsChange}
-                  sx={(theme) => ({
-                    border: `1px solid ${theme.palette.primary.main}`,
-                    width: "7vw",
-                  })}
-                >
-                  <MenuItem value="Local">Local</MenuItem>
-                  <MenuItem value="Foreign">Foreign</MenuItem>
-                </Select>
-              </TableCell>
-              <TableCell>
-                <Select
-                  id="select-payment"
-                  value={selectedPayment}
-                  onChange={(e) =>
-                    setSelectedPayment(e.target.value as "Paid" | "Free")
-                  }
-                  sx={(theme) => ({
-                    border: `1px solid ${theme.palette.primary.main}`,
-                    width: "7vw",
-                  })}
-                >
-                  <MenuItem value="Paid">Paid</MenuItem>
-                  <MenuItem value="Free">Free</MenuItem>
-                </Select>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </Box>
-      <Box className={styles["purchases-page__purchases-grid"]}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          editMode="row"
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={handleRowModesModelChange}
-          onRowEditStop={handleRowEditStop}
-          processRowUpdate={processRowUpdate}
-          initialState={{
-            columns: {
-              columnVisibilityModel: {
-                createdBy: false,
-                createdOn: false,
-                updatedBy: false,
-                updatedOn: false,
-              },
-            },
-          }}
-          slots={{
-            toolbar: DataGridToolbar as GridSlots["toolbar"],
-          }}
-          slotProps={{
-            toolbar: {
-              isSaveButtonDisabled: isSaveButtonDisabled,
-              handleSaveButtonClick: handleSaveAllButtonClick,
-            },
-          }}
-          sx={dataGridStyles}
-        />
-      </Box>
+                      })}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      id="input-quantity"
+                      value={quantity}
+                      color="primary"
+                      sx={(theme) => ({
+                        border: `1px solid ${theme.palette.primary.main}`,
+                        "& fieldset": {
+                          borderRadius: "0px",
+                        },
+                        input: {
+                          color: "#fff",
+                        },
+                      })}
+                      slotProps={{ input: { readOnly: true } }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      id="input-value-of-purchase"
+                      value={invoiceData["valueOfPurchases"]}
+                      color="primary"
+                      sx={(theme) => ({
+                        border: `1px solid ${theme.palette.primary.main}`,
+                        "& fieldset": {
+                          borderRadius: "0px",
+                        },
+                        input: {
+                          color: "#fff",
+                        },
+                      })}
+                      slotProps={{ input: { readOnly: true } }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      id="input-vat-amount"
+                      type="Number"
+                      name="vat"
+                      value={invoiceData["vat"]}
+                      onFocus={(e) => e.target.select()}
+                      onChange={(e) =>
+                        handleInvoiceFieldsChange(
+                          e as ChangeEvent<HTMLInputElement>
+                        )
+                      }
+                      color="primary"
+                      sx={(theme) => ({
+                        border: `1px solid ${theme.palette.primary.main}`,
+                        "& fieldset": {
+                          borderRadius: "0px",
+                        },
+                        "& .MuiInputAdornment-root p": {
+                          color: "#fff",
+                        },
+                        input: {
+                          color: "#fff",
+                        },
+                      })}
+                      slotProps={{
+                        input: {
+                          endAdornment: (
+                            <InputAdornment position="end">%</InputAdornment>
+                          ),
+                        },
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      id="input-total-payable"
+                      value={invoiceData["totalPayable"]}
+                      color="primary"
+                      sx={(theme) => ({
+                        border: `1px solid ${theme.palette.primary.main}`,
+                        "& fieldset": {
+                          borderRadius: "0px",
+                        },
+                        input: {
+                          color: "#fff",
+                        },
+                      })}
+                      slotProps={{ input: { readOnly: true } }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DesktopDatePicker
+                        disableFuture
+                        value={selectedReceivedDate}
+                        onChange={(value) => setSelectedReceivedDate(value)}
+                        slotProps={{
+                          textField: {
+                            color: "secondary",
+                            sx: {
+                              svg: { color: "#fff" },
+                              input: { color: "#fff" },
+                            },
+                          },
+                        }}
+                      />
+                    </LocalizationProvider>
+                  </TableCell>
+                  <TableCell>
+                    <Select
+                      id="select-invoice-type"
+                      name="invoiceType"
+                      value={invoiceData["invoiceType"]}
+                      onChange={handleInvoiceFieldsChange}
+                      sx={(theme) => ({
+                        border: `1px solid ${theme.palette.primary.main}`,
+                        width: "7vw",
+                      })}
+                    >
+                      <MenuItem value="Local">Local</MenuItem>
+                      <MenuItem value="Foreign">Foreign</MenuItem>
+                    </Select>
+                  </TableCell>
+                  <TableCell>
+                    <Select
+                      id="select-payment"
+                      value={selectedPayment}
+                      onChange={(e) =>
+                        setSelectedPayment(e.target.value as "Paid" | "Free")
+                      }
+                      sx={(theme) => ({
+                        border: `1px solid ${theme.palette.primary.main}`,
+                        width: "7vw",
+                      })}
+                    >
+                      <MenuItem value="Paid">Paid</MenuItem>
+                      <MenuItem value="Free">Free</MenuItem>
+                    </Select>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </Box>
+          <Box className={styles["purchases-page__purchases-grid"]}>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              editMode="row"
+              rowModesModel={rowModesModel}
+              onRowModesModelChange={handleRowModesModelChange}
+              onRowEditStop={handleRowEditStop}
+              processRowUpdate={processRowUpdate}
+              initialState={{
+                columns: {
+                  columnVisibilityModel: {
+                    createdBy: false,
+                    createdOn: false,
+                    updatedBy: false,
+                    updatedOn: false,
+                  },
+                },
+              }}
+              slots={{
+                toolbar: DataGridToolbar as GridSlots["toolbar"],
+              }}
+              slotProps={{
+                toolbar: {
+                  isSaveButtonDisabled: isSaveButtonDisabled,
+                  handleSaveButtonClick: handleSaveAllButtonClick,
+                },
+              }}
+              sx={dataGridStyles}
+            />
+          </Box>
+        </>
+      )}
     </Box>
   );
 };
