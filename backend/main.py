@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
@@ -45,5 +46,7 @@ app.include_router(suppliers.router)
 app.include_router(stock_movements.router)
 app.include_router(invoices.router)
 
+PORT = os.getenv("PORT")
+
 if __name__ == '__main__':
-    uvicorn.run('main:app', host='0.0.0.0', port=8000)
+    uvicorn.run('main:app', host='0.0.0.0', port=PORT)
