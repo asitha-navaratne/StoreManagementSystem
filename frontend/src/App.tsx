@@ -57,7 +57,7 @@ const router = createBrowserRouter([
       {
         path: "suppliers",
         element: <SuppliersPage />,
-        loader: suppliersLoader,
+        loader: suppliersLoader(queryClient),
       },
       {
         path: "stock-movements",
