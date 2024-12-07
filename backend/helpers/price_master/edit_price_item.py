@@ -62,6 +62,7 @@ def edit_price_item(price_item: CreatePriceModel, db: Session):
             .where(PriceMaster.store_id == store_id)
             .where(PriceMaster.supplier_id == supplier_id)
             .where(PriceMaster.brand == price_item.brand)
+            .where(PriceMaster.id != price_item.id)
         ).first() is not None
 
         if item_exists:

@@ -59,6 +59,7 @@ def edit_invoice(invoice: CreateInvoiceModel, db: Session):
         item_exists = db.scalars(
             select(Invoices.id)
             .where(Invoices.invoice_number == invoice.invoice_number)
+            .where(Invoices.id != invoice.id)
         ).first() is not None
 
         if item_exists:

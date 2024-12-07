@@ -49,6 +49,7 @@ def edit_store(store: CreateStoreModel, db: Session):
         item_exists = db.scalars(
             select(Stores.id)
             .where(Stores.store_name == store.store_name)
+            .where(Stores.id != store.id)
         ).first() is not None
 
         if item_exists:
