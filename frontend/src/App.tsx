@@ -1,12 +1,13 @@
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 
-import Root from "./Components/Root/Root";
 import ErrorProvider from "./Contexts/ErrorProvider";
+
+import Root from "./Components/Root/Root";
+import Fallback from "./Components/Fallback/Fallback";
 
 import LoginPage from "./Views/LoginPage/LoginPage";
 import ErrorPage from "./Views/ErrorPage/ErrorPage";
-import Fallback from "./Components/Fallback/Fallback";
 import PriceMasterPage from "./Views/PriceMasterPage/PriceMasterPage";
 import PurchasesPage from "./Views/PurchasesPage/PurchasesPage";
 import InvoicesPage from "./Views/InvoicesPage/InvoicesPage";
@@ -19,6 +20,8 @@ import purchasesLoader from "./Views/PurchasesPage/PurchasesLoader";
 import invoicesLoader from "./Views/InvoicesPage/InvoicesLoader";
 import storesLoader from "./Views/StoresPage/StoresLoader";
 import suppliersLoader from "./Views/SuppliersPage/SuppliersLoader";
+
+import queryClient from "./Utils/QueryClient";
 
 const router = createBrowserRouter([
   {
@@ -49,7 +52,7 @@ const router = createBrowserRouter([
       {
         path: "stores",
         element: <StoresPage />,
-        loader: storesLoader,
+        loader: storesLoader(queryClient),
       },
       {
         path: "suppliers",
@@ -59,7 +62,7 @@ const router = createBrowserRouter([
       {
         path: "stock-movements",
         element: <StockMovementsPage />,
-        loader: storesLoader,
+        loader: storesLoader(queryClient),
       },
     ],
   },
