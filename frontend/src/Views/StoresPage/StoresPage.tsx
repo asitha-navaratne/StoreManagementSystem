@@ -96,7 +96,7 @@ const StoresPage = () => {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const [isAddButtonClicked, setIsAddButtonClicked] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<number>(0);
-  const [isWindowOpen, setIsWindowOpen] = useState<boolean>(false);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState<boolean>(false);
 
   const { handlePushError } = useErrorContext();
 
@@ -294,13 +294,13 @@ const StoresPage = () => {
   };
 
   const handleDeleteButtonClick = (id: GridRowId) => () => {
-    setIsWindowOpen(true);
+    setIsDeleteAlertOpen(true);
     setDeleteId(id as number);
   };
 
   const handleDeleteStore = function () {
     setRows(rows.filter((row) => row.id !== deleteId));
-    setIsWindowOpen(false);
+    setIsDeleteAlertOpen(false);
 
     deleteMutation.mutate(deleteId);
   };
@@ -329,7 +329,7 @@ const StoresPage = () => {
 
   const handleAlertWindowClose = function () {
     setDeleteId(0);
-    setIsWindowOpen(false);
+    setIsDeleteAlertOpen(false);
   };
 
   return (
@@ -382,7 +382,7 @@ const StoresPage = () => {
         </>
       )}
       <AlertWindow
-        isWindowOpen={isWindowOpen}
+        isWindowOpen={isDeleteAlertOpen}
         handleClose={handleAlertWindowClose}
         handleAgreeAction={handleDeleteStore}
         handleDisagreeAction={handleAlertWindowClose}
