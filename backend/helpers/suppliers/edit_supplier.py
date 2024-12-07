@@ -22,7 +22,6 @@ def edit_supplier(supplier: CreateSupplierModel, db: Session):
             "supplier_tin",
             "invoice_type",
             "payment_period",
-            "active",
             "created_by",
             "created_on",
         ]
