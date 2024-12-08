@@ -5,47 +5,66 @@ import config from "../Configs/urls.config";
 
 import InvoiceGridColumnsType from "../Views/InvoicesPage/types/GridColumnsType";
 import InvoiceApiColumnsType from "../Views/InvoicesPage/types/ApiColumnsType";
+
 import processInvoicePayload from "../Helpers/processInvoicePayload";
 import processInvoiceColumns from "../Helpers/processInvoiceColumns";
 
 const Service = () => {
-  const GetInvoices = async function () {
-    return AxiosInstance.get(config.api.invoices.GetAllInvoices).then((res) =>
-      res.data?.map((row: InvoiceApiColumnsType) => processInvoiceColumns(row))
-    );
+  const GetInvoices = async function (): Promise<InvoiceGridColumnsType[]> {
+    return AxiosInstance.get(config.api.invoices.GetAllInvoices)
+      .then((res) =>
+        res.data?.map((row: InvoiceApiColumnsType) =>
+          processInvoiceColumns(row)
+        )
+      )
+      .catch((err) => {
+        throw err;
+      });
   };
 
-  const AddInvoice = function (row: InvoiceGridColumnsType) {
+  const AddInvoice = async function (row: InvoiceGridColumnsType) {
     return AxiosInstance.post(
       config.api.invoices.AddInvoice,
       processInvoicePayload(row)
-    );
+    ).catch((err) => {
+      throw err;
+    });
   };
 
-  const EditInvoice = function (row: GridValidRowModel) {
+  const EditInvoice = async function (row: GridValidRowModel) {
     return AxiosInstance.patch(
       config.api.invoices.EditInvoice,
       processInvoicePayload(row)
-    );
+    ).catch((err) => {
+      throw err;
+    });
   };
 
-  const DeleteInvoice = function (id: number) {
-    return AxiosInstance.delete(`${config.api.invoices.DeleteInvoice}/${id}`);
+  const DeleteInvoice = async function (id: number) {
+    return AxiosInstance.delete(
+      `${config.api.invoices.DeleteInvoice}/${id}`
+    ).catch((err) => {
+      throw err;
+    });
   };
 
   const GetInvoiceByNumberSupplierAndStore = async function (
     invoiceNumber: number,
     supplierName: string,
     storeName: string
-  ) {
+  ): Promise<InvoiceGridColumnsType | null> {
     return AxiosInstance.get(
       `${config.api.invoices.GetInvoiceByNumberSupplierAndStore}?invoice=${invoiceNumber}&supplier=${supplierName}&store=${storeName}`
-    ).then((res) => {
-      if (res.data) {
-        return processInvoiceColumns(res.data);
-      }
-      return null;
-    });
+    )
+      .then((res) => {
+        if (res.data) {
+          return processInvoiceColumns(res.data);
+        }
+        return null;
+      })
+      .catch((err) => {
+        throw err;
+      });
   };
 
   return {

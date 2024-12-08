@@ -47,7 +47,7 @@ const router = createBrowserRouter([
       {
         path: "invoices",
         element: <InvoicesPage />,
-        loader: invoicesLoader,
+        loader: invoicesLoader(queryClient),
       },
       {
         path: "stores",

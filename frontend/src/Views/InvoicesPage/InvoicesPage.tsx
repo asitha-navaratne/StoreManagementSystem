@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import { useLoaderData, useNavigation } from "react-router";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import {
   DataGrid,
@@ -30,26 +31,53 @@ import AlertWindow from "../../Components/AlertWindow/AlertWindow";
 
 import useErrorContext from "../../Hooks/useErrorContext";
 
-import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
+import InvoiceGridColumnsType from "./types/GridColumnsType";
 import InvoiceApiColumnsType from "./types/ApiColumnsType";
+import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
 import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
 
 import handleErrors from "../../Helpers/handleErrors";
 
+import { getInvoicesQuery } from "./InvoicesLoader";
 import Service from "../../Services/InvoicesService";
 
-const { GetInvoices, EditInvoice, DeleteInvoice } = Service();
+const { EditInvoice, DeleteInvoice } = Service();
 
 const InvoicesPage = () => {
   const navigation = useNavigation();
+  const loaderData = useLoaderData() as InvoiceGridColumnsType[];
+
+  const { data } = useSuspenseQuery(getInvoicesQuery);
+
+  const editMutation = useMutation({
+    mutationFn: EditInvoice,
+    onError: (
+      err: AxiosError<StoreManagementSystemErrorType<InvoiceApiColumnsType>>
+    ) => {
+      const { errorObject } = handleErrors(err, "Invoices Page");
+      handlePushError(errorObject);
+
+      setRows(data);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: DeleteInvoice,
+    onError: (
+      err: AxiosError<StoreManagementSystemErrorType<{ id: number }>>
+    ) => {
+      const { errorObject } = handleErrors(err, "Invoices Page");
+      handlePushError(errorObject);
+
+      setRows(data);
+    },
+    onSettled: () => setDeleteId(0),
+  });
 
   const isLoading = navigation.state === "loading";
 
-  const [rows, setRows] = useState<GridRowsProp>(
-    useLoaderData() as GridRowsProp
-  );
+  const [rows, setRows] = useState<GridRowsProp>(loaderData);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-  const [editedRow, setEditedRow] = useState<GridRowModel | null>(null);
   const [deleteId, setDeleteId] = useState<number>(0);
   const [isWindowOpen, setIsWindowOpen] = useState<boolean>(false);
 
@@ -245,46 +273,6 @@ const InvoicesPage = () => {
     },
   ];
 
-  useEffect(() => {
-    if (editedRow) {
-      EditInvoice({
-        ...editedRow,
-      })
-        .catch(
-          async (
-            err: AxiosError<
-              StoreManagementSystemErrorType<InvoiceApiColumnsType>
-            >
-          ) => {
-            const { errorObject } = handleErrors(err, "Invoices Page");
-            handlePushError(errorObject);
-
-            const res = await GetInvoices();
-            setRows(res);
-          }
-        )
-        .finally(() => {
-          setEditedRow(null);
-        });
-    }
-  }, [editedRow, handlePushError]);
-
-  useEffect(() => {
-    if (deleteId !== 0 && !isWindowOpen) {
-      DeleteInvoice(deleteId)
-        .catch(async (err) => {
-          const { errorObject } = handleErrors(err, "Invoices Page");
-          handlePushError(errorObject);
-
-          const res = await GetInvoices();
-          setRows(res);
-        })
-        .finally(() => {
-          setDeleteId(0);
-        });
-    }
-  }, [deleteId, handlePushError, isWindowOpen]);
-
   const handleRowModesModelChange = function (
     newRowModesModel: GridRowModesModel
   ) {
@@ -312,7 +300,8 @@ const InvoicesPage = () => {
       isNew: false,
     };
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    setEditedRow({ ...updatedRow });
+
+    editMutation.mutate({ ...updatedRow });
     return updatedRow;
   };
 
@@ -323,6 +312,8 @@ const InvoicesPage = () => {
 
   const handleDeleteInvoice = function () {
     setRows(rows.filter((row) => row.id !== deleteId));
+
+    deleteMutation.mutate(deleteId);
     setIsWindowOpen(false);
   };
 
