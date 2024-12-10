@@ -11,20 +11,26 @@ const Service = () => {
   const GetStockMovements = async function (store: string, date: string) {
     return AxiosInstance.get(
       `${config.api.stockMovements.GetStockMovements}?store=${store}&date=${date}`
-    ).then((res) =>
-      res.data?.map((column: StockMovementsApiColumnsType) =>
-        processStockMovementsColumns(column)
+    )
+      .then((res) =>
+        res.data?.map((column: StockMovementsApiColumnsType) =>
+          processStockMovementsColumns(column)
+        )
       )
-    );
+      .catch((err) => {
+        throw err;
+      });
   };
 
-  const UpdateStockMovement = function (rows: GridValidRowModel[]) {
+  const UpdateStockMovement = async function (rows: GridValidRowModel[]) {
     const payload = rows.map((row) => processStockMovementsPayload(row));
 
     return AxiosInstance.patch(
       config.api.stockMovements.UpdateStockMovement,
       payload
-    );
+    ).catch((err) => {
+      throw err;
+    });
   };
 
   return {

@@ -54,6 +54,14 @@ const SuppliersPage = () => {
 
   const { data } = useSuspenseQuery(getSuppliersQuery);
 
+  const isLoading = navigation.state === "loading";
+
+  const [rows, setRows] = useState<GridRowsProp>(loaderData);
+  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+  const [isAddButtonClicked, setIsAddButtonClicked] = useState<boolean>(false);
+  const [deleteId, setDeleteId] = useState<number>(0);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState<boolean>(false);
+
   const addMutation = useMutation({
     mutationFn: AddSupplier,
     onError: (
@@ -89,14 +97,6 @@ const SuppliersPage = () => {
     },
     onSettled: () => setDeleteId(0),
   });
-
-  const isLoading = navigation.state === "loading";
-
-  const [rows, setRows] = useState<GridRowsProp>(loaderData);
-  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-  const [isAddButtonClicked, setIsAddButtonClicked] = useState<boolean>(false);
-  const [deleteId, setDeleteId] = useState<number>(0);
-  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState<boolean>(false);
 
   const { handlePushError } = useErrorContext();
 

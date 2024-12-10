@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { AxiosError } from "axios";
 import { useLoaderData, useNavigation } from "react-router";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Box,
   CircularProgress,
@@ -46,10 +47,9 @@ const { GetStockMovements, UpdateStockMovement } = Service();
 
 const StockMovementsPage = () => {
   const navigation = useNavigation();
+  const storesList = useLoaderData() as StoreGridColumnsType[];
 
   const isLoading = navigation.state === "loading";
-
-  const storesList = useLoaderData() as StoreGridColumnsType[];
 
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
   const [selectedStore, setSelectedStore] = useState<string>("");
@@ -57,9 +57,51 @@ const StockMovementsPage = () => {
   const [isGridEditable, setIsGridEditable] = useState<boolean>(false);
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] =
     useState<boolean>(true);
-  const [isGridDataLoading, setIsGridDataLoading] = useState<boolean>(false);
 
   const { handlePushError } = useErrorContext();
+
+  const fetchStockMovements = async function () {
+    const res = await GetStockMovements(
+      selectedStore,
+      selectedDate!.format("YYYY-MM-DD")
+    );
+    const isSoldColumnNull = res.some(
+      (row: StockMovementsApiColumnsType) => row.sold === null
+    );
+    setIsGridEditable(isSoldColumnNull);
+    setIsSaveButtonDisabled(!isSoldColumnNull);
+    return res;
+  };
+
+  const { data, isPending, error, isError, refetch } = useQuery({
+    queryKey: ["stock movements", selectedStore, selectedDate],
+    queryFn: fetchStockMovements,
+    enabled: !!selectedStore && !!selectedDate,
+  });
+
+  if (isError) {
+    const { errorObject } = handleErrors(
+      error as AxiosError<
+        StoreManagementSystemErrorType<StockMovementsApiColumnsType>
+      >,
+      "Stock Movements Page"
+    );
+    handlePushError(errorObject);
+  }
+
+  const { isPending: isMutationPending, mutate } = useMutation({
+    mutationFn: UpdateStockMovement,
+    onError: (
+      err: AxiosError<
+        StoreManagementSystemErrorType<StockMovementsApiColumnsType>
+      >
+    ) => {
+      const { errorObject } = handleErrors(err, "Stock Movements Page");
+      handlePushError(errorObject);
+    },
+    onSuccess: () => setSelectedDate(dayjs()),
+    onSettled: () => refetch(),
+  });
 
   const columns = [
     {
@@ -266,31 +308,10 @@ const StockMovementsPage = () => {
   ];
 
   useEffect(() => {
-    if (selectedStore && selectedDate) {
-      setIsGridDataLoading(true);
-      GetStockMovements(selectedStore, selectedDate.format("YYYY-MM-DD"))
-        .then((res) => {
-          setRows(res);
-
-          const isSoldColumnNull = res.some(
-            (row: StockMovementsApiColumnsType) => row.sold === null
-          );
-          setIsGridEditable(isSoldColumnNull);
-          setIsSaveButtonDisabled(!isSoldColumnNull);
-        })
-        .catch(
-          (
-            err: AxiosError<
-              StoreManagementSystemErrorType<StockMovementsApiColumnsType>
-            >
-          ) => {
-            const { errorObject } = handleErrors(err, "Stock Movements Page");
-            handlePushError(errorObject);
-          }
-        )
-        .finally(() => setIsGridDataLoading(false));
+    if (data) {
+      setRows(data);
     }
-  }, [selectedStore, selectedDate, handlePushError]);
+  }, [data]);
 
   const handleRowEditStart = function () {
     setIsSaveButtonDisabled(true);
@@ -323,43 +344,7 @@ const StockMovementsPage = () => {
   };
 
   const handleSaveButtonClick = function () {
-    setIsGridDataLoading(true);
-    UpdateStockMovement([...rows])
-      .then(() => {
-        return GetStockMovements(selectedStore, dayjs().format("YYYY-MM-DD"));
-      })
-      .then((res) => {
-        setRows(res);
-
-        const isSoldColumnNull = res.some(
-          (row: StockMovementsApiColumnsType) => row.sold === null
-        );
-        setIsGridEditable(isSoldColumnNull);
-        setIsSaveButtonDisabled(!isSoldColumnNull);
-      })
-      .catch(
-        async (
-          err: AxiosError<
-            StoreManagementSystemErrorType<StockMovementsApiColumnsType>
-          >
-        ) => {
-          const { errorObject } = handleErrors(err, "Stock Movements Page");
-          handlePushError(errorObject);
-
-          const res = await GetStockMovements(
-            selectedStore,
-            selectedDate!.format("YYYY-MM-DD")
-          );
-          setRows(res);
-
-          const isSoldColumnNull = res.some(
-            (row: StockMovementsApiColumnsType) => row.sold === null
-          );
-          setIsGridEditable(isSoldColumnNull);
-          setIsSaveButtonDisabled(!isSoldColumnNull);
-        }
-      )
-      .finally(() => setIsGridDataLoading(false));
+    mutate([...rows]);
   };
 
   return (
@@ -423,7 +408,7 @@ const StockMovementsPage = () => {
               columns={columns as GridColDef[]}
               columnGroupingModel={columnGroupingModel}
               editMode="row"
-              loading={isGridDataLoading}
+              loading={isPending || isMutationPending}
               processRowUpdate={processRowUpdate}
               onRowEditStart={handleRowEditStart}
               onRowEditStop={handleRowEditStop}

@@ -49,6 +49,13 @@ const InvoicesPage = () => {
 
   const { data } = useSuspenseQuery(getInvoicesQuery);
 
+  const isLoading = navigation.state === "loading";
+
+  const [rows, setRows] = useState<GridRowsProp>(loaderData);
+  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+  const [deleteId, setDeleteId] = useState<number>(0);
+  const [isWindowOpen, setIsWindowOpen] = useState<boolean>(false);
+
   const editMutation = useMutation({
     mutationFn: EditInvoice,
     onError: (
@@ -73,13 +80,6 @@ const InvoicesPage = () => {
     },
     onSettled: () => setDeleteId(0),
   });
-
-  const isLoading = navigation.state === "loading";
-
-  const [rows, setRows] = useState<GridRowsProp>(loaderData);
-  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-  const [deleteId, setDeleteId] = useState<number>(0);
-  const [isWindowOpen, setIsWindowOpen] = useState<boolean>(false);
 
   const { handlePushError } = useErrorContext();
 
