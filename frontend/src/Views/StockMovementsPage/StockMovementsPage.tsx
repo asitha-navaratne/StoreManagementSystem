@@ -73,7 +73,7 @@ const StockMovementsPage = () => {
     return res;
   };
 
-  const { data, isPending, error, isError, refetch } = useQuery({
+  const { data, isFetching, error, isError, refetch } = useQuery({
     queryKey: ["stock movements", selectedStore, selectedDate],
     queryFn: fetchStockMovements,
     enabled: !!selectedStore && !!selectedDate,
@@ -408,7 +408,7 @@ const StockMovementsPage = () => {
               columns={columns as GridColDef[]}
               columnGroupingModel={columnGroupingModel}
               editMode="row"
-              loading={isPending || isMutationPending}
+              loading={isFetching || isMutationPending}
               processRowUpdate={processRowUpdate}
               onRowEditStart={handleRowEditStart}
               onRowEditStop={handleRowEditStop}
