@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
 import { AxiosError } from "axios";
-import { useLoaderData, useNavigation } from "react-router";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useNavigation } from "react-router";
+import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import {
   Box,
   CircularProgress,
@@ -31,7 +31,6 @@ import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
 
 import useErrorContext from "../../Hooks/useErrorContext";
 
-import StoreGridColumnsType from "../StoresPage/types/GridColumnsType";
 import StockMovementsApiColumnsType from "./types/ApiColumnsType";
 import StockMovementsGridColumnsType from "./types/GridColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
@@ -41,13 +40,15 @@ import handleErrors from "../../Helpers/handleErrors";
 import getCurrentInHandAmount from "../../Helpers/getCurrentInHandAmount";
 import getHeadersForGroupedColumns from "../../Helpers/getHeadersForGroupedColumns";
 
+import { getStoresQuery } from "../StoresPage/StoresLoader";
 import Service from "../../Services/StockMovementsService";
 
 const { GetStockMovements, UpdateStockMovement } = Service();
 
 const StockMovementsPage = () => {
   const navigation = useNavigation();
-  const storesList = useLoaderData() as StoreGridColumnsType[];
+
+  const { data: storesList } = useSuspenseQuery(getStoresQuery);
 
   const isLoading = navigation.state === "loading";
 

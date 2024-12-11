@@ -37,7 +37,7 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <PriceMasterPage />,
-        loader: priceMasterLoader,
+        loader: priceMasterLoader(queryClient),
       },
       {
         path: "purchases",

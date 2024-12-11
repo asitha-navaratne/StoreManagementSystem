@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AxiosError } from "axios";
 import dayjs from "dayjs";
@@ -47,7 +47,7 @@ const InvoicesPage = () => {
   const navigation = useNavigation();
   const loaderData = useLoaderData() as InvoiceGridColumnsType[];
 
-  const { data } = useSuspenseQuery(getInvoicesQuery);
+  const { data, refetch } = useSuspenseQuery(getInvoicesQuery);
 
   const isLoading = navigation.state === "loading";
 
@@ -64,7 +64,7 @@ const InvoicesPage = () => {
       const { errorObject } = handleErrors(err, "Invoices Page");
       handlePushError(errorObject);
 
-      setRows(data);
+      refetch();
     },
   });
 
@@ -76,7 +76,7 @@ const InvoicesPage = () => {
       const { errorObject } = handleErrors(err, "Invoices Page");
       handlePushError(errorObject);
 
-      setRows(data);
+      refetch();
     },
     onSettled: () => setDeleteId(0),
   });
@@ -272,6 +272,12 @@ const InvoicesPage = () => {
       },
     },
   ];
+
+  useEffect(() => {
+    if (data) {
+      setRows(data);
+    }
+  }, [data]);
 
   const handleRowModesModelChange = function (
     newRowModesModel: GridRowModesModel

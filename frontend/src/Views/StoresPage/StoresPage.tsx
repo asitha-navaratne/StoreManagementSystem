@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AxiosError } from "axios";
 import dayjs from "dayjs";
@@ -52,7 +52,7 @@ const StoresPage = () => {
   const navigation = useNavigation();
   const loaderData = useLoaderData() as StoreGridColumnsType[];
 
-  const { data } = useSuspenseQuery(getStoresQuery);
+  const { data, refetch } = useSuspenseQuery(getStoresQuery);
 
   const isLoading = navigation.state === "loading";
 
@@ -81,7 +81,7 @@ const StoresPage = () => {
       const { errorObject } = handleErrors(err, "Stores Page");
       handlePushError(errorObject);
 
-      setRows(data);
+      refetch();
     },
   });
 
@@ -93,7 +93,7 @@ const StoresPage = () => {
       const { errorObject } = handleErrors(err, "Stores Page");
       handlePushError(errorObject);
 
-      setRows(data);
+      refetch();
     },
     onSettled: () => setDeleteId(0),
   });
@@ -231,6 +231,12 @@ const StoresPage = () => {
       },
     },
   ];
+
+  useEffect(() => {
+    if (data) {
+      setRows(data);
+    }
+  }, [data]);
 
   const handleRowModesModelChange = function (
     newRowModesModel: GridRowModesModel

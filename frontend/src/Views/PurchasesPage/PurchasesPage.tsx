@@ -50,7 +50,6 @@ import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErr
 import PurchaseGridColumnsType from "./types/GridColumnsType";
 import PurchaseApiColumnsType from "./types/ApiColumnsType";
 import InvoiceGridColumnsType from "../InvoicesPage/types/GridColumnsType";
-import PriceMasterApiColumnsType from "../PriceMasterPage/types/ApiColumnsType";
 import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
 
 import InitInvoiceData from "../../Constants/InitInvoiceData";
@@ -239,27 +238,8 @@ const PurchasesPage = () => {
     if (selectedSupplier && selectedStore) {
       GetPricesBySupplierAndStore(selectedSupplier, selectedStore)
         .then((res) => {
-          setRows(
-            res.data.map((row: PriceMasterApiColumnsType) => {
-              const id = randomInteger(2 ** 16, 2 ** 17);
-
-              return {
-                id,
-                category: row.category,
-                productName: row.brand,
-                bottleSize: row.bottle_size,
-                quantityOrdered: 0,
-                price: row.price,
-                quantityReceived: 0,
-                payableAmount: 0,
-                createdBy: null,
-                createdOn: null,
-                updatedBy: null,
-                updatedOn: null,
-              };
-            })
-          );
-          if (res.data.length > 0) {
+          setRows(res);
+          if (res.length > 0) {
             setIsSaveButtonDisabled(false);
           } else {
             setIsSaveButtonDisabled(true);
@@ -473,26 +453,7 @@ const PurchasesPage = () => {
               selectedSupplier,
               selectedStore
             );
-            setRows(
-              initialRows.data.map((row: PriceMasterApiColumnsType) => {
-                const id = randomInteger(2 ** 16, 2 ** 17);
-
-                return {
-                  id,
-                  category: row.category,
-                  productName: row.brand,
-                  bottleSize: row.bottle_size,
-                  quantityOrdered: 0,
-                  price: row.price,
-                  quantityReceived: 0,
-                  payableAmount: 0,
-                  createdBy: null,
-                  createdOn: null,
-                  updatedBy: null,
-                  updatedOn: null,
-                };
-              })
-            );
+            setRows(initialRows);
 
             const purchases = await GetPurchasesForInvoiceNumber(
               invoiceNumber,
@@ -573,26 +534,7 @@ const PurchasesPage = () => {
               selectedSupplier,
               selectedStore
             );
-            setRows(
-              initialRows.data.map((row: PriceMasterApiColumnsType) => {
-                const id = randomInteger(2 ** 16, 2 ** 17);
-
-                return {
-                  id,
-                  category: row.category,
-                  productName: row.brand,
-                  bottleSize: row.bottle_size,
-                  quantityOrdered: 0,
-                  price: row.price,
-                  quantityReceived: 0,
-                  payableAmount: 0,
-                  createdBy: null,
-                  createdOn: null,
-                  updatedBy: null,
-                  updatedOn: null,
-                };
-              })
-            );
+            setRows(initialRows);
           }
         );
     }
