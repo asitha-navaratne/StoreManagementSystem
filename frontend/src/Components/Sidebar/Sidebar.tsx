@@ -16,7 +16,7 @@ import { NavLink } from "react-router";
 
 import styles from "./Sidebar.module.scss";
 
-import { menuConfig } from "../../Configs/menu.config";
+import { config } from "../../Configs/menu.config";
 
 import PropTypes from "./types/PropTypes";
 
@@ -37,7 +37,7 @@ const Sidebar: FC<PropTypes> = (props) => {
     <Drawer open={props.isOpen} onClose={props.handleClose}>
       <Box className={styles["sidebar"]}>
         <List>
-          {menuConfig.map((menuItem) => (
+          {config.map((menuItem) => (
             <NavLink
               key={menuItem.key}
               to={menuItem.url}
