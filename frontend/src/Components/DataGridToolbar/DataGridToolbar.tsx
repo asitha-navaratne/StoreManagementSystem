@@ -1,3 +1,5 @@
+import { FC } from "react";
+
 import { Box, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from "@mui/icons-material/Save";
@@ -5,7 +7,7 @@ import { GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
 
 import PropTypes from "./types/PropTypes";
 
-const DataGridToolbar = (props: PropTypes) => {
+const DataGridToolbar: FC<PropTypes> = (props) => {
   return (
     <GridToolbarContainer>
       {"isSaveButtonDisabled" in props ? (

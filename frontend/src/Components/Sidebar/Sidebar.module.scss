@@ -19,4 +19,10 @@
       color: variables.$secondary-color-light;
     }
   }
+
+  &__logout-button {
+    position: absolute;
+    bottom: 1%;
+    right: 10%;
+  }
 }

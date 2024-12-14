@@ -36,12 +36,3 @@ export const menuConfig = [
     icon: "storefront",
   },
 ];
-
-export const settingsConfig = [
-  {
-    key: "users",
-    title: "Users",
-    url: "/users",
-    icon: "person_icon",
-  },
-];

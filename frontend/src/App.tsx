@@ -1,5 +1,10 @@
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
+import {
+  AuthenticatedTemplate,
+  UnauthenticatedTemplate,
+  useMsal,
+} from "@azure/msal-react";
 
 import ErrorProvider from "./Contexts/ErrorProvider";
 
@@ -22,12 +27,9 @@ import storesLoader from "./Views/StoresPage/StoresLoader";
 import suppliersLoader from "./Views/SuppliersPage/SuppliersLoader";
 
 import queryClient from "./Utils/QueryClient";
+import { loginRequest } from "./Configs/auth.config";
 
 const router = createBrowserRouter([
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
   {
     path: "/",
     element: <Root />,
@@ -69,9 +71,27 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const { instance } = useMsal();
+  const activeAccount = instance.getActiveAccount();
+
+  const handleRedirect = () => {
+    instance
+      .loginRedirect({
+        ...loginRequest,
+      })
+      .catch((err) => {
+        throw err;
+      });
+  };
+
   return (
     <ErrorProvider>
-      <RouterProvider router={router} />
+      <AuthenticatedTemplate>
+        {activeAccount && <RouterProvider router={router} />}
+      </AuthenticatedTemplate>
+      <UnauthenticatedTemplate>
+        <LoginPage handleLogin={handleRedirect} />
+      </UnauthenticatedTemplate>
     </ErrorProvider>
   );
 }

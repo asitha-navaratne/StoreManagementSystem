@@ -52,7 +52,10 @@ const theme = createTheme({
         h1: {
           color: colors.secondary.light,
           fontSize: "5vh",
-          marginBottom: "3vh",
+        },
+        h2: {
+          fontSize: "3vh",
+          color: colors.secondary.contrastText,
         },
         h4: {
           color: colors.secondary.light,
@@ -60,6 +63,13 @@ const theme = createTheme({
         },
         body2: {
           color: colors.primary.contrastText,
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundColor: colors.info.light,
         },
       },
     },

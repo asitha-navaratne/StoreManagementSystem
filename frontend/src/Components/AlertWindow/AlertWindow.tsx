@@ -1,3 +1,5 @@
+import { FC } from "react";
+
 import {
   Button,
   Dialog,
@@ -9,7 +11,7 @@ import {
 
 import PropTypes from "./types/PropTypes";
 
-const AlertWindow = (props: PropTypes) => {
+const AlertWindow: FC<PropTypes> = (props) => {
   return (
     <Dialog open={props.isWindowOpen} onClose={props.handleClose}>
       <DialogTitle>{props.windowTitle}</DialogTitle>
