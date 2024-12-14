@@ -23,9 +23,10 @@ function handleErrors<T extends { id: number }>(
       ': Field "' +
       err.response.data.errors[0].loc[1] +
       '"';
-  } else if (err.response?.data?.detail) {
-    processedErrorObject["description"] = err.response.data.detail[0].msg;
+  } else if (err.response?.data?.message) {
+    processedErrorObject["description"] = err.response.data.message;
   } else if (err.message && typeof err.message === "string") {
+    console.log(err);
     processedErrorObject["description"] = err.message;
   } else {
     processedErrorObject["description"] =

@@ -22,7 +22,6 @@ def edit_supplier(supplier: CreateSupplierModel, db: Session):
             "supplier_tin",
             "invoice_type",
             "payment_period",
-            "active",
             "created_by",
             "created_on",
         ]
@@ -56,6 +55,7 @@ def edit_supplier(supplier: CreateSupplierModel, db: Session):
             select(Suppliers.id)
             .where(Suppliers.company_name == supplier.company_name)
             .where(Suppliers.supplier_tin == supplier.supplier_tin)
+            .where(Suppliers.id != supplier.id)
         ).first() is not None
 
         if item_exists:

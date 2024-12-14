@@ -15,7 +15,6 @@ def create_store(store: CreateStoreModel, db: Session):
         check_fields = [
             "id",
             "store_name",
-            "active",
             "created_by",
             "created_on",
         ]

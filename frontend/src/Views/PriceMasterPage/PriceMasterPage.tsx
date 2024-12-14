@@ -2,8 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 
 import dayjs from "dayjs";
 import randomInteger from "random-int";
-import { useLoaderData, useNavigation } from "react-router";
 import { AxiosError } from "axios";
+import { useLoaderData, useNavigation } from "react-router";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import {
   DataGrid,
@@ -44,25 +45,60 @@ import AlcoholCategories from "../../Constants/AlcoholCategories";
 
 import handleErrors from "../../Helpers/handleErrors";
 
+import { getPriceItemsQuery } from "./PriceMasterLoader";
 import Service from "../../Services/PriceMasterService";
 
-const { GetPriceItems, AddPriceItem, EditPriceItem, DeletePriceItem } =
-  Service();
+const { AddPriceItem, EditPriceItem, DeletePriceItem } = Service();
 
 const PriceMasterPage = () => {
   const navigation = useNavigation();
+  const loaderData = useLoaderData() as LoaderDataType;
+
+  const { data, refetch } = useSuspenseQuery(getPriceItemsQuery);
 
   const isLoading = navigation.state === "loading";
 
-  const payloadData = useLoaderData() as LoaderDataType;
-
-  const [rows, setRows] = useState<GridRowsProp>(payloadData.products);
+  const [rows, setRows] = useState<GridRowsProp>(loaderData.products);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-  const [editedRow, setEditedRow] = useState<GridRowModel | null>(null);
-  const [addedRow, setAddedRow] = useState<GridRowModel | null>(null);
   const [isAddButtonClicked, setIsAddButtonClicked] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<number>(0);
   const [isWindowOpen, setIsWindowOpen] = useState<boolean>(false);
+
+  const addMutation = useMutation({
+    mutationFn: AddPriceItem,
+    onError: (
+      err: AxiosError<StoreManagementSystemErrorType<PriceMasterApiColumnsType>>
+    ) => {
+      const { errorObject, id } = handleErrors(err, "Price Master Page");
+      handlePushError(errorObject);
+      setRows((prev) => prev.filter((row) => row.id !== id));
+    },
+  });
+
+  const editMutation = useMutation({
+    mutationFn: EditPriceItem,
+    onError: (
+      err: AxiosError<StoreManagementSystemErrorType<PriceMasterApiColumnsType>>
+    ) => {
+      const { errorObject } = handleErrors(err, "Price Master Page");
+      handlePushError(errorObject);
+
+      refetch();
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: DeletePriceItem,
+    onError: (
+      err: AxiosError<StoreManagementSystemErrorType<{ id: number }>>
+    ) => {
+      const { errorObject } = handleErrors(err, "Price Master Page");
+      handlePushError(errorObject);
+
+      refetch();
+    },
+    onSettled: () => setDeleteId(0),
+  });
 
   const { handlePushError } = useErrorContext();
 
@@ -84,11 +120,11 @@ const PriceMasterPage = () => {
       renderEditCell: (params) => (
         <GridAutocompleteComponent
           {...params}
-          options={payloadData.stores}
+          options={loaderData.stores}
           keyField="storeName"
           handleValueChange={handleStoreValueChange}
           getInitialValue={() =>
-            payloadData.stores.filter(
+            loaderData.stores.filter(
               (option) => option.storeName === params.value
             )[0] ?? null
           }
@@ -105,11 +141,11 @@ const PriceMasterPage = () => {
       renderEditCell: (params) => (
         <GridAutocompleteComponent
           {...params}
-          options={payloadData.suppliers}
+          options={loaderData.suppliers}
           keyField="companyName"
           handleValueChange={handleSupplierValueChange}
           getInitialValue={() =>
-            payloadData.suppliers.filter(
+            loaderData.suppliers.filter(
               (option) => option.companyName === params.value
             )[0] ?? null
           }
@@ -318,64 +354,10 @@ const PriceMasterPage = () => {
   ];
 
   useEffect(() => {
-    if (addedRow) {
-      AddPriceItem({
-        ...addedRow,
-      })
-        .catch(
-          (
-            err: AxiosError<
-              StoreManagementSystemErrorType<PriceMasterApiColumnsType>
-            >
-          ) => {
-            const { errorObject, id } = handleErrors(err, "Price Master Page");
-            handlePushError(errorObject);
-            setRows((prev) => prev.filter((row) => row.id !== id));
-          }
-        )
-        .finally(() => setAddedRow(null));
+    if (data) {
+      setRows(data);
     }
-  }, [addedRow, handlePushError]);
-
-  useEffect(() => {
-    if (editedRow) {
-      EditPriceItem({
-        ...editedRow,
-      })
-        .catch(
-          async (
-            err: AxiosError<
-              StoreManagementSystemErrorType<PriceMasterApiColumnsType>
-            >
-          ) => {
-            const { errorObject } = handleErrors(err, "Price Master Page");
-            handlePushError(errorObject);
-
-            const res = await GetPriceItems();
-            setRows(res);
-          }
-        )
-        .finally(() => {
-          setEditedRow(null);
-        });
-    }
-  }, [editedRow, handlePushError, payloadData.products]);
-
-  useEffect(() => {
-    if (deleteId !== 0 && !isWindowOpen) {
-      DeletePriceItem(deleteId)
-        .catch(async (err) => {
-          const { errorObject } = handleErrors(err, "Price Master Page");
-          handlePushError(errorObject);
-
-          const res = await GetPriceItems();
-          setRows(res);
-        })
-        .finally(() => {
-          setDeleteId(0);
-        });
-    }
-  }, [deleteId, handlePushError, isWindowOpen]);
+  }, [data]);
 
   const handleStoreValueChange = useCallback(function (
     id: GridRowId,
@@ -458,7 +440,8 @@ const PriceMasterPage = () => {
     if (isAddButtonClicked) {
       const addRow = { ...newRow, commissions: commissionValue, isNew: false };
       setRows(rows.map((row) => (row.id === newRow.id ? addRow : row)));
-      setAddedRow({ ...addRow });
+
+      addMutation.mutate({ ...addRow });
       setIsAddButtonClicked(false);
       return addRow;
     } else {
@@ -470,7 +453,8 @@ const PriceMasterPage = () => {
         isNew: false,
       };
       setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-      setEditedRow({ ...updatedRow });
+
+      editMutation.mutate({ ...updatedRow });
       return updatedRow;
     }
   };
@@ -483,6 +467,8 @@ const PriceMasterPage = () => {
   const handleDeletePriceItem = function () {
     setRows(rows.filter((row) => row.id !== deleteId));
     setIsWindowOpen(false);
+
+    deleteMutation.mutate(deleteId);
   };
 
   const handleSaveButtonClick = (id: GridRowId) => () => {

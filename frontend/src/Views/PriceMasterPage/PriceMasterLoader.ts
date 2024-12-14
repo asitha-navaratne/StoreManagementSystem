@@ -1,35 +1,31 @@
+import { QueryClient, queryOptions } from "@tanstack/react-query";
+
 import LoaderDataType from "./types/LoaderType";
 
-import PriceMasterService from "../../Services/PriceMasterService";
-import StoreService from "../../Services/StoreService";
-import SupplierService from "../../Services/SupplierService";
+import { getSuppliersQuery } from "../SuppliersPage/SuppliersLoader";
+import { getStoresQuery } from "../StoresPage/StoresLoader";
+import Service from "../../Services/PriceMasterService";
 
-const { GetPriceItems } = PriceMasterService();
-const { GetStores } = StoreService();
-const { GetSuppliers } = SupplierService();
+const { GetPriceItems } = Service();
 
-const loader = async function () {
-  const payload: LoaderDataType = { products: [], stores: [], suppliers: [] };
+export const getPriceItemsQuery = queryOptions({
+  queryKey: ["price items", "all"],
+  queryFn: GetPriceItems,
+});
 
-  return GetPriceItems()
-    .then((res) => {
-      payload["products"] = res;
+const loader = (queryClient: QueryClient) =>
+  async function () {
+    const payload: LoaderDataType = { products: [], stores: [], suppliers: [] };
 
-      return GetStores();
-    })
-    .then((res) => {
-      payload["stores"] = res;
+    const priceItemsData = queryClient.ensureQueryData(getPriceItemsQuery);
+    const suppliersData = queryClient.ensureQueryData(getSuppliersQuery);
+    const storesData = queryClient.ensureQueryData(getStoresQuery);
 
-      return GetSuppliers();
-    })
-    .then((res) => {
-      payload["suppliers"] = res;
+    payload["products"] = await priceItemsData;
+    payload["suppliers"] = await suppliersData;
+    payload["stores"] = await storesData;
 
-      return payload;
-    })
-    .catch((err) => {
-      throw err;
-    });
-};
+    return payload;
+  };
 
 export default loader;

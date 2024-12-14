@@ -4,6 +4,7 @@ import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import randomInteger from "random-int";
 import { useLoaderData, useNavigation } from "react-router";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import {
   DataGrid,
@@ -33,6 +34,7 @@ import AlertWindow from "../../Components/AlertWindow/AlertWindow";
 
 import useErrorContext from "../../Hooks/useErrorContext";
 
+import SuppliersGridColumnsType from "./types/GridColumnsType";
 import SuppliersApiColumnsType from "./types/ApiColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
 import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
@@ -41,24 +43,60 @@ import InitSupplierRowValues from "../../Constants/InitSupplierRowValues";
 
 import handleErrors from "../../Helpers/handleErrors";
 
+import { getSuppliersQuery } from "./SuppliersLoader";
 import Service from "../../Services/SupplierService";
 
-const { GetSuppliers, AddSupplier, EditSupplier, DeleteSupplier } = Service();
+const { AddSupplier, EditSupplier, DeleteSupplier } = Service();
 
 const SuppliersPage = () => {
   const navigation = useNavigation();
+  const loaderData = useLoaderData() as SuppliersGridColumnsType[];
+
+  const { data, refetch } = useSuspenseQuery(getSuppliersQuery);
 
   const isLoading = navigation.state === "loading";
 
-  const [rows, setRows] = useState<GridRowsProp>(
-    useLoaderData() as GridRowsProp
-  );
+  const [rows, setRows] = useState<GridRowsProp>(loaderData);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-  const [editedRow, setEditedRow] = useState<GridRowModel | null>(null);
-  const [addedRow, setAddedRow] = useState<GridRowModel | null>(null);
   const [isAddButtonClicked, setIsAddButtonClicked] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<number>(0);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState<boolean>(false);
+
+  const addMutation = useMutation({
+    mutationFn: AddSupplier,
+    onError: (
+      err: AxiosError<StoreManagementSystemErrorType<SuppliersApiColumnsType>>
+    ) => {
+      const { errorObject, id } = handleErrors(err, "Suppliers Page");
+      handlePushError(errorObject);
+      setRows((prev) => prev.filter((row) => row.id !== id));
+    },
+  });
+
+  const editMutation = useMutation({
+    mutationFn: EditSupplier,
+    onError: (
+      err: AxiosError<StoreManagementSystemErrorType<SuppliersApiColumnsType>>
+    ) => {
+      const { errorObject } = handleErrors(err, "Suppliers Page");
+      handlePushError(errorObject);
+
+      refetch();
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: DeleteSupplier,
+    onError: (
+      err: AxiosError<StoreManagementSystemErrorType<{ id: number }>>
+    ) => {
+      const { errorObject } = handleErrors(err, "Suppliers Page");
+      handlePushError(errorObject);
+
+      refetch();
+    },
+    onSettled: () => setDeleteId(0),
+  });
 
   const { handlePushError } = useErrorContext();
 
@@ -246,66 +284,10 @@ const SuppliersPage = () => {
   ];
 
   useEffect(() => {
-    if (addedRow) {
-      AddSupplier({
-        ...addedRow,
-      })
-        .catch(
-          (
-            err: AxiosError<
-              StoreManagementSystemErrorType<SuppliersApiColumnsType>
-            >
-          ) => {
-            const { errorObject, id } = handleErrors(err, "Suppliers Page");
-            handlePushError(errorObject);
-            setRows((prev) => prev.filter((row) => row.id !== id));
-          }
-        )
-        .finally(() => {
-          setAddedRow(null);
-        });
+    if (data) {
+      setRows(data);
     }
-  }, [addedRow, handlePushError]);
-
-  useEffect(() => {
-    if (editedRow) {
-      EditSupplier({
-        ...editedRow,
-      })
-        .catch(
-          async (
-            err: AxiosError<
-              StoreManagementSystemErrorType<SuppliersApiColumnsType>
-            >
-          ) => {
-            const { errorObject } = handleErrors(err, "Suppliers Page");
-            handlePushError(errorObject);
-
-            const res = await GetSuppliers();
-            setRows(res);
-          }
-        )
-        .finally(() => {
-          setEditedRow(null);
-        });
-    }
-  }, [editedRow, handlePushError]);
-
-  useEffect(() => {
-    if (deleteId !== 0 && !isDeleteAlertOpen) {
-      DeleteSupplier(deleteId)
-        .catch(async (err) => {
-          const { errorObject } = handleErrors(err, "Suppliers Page");
-          handlePushError(errorObject);
-
-          const res = await GetSuppliers();
-          setRows(res);
-        })
-        .finally(() => {
-          setDeleteId(0);
-        });
-    }
-  }, [deleteId, handlePushError, isDeleteAlertOpen]);
+  }, [data]);
 
   const handleRowModesModelChange = function (
     newRowModesModel: GridRowModesModel
@@ -356,7 +338,8 @@ const SuppliersPage = () => {
         isNew: false,
       };
       setRows(rows.map((row) => (row.id === newRow.id ? addRow : row)));
-      setAddedRow({ ...addRow });
+
+      addMutation.mutate({ ...addRow });
       setIsAddButtonClicked(false);
       return addRow;
     } else {
@@ -368,7 +351,8 @@ const SuppliersPage = () => {
         isNew: false,
       };
       setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-      setEditedRow({ ...updatedRow });
+
+      editMutation.mutate({ ...updatedRow });
       return updatedRow;
     }
   };
@@ -381,6 +365,8 @@ const SuppliersPage = () => {
   const handleDeleteSupplier = function () {
     setRows(rows.filter((row) => row.id !== deleteId));
     setIsDeleteAlertOpen(false);
+
+    deleteMutation.mutate(deleteId);
   };
 
   const handleSaveButtonClick = (id: GridRowId) => () => {

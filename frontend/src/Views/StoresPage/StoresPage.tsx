@@ -4,6 +4,7 @@ import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import randomInteger from "random-int";
 import { useLoaderData, useNavigation } from "react-router";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import {
   DataGrid,
@@ -33,6 +34,7 @@ import AlertWindow from "../../Components/AlertWindow/AlertWindow";
 
 import useErrorContext from "../../Hooks/useErrorContext";
 
+import StoreGridColumnsType from "./types/GridColumnsType";
 import StoreApiColumnsType from "./types/ApiColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
 import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
@@ -41,24 +43,60 @@ import InitStoreRowValues from "../../Constants/InitStoreRowValues";
 
 import handleErrors from "../../Helpers/handleErrors";
 
+import { getStoresQuery } from "./StoresLoader";
 import Service from "../../Services/StoreService";
 
-const { GetStores, AddStore, EditStore, DeleteStore } = Service();
+const { AddStore, EditStore, DeleteStore } = Service();
 
 const StoresPage = () => {
   const navigation = useNavigation();
+  const loaderData = useLoaderData() as StoreGridColumnsType[];
+
+  const { data, refetch } = useSuspenseQuery(getStoresQuery);
 
   const isLoading = navigation.state === "loading";
 
-  const [rows, setRows] = useState<GridRowsProp>(
-    useLoaderData() as GridRowsProp
-  );
+  const [rows, setRows] = useState<GridRowsProp>(loaderData);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-  const [editedRow, setEditedRow] = useState<GridRowModel | null>(null);
-  const [addedRow, setAddedRow] = useState<GridRowModel | null>(null);
   const [isAddButtonClicked, setIsAddButtonClicked] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<number>(0);
-  const [isWindowOpen, setIsWindowOpen] = useState<boolean>(false);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState<boolean>(false);
+
+  const addMutation = useMutation({
+    mutationFn: AddStore,
+    onError: (
+      err: AxiosError<StoreManagementSystemErrorType<StoreApiColumnsType>>
+    ) => {
+      const { errorObject, id } = handleErrors(err, "Stores Page");
+      handlePushError(errorObject);
+      setRows((prev) => prev.filter((row) => row.id !== id));
+    },
+  });
+
+  const editMutation = useMutation({
+    mutationFn: EditStore,
+    onError: (
+      err: AxiosError<StoreManagementSystemErrorType<StoreApiColumnsType>>
+    ) => {
+      const { errorObject } = handleErrors(err, "Stores Page");
+      handlePushError(errorObject);
+
+      refetch();
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: DeleteStore,
+    onError: (
+      err: AxiosError<StoreManagementSystemErrorType<{ id: number }>>
+    ) => {
+      const { errorObject } = handleErrors(err, "Stores Page");
+      handlePushError(errorObject);
+
+      refetch();
+    },
+    onSettled: () => setDeleteId(0),
+  });
 
   const { handlePushError } = useErrorContext();
 
@@ -195,62 +233,10 @@ const StoresPage = () => {
   ];
 
   useEffect(() => {
-    if (addedRow) {
-      AddStore({
-        ...addedRow,
-      })
-        .catch(
-          (
-            err: AxiosError<StoreManagementSystemErrorType<StoreApiColumnsType>>
-          ) => {
-            const { errorObject, id } = handleErrors(err, "Stores Page");
-            handlePushError(errorObject);
-            setRows((prev) => prev.filter((row) => row.id !== id));
-          }
-        )
-        .finally(() => {
-          setAddedRow(null);
-        });
+    if (data) {
+      setRows(data);
     }
-  }, [addedRow, handlePushError]);
-
-  useEffect(() => {
-    if (editedRow) {
-      EditStore({
-        ...editedRow,
-      })
-        .catch(
-          async (
-            err: AxiosError<StoreManagementSystemErrorType<StoreApiColumnsType>>
-          ) => {
-            const { errorObject } = handleErrors(err, "Stores Page");
-            handlePushError(errorObject);
-
-            const res = await GetStores();
-            setRows(res);
-          }
-        )
-        .finally(() => {
-          setEditedRow(null);
-        });
-    }
-  }, [editedRow, handlePushError]);
-
-  useEffect(() => {
-    if (deleteId !== 0 && !isWindowOpen) {
-      DeleteStore(deleteId)
-        .catch(async (err) => {
-          const { errorObject } = handleErrors(err, "Stores Page");
-          handlePushError(errorObject);
-
-          const res = await GetStores();
-          setRows(res);
-        })
-        .finally(() => {
-          setDeleteId(0);
-        });
-    }
-  }, [deleteId, handlePushError, isWindowOpen]);
+  }, [data]);
 
   const handleRowModesModelChange = function (
     newRowModesModel: GridRowModesModel
@@ -295,7 +281,8 @@ const StoresPage = () => {
     if (isAddButtonClicked) {
       const addRow = { ...newRow, isNew: false };
       setRows(rows.map((row) => (row.id === newRow.id ? addRow : row)));
-      setAddedRow({ ...newRow });
+
+      addMutation.mutate({ ...newRow });
       setIsAddButtonClicked(false);
       return addRow;
     } else {
@@ -306,19 +293,22 @@ const StoresPage = () => {
         isNew: false,
       };
       setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-      setEditedRow({ ...updatedRow });
+
+      editMutation.mutate({ ...updatedRow });
       return updatedRow;
     }
   };
 
   const handleDeleteButtonClick = (id: GridRowId) => () => {
-    setIsWindowOpen(true);
+    setIsDeleteAlertOpen(true);
     setDeleteId(id as number);
   };
 
   const handleDeleteStore = function () {
     setRows(rows.filter((row) => row.id !== deleteId));
-    setIsWindowOpen(false);
+    setIsDeleteAlertOpen(false);
+
+    deleteMutation.mutate(deleteId);
   };
 
   const handleSaveButtonClick = (id: GridRowId) => () => {
@@ -345,7 +335,7 @@ const StoresPage = () => {
 
   const handleAlertWindowClose = function () {
     setDeleteId(0);
-    setIsWindowOpen(false);
+    setIsDeleteAlertOpen(false);
   };
 
   return (
@@ -398,7 +388,7 @@ const StoresPage = () => {
         </>
       )}
       <AlertWindow
-        isWindowOpen={isWindowOpen}
+        isWindowOpen={isDeleteAlertOpen}
         handleClose={handleAlertWindowClose}
         handleAgreeAction={handleDeleteStore}
         handleDisagreeAction={handleAlertWindowClose}

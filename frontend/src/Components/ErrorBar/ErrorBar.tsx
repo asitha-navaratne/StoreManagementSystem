@@ -1,3 +1,5 @@
+import { FC } from "react";
+
 import {
   Avatar,
   Box,
@@ -19,7 +21,7 @@ import PropTypes from "./types/PropTypes";
 
 import useErrorContext from "../../Hooks/useErrorContext";
 
-const ErrorBar = (props: PropTypes) => {
+const ErrorBar: FC<PropTypes> = (props) => {
   const { errorList, handleRemoveError } = useErrorContext();
 
   return (

@@ -26,7 +26,6 @@ def create_price_item(price_item: CreatePriceModel, db: Session):
             "tax_price",
             "cost",
             "price",
-            "active",
             "created_by",
             "created_on",
         ]
