@@ -50,12 +50,17 @@ const theme = createTheme({
     MuiTypography: {
       styleOverrides: {
         h1: {
-          color: colors.secondary.light,
+          color: colors.secondary.main,
           fontSize: "5vh",
         },
         h2: {
+          color: colors.secondary.light,
+          fontSize: "5vh",
+          marginBottom: "5vh",
+        },
+        h3: {
           fontSize: "3vh",
-          color: colors.secondary.contrastText,
+          color: colors.info.light,
         },
         h4: {
           color: colors.secondary.light,
@@ -63,13 +68,6 @@ const theme = createTheme({
         },
         body2: {
           color: colors.primary.contrastText,
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          backgroundColor: colors.info.light,
         },
       },
     },

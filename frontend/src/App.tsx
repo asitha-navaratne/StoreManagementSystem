@@ -27,7 +27,6 @@ import storesLoader from "./Views/StoresPage/StoresLoader";
 import suppliersLoader from "./Views/SuppliersPage/SuppliersLoader";
 
 import queryClient from "./Utils/QueryClient";
-import { loginRequest } from "./Configs/auth.config";
 
 const router = createBrowserRouter([
   {
@@ -74,23 +73,13 @@ function App() {
   const { instance } = useMsal();
   const activeAccount = instance.getActiveAccount();
 
-  const handleRedirect = () => {
-    instance
-      .loginRedirect({
-        ...loginRequest,
-      })
-      .catch((err) => {
-        throw err;
-      });
-  };
-
   return (
     <ErrorProvider>
       <AuthenticatedTemplate>
         {activeAccount && <RouterProvider router={router} />}
       </AuthenticatedTemplate>
       <UnauthenticatedTemplate>
-        <LoginPage handleLogin={handleRedirect} />
+        <LoginPage />
       </UnauthenticatedTemplate>
     </ErrorProvider>
   );

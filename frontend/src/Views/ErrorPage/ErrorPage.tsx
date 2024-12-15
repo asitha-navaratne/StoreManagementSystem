@@ -34,7 +34,7 @@ const ErrorPage = () => {
 
   return (
     <Box className={styles["error-page"]}>
-      <Typography variant="h1">An Error Occurred!</Typography>
+      <Typography variant="h2">An Error Occurred!</Typography>
       <Typography variant="body2">
         An error occurred when accessing the content you requested.
       </Typography>

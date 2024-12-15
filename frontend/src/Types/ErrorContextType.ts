@@ -20,9 +20,9 @@ export type ErrorContextStateType = {
 
 export type ErrorContextActionType =
   | {
-      type: "push";
+      type: "PUSH";
       payload: ErrorListItemType;
     }
-  | { type: "remove"; payload: number };
+  | { type: "REMOVE"; payload: number };
 
 export default ErrorContextType;

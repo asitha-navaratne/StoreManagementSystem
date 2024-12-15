@@ -1,22 +1,17 @@
 from fastapi import status
 from fastapi.responses import JSONResponse
 from sqlalchemy import select
-from sqlalchemy.orm import Session, aliased
+from sqlalchemy.orm import Session
 
-from database.models import PriceMaster, Stores, Suppliers, Users
+from database.models import PriceMaster, Stores, Suppliers
 
 
 def get_price_items(db: Session):
     try:
-        user_alias_1 = aliased(Users, name="user_alias_1")
-        user_alias_2 = aliased(Users, name="user_alias_2")
-
         stmt = (
-            select(PriceMaster, Stores.store_name, Suppliers.company_name, user_alias_1.username, user_alias_2.username)
+            select(PriceMaster, Stores.store_name, Suppliers.company_name)
             .join(Stores, PriceMaster.store_id == Stores.id, isouter=True)
             .join(Suppliers, PriceMaster.supplier_id == Suppliers.id, isouter=True)
-            .join(user_alias_1, PriceMaster.created_by == user_alias_1.id, isouter=True)
-            .join(user_alias_2, PriceMaster.updated_by == user_alias_2.id, isouter=True)
         )
         results = db.execute(stmt).all()
 
@@ -37,13 +32,11 @@ def get_price_items(db: Session):
                 'commissions': result[0].commissions,
                 'margin': result[0].margin,
                 'active': result[0].active,
-                'created_by': result[3],
+                'created_by': result[0].created_by,
                 'created_on': result[0].created_on,
+                'updated_by': result[0].updated_by,
+                'updated_on': result[0].updated_on,
             }
-            if result[4] is None:
-                result_dict = {**result_dict, 'updated_by': None, 'updated_on': None}
-            else:
-                result_dict = {**result_dict, 'updated_by': result[4], 'updated_on': result[0].updated_on}
             
             processed_results.append(result_dict)
         

@@ -4,6 +4,7 @@ import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import randomInteger from "random-int";
 import { useLoaderData, useNavigation } from "react-router";
+import { useMsal } from "@azure/msal-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import {
@@ -56,6 +57,10 @@ const SuppliersPage = () => {
   const { data, refetch } = useSuspenseQuery(getSuppliersQuery);
 
   const isLoading = navigation.state === "loading";
+
+  const { instance } = useMsal();
+
+  const user = instance.getActiveAccount()!.name ?? "";
 
   const [rows, setRows] = useState<GridRowsProp>(loaderData);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
@@ -304,7 +309,7 @@ const SuppliersPage = () => {
       {
         id,
         ...InitSupplierRowValues,
-        createdBy: "AsithaN",
+        createdBy: user,
         createdOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         updatedBy: null,
         updatedOn: null,
@@ -347,7 +352,7 @@ const SuppliersPage = () => {
       const updatedRow = {
         ...newRow,
         paymentPeriod: paymentPeriodValue,
-        updatedBy: "AsithaN",
+        updatedBy: user,
         updatedOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         isNew: false,
       };

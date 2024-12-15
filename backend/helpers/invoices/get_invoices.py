@@ -1,22 +1,17 @@
 from fastapi import status
 from fastapi.responses import JSONResponse
 from sqlalchemy import select
-from sqlalchemy.orm import Session, aliased
+from sqlalchemy.orm import Session
 
-from database.models import Invoices, Suppliers, Stores, Users
+from database.models import Invoices, Suppliers, Stores
 
 
 def get_invoices(db: Session):
     try:
-        user_alias_1 = aliased(Users, name="user_alias_1")
-        user_alias_2 = aliased(Users, name="user_alias_2")
-
         stmt = (
-            select(Invoices, Suppliers, Stores, user_alias_1.username, user_alias_2.username)
+            select(Invoices, Suppliers, Stores)
             .join(Suppliers, Invoices.supplier_id == Suppliers.id, isouter=True)
             .join(Stores, Invoices.store_id == Stores.id, isouter=True)
-            .join(user_alias_1, Invoices.created_by == user_alias_1.id, isouter=True)
-            .join(user_alias_2, Invoices.updated_by == user_alias_2.id, isouter=True)
         )
         results = db.execute(stmt).all()
 
@@ -35,14 +30,12 @@ def get_invoices(db: Session):
                 'invoice_type': result[0].invoice_type,
                 'received_date': result[0].received_date,
                 'payment_date': result[0].payment_date,
-                'created_by': result[3],
+                'created_by': result[0].created_by,
                 'created_on': result[0].created_on,
+                'updated_by': result[0].updated_by,
+                'updated_on': result[0].updated_on,
             }
-            if result[4] is None:
-                result_dict = {**result_dict, 'updated_by': None, 'updated_on': None}
-            else:
-                result_dict = {**result_dict, 'updated_by': result[4], 'updated_on': result[0].updated_on}
-            
+
             processed_results.append(result_dict)
 
         return processed_results

@@ -3,16 +3,13 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
-from database.models import PriceMaster, Stores, Suppliers, Users
+from database.models import PriceMaster, Stores, Suppliers
 
 from models.CreatePriceModel import CreatePriceModel
 
 
 def edit_price_item(price_item: CreatePriceModel, db: Session):
     try:
-        created_user_id = db.scalars(select(Users.id).where(Users.username == price_item.created_by)).first()
-        updated_user_id = db.scalars(select(Users.id).where(Users.username == price_item.updated_by)).first()
-        
         store_id = db.scalars(select(Stores.id).where(Stores.store_name == price_item.shop_name)).first()
         supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.company_name == price_item.company_name)).first()
 
@@ -98,9 +95,9 @@ def edit_price_item(price_item: CreatePriceModel, db: Session):
                 commissions = price_item.commissions,
                 margin = price_item.margin,
                 active = price_item.active,
-                created_by = created_user_id,
+                created_by = price_item.created_by,
                 created_on = price_item.created_on,
-                updated_by = updated_user_id,
+                updated_by = price_item.updated_by,
                 updated_on = price_item.updated_on,
             )
         )

@@ -1,23 +1,24 @@
-import { createContext, useCallback, useMemo, useReducer } from "react";
+import { createContext, FC, useCallback, useMemo, useReducer } from "react";
 
-import ContextProviderPropTypes from "../Types/ContextProviderPropTypes";
 import ErrorContextType, { ErrorListItemType } from "../Types/ErrorContextType";
+import ContextProviderProps from "../Types/ContextProviderProps";
+
 import errorContextReducer from "../Helpers/errorContextReducer";
 
 export const ErrorContext = createContext<ErrorContextType | null>(null);
 
-const ErrorProvider = ({ children }: ContextProviderPropTypes) => {
+const ErrorProvider: FC<ContextProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(errorContextReducer, {
     errorList: [],
     newError: null,
   });
 
   const handlePushError = useCallback(function (error: ErrorListItemType) {
-    dispatch({ type: "push", payload: error });
+    dispatch({ type: "PUSH", payload: error });
   }, []);
 
   const handleRemoveError = useCallback(function (id: number) {
-    dispatch({ type: "remove", payload: id });
+    dispatch({ type: "REMOVE", payload: id });
   }, []);
 
   const errorCount = useMemo(() => state.errorList.length, [state.errorList]);

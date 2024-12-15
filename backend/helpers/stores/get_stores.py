@@ -1,22 +1,14 @@
 from fastapi import status
 from fastapi.responses import JSONResponse
 from sqlalchemy import select
-from sqlalchemy.orm import Session, aliased
+from sqlalchemy.orm import Session
 
-from database.models import Stores, Users
+from database.models import Stores
 
 
 def get_stores(db: Session):
     try:
-        user_alias_1 = aliased(Users, name="user_alias_1")
-        user_alias_2 = aliased(Users, name="user_alias_2")
-
-        stmt = (
-            select(Stores, user_alias_1.username, user_alias_2.username)
-            .join(user_alias_1, Stores.created_by == user_alias_1.id, isouter=True)
-            .join(user_alias_2, Stores.updated_by == user_alias_2.id, isouter=True)
-        )
-        results = db.execute(stmt).all()
+        results = db.execute(select(Stores)).all()
 
         processed_results = []
         for result in results:
@@ -25,13 +17,11 @@ def get_stores(db: Session):
                 'store_name': result[0].store_name,
                 'store_address': result[0].store_address,
                 'active': result[0].active,
-                'created_by': result[1],
+                'created_by': result[0].created_by,
                 'created_on': result[0].created_on,
+                'updated_by': result[0].updated_by,
+                'updated_on': result[0].updated_on,
             }
-            if result[2] is None:
-                result_dict = {**result_dict, 'updated_by': None, 'updated_on': None}
-            else:
-                result_dict = {**result_dict, 'updated_by': result[2], 'updated_on': result[0].updated_on}
             
             processed_results.append(result_dict)
 

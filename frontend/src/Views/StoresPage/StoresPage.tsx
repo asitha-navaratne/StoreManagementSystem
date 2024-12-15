@@ -4,6 +4,7 @@ import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import randomInteger from "random-int";
 import { useLoaderData, useNavigation } from "react-router";
+import { useMsal } from "@azure/msal-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import {
@@ -56,6 +57,10 @@ const StoresPage = () => {
   const { data, refetch } = useSuspenseQuery(getStoresQuery);
 
   const isLoading = navigation.state === "loading";
+
+  const { instance } = useMsal();
+
+  const user = instance.getActiveAccount()!.name ?? "";
 
   const [rows, setRows] = useState<GridRowsProp>(loaderData);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
@@ -253,7 +258,7 @@ const StoresPage = () => {
       {
         id,
         ...InitStoreRowValues,
-        createdBy: "AsithaN",
+        createdBy: user,
         createdOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         updatedBy: null,
         updatedOn: null,
@@ -289,7 +294,7 @@ const StoresPage = () => {
     } else {
       const updatedRow = {
         ...newRow,
-        updatedBy: "AsithaN",
+        updatedBy: user,
         updatedOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         isNew: false,
       };

@@ -1,21 +1,18 @@
 from fastapi import status
 from fastapi.responses import JSONResponse
 from datetime import datetime, timedelta
-from sqlalchemy import select, insert, update
+from sqlalchemy import insert, update
 from sqlalchemy.orm import Session
 
-from database.models import StockMovements, Users
+from database.models import StockMovements
 
 from models.CreateStockMovementModel import CreateStockMovementModel
 
 
 def update_stock_movements(stock_movements: list[CreateStockMovementModel], db: Session):
     try:
-        user_id = db.scalars(select(Users.id).where(Users.username == stock_movements[0].updated_by)).first()
-
         update_stock_movements_list = [{
-            **stock_movement.model_dump(),
-            'updated_by': user_id
+            **stock_movement.model_dump()
         } for stock_movement in stock_movements]
 
         next_date = datetime.today() + timedelta(days=1)
@@ -28,7 +25,7 @@ def update_stock_movements(stock_movements: list[CreateStockMovementModel], db: 
             'record_date': next_date.strftime('%Y-%m-%d'),
             'in_hand': stock_movement.current_in_hand,
             'sold': None,
-            'updated_by': user_id
+            'updated_by': stock_movement.updated_by
         } for stock_movement in stock_movements]
 
         db.execute(update(StockMovements), update_stock_movements_list)

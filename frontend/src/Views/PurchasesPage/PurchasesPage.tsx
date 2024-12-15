@@ -3,6 +3,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { AxiosError } from "axios";
 import { useLoaderData, useNavigation } from "react-router";
 import randomInteger from "random-int";
+import { useMsal } from "@azure/msal-react";
 import dayjs, { Dayjs } from "dayjs";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -71,6 +72,10 @@ const PurchasesPage = () => {
   const navigation = useNavigation();
 
   const isLoading = navigation.state === "loading";
+
+  const { instance } = useMsal();
+
+  const user = instance.getActiveAccount()!.name ?? "";
 
   const { suppliers: suppliersList, stores: storesList } =
     useLoaderData() as LoaderDataType;
@@ -425,7 +430,7 @@ const PurchasesPage = () => {
         supplierName: selectedSupplier,
         storeName: selectedStore,
         invoiceNumber: invoiceNumber,
-        updatedBy: "AsithaN",
+        updatedBy: user,
         updatedOn: dayjs().format("YYYY-MM-DD"),
       })
         .then(() => {
@@ -434,7 +439,7 @@ const PurchasesPage = () => {
               ...row,
               invoiceNumber: invoiceNumber,
               receivedDate: selectedReceivedDate?.format("YYYY-MM-DD"),
-              updatedBy: "AsithaN",
+              updatedBy: user,
               updatedOn: dayjs().format("YYYY-MM-DD"),
             })),
             selectedSupplier,
@@ -496,7 +501,7 @@ const PurchasesPage = () => {
         supplierName: selectedSupplier,
         storeName: selectedStore,
         invoiceNumber: invoiceNumber,
-        createdBy: "AsithaN",
+        createdBy: user,
       })
         .then(() => {
           AddPurchases(
@@ -512,7 +517,7 @@ const PurchasesPage = () => {
                   id,
                   invoiceNumber: invoiceNumber,
                   receivedDate: selectedReceivedDate?.format("YYYY-MM-DD"),
-                  createdBy: "AsithaN",
+                  createdBy: user,
                   createdOn: dayjs().format("YYYY-MM-DD"),
                   updatedBy: null,
                   updatedOn: null,

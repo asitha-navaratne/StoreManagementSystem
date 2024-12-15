@@ -3,16 +3,13 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
-from database.models import Invoices, Suppliers, Stores, Users
+from database.models import Invoices, Suppliers, Stores
 
 from models.CreateInvoiceModel import CreateInvoiceModel
 
 
 def edit_invoice(invoice: CreateInvoiceModel, db: Session):
     try:
-        created_user_id = db.scalars(select(Users.id).where(Users.username == invoice.created_by)).first()
-        updated_user_id = db.scalars(select(Users.id).where(Users.username == invoice.updated_by)).first()
-        
         supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.company_name == invoice.supplier_name)).first()
         store_id = db.scalars(select(Stores.id).where(Stores.store_name == invoice.store_name)).first()
         
@@ -94,9 +91,9 @@ def edit_invoice(invoice: CreateInvoiceModel, db: Session):
                 invoice_type = invoice.invoice_type,
                 received_date = invoice.received_date,
                 payment_date = invoice.payment_date,
-                created_by = created_user_id,
+                created_by = invoice.created_by,
                 created_on = invoice.created_on,
-                updated_by = updated_user_id,
+                updated_by = invoice.updated_by,
                 updated_on = invoice.updated_on,
             )
         )

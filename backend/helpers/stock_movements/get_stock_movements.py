@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy import select, func, and_, desc
 from sqlalchemy.orm import Session, aliased
 
-from database.models import StockMovements, PriceMaster, Stores, Suppliers, Purchases, Users
+from database.models import StockMovements, PriceMaster, Stores, Suppliers, Purchases
 
 
 def get_stock_movements(store: str, date: str, db: Session):
@@ -36,13 +36,11 @@ def get_stock_movements(store: str, date: str, db: Session):
                     Stores,
                     Suppliers,
                     Purchases.quantity_received,
-                    Users.username
                 )
                 .join(PriceMaster, sm.product_id == PriceMaster.id)
                 .join(Stores, sm.store_id == Stores.id)
                 .join(Suppliers, and_(sm.product_id == PriceMaster.id, PriceMaster.supplier_id == Suppliers.id))
                 .join(Purchases, and_(sm.product_id == Purchases.product_id, sm.store_id == Purchases.store_id, sm.record_date == Purchases.received_date))
-                .join(Users, sm.updated_by == Users.id)
                 .where(sm.store_id == store_id)
                 .order_by(desc(sm.record_date))
                 .limit(subquery)
@@ -91,14 +89,12 @@ def get_stock_movements(store: str, date: str, db: Session):
                     Stores,
                     Suppliers,
                     Purchases.quantity_received,
-                    Users.username
                 )
                 .join(stock_lags_cte, sm.id == stock_lags_cte.c.id)
                 .join(PriceMaster, sm.product_id == PriceMaster.id)
                 .join(Stores, sm.store_id == Stores.id)
                 .join(Suppliers, and_(sm.product_id == PriceMaster.id, PriceMaster.supplier_id == Suppliers.id))
                 .join(Purchases, and_(sm.product_id == Purchases.product_id, sm.store_id == Purchases.store_id, sm.record_date == Purchases.received_date))
-                .join(Users, sm.updated_by == Users.id)
                 .where(stock_lags_cte.c.record_date == date)
             )
             results = db.execute(stmt).all()
@@ -129,7 +125,7 @@ def get_stock_movements(store: str, date: str, db: Session):
                 'fourth_record_date': result[12],
                 'purchased_amount': result[16],
                 'sold': result[0].sold,
-                'updated_by': result[17],
+                'updated_by': result[0].updated_by,
             }
             
             processed_results.append(result_dict)
