@@ -29,16 +29,17 @@ import CloseIcon from "@mui/icons-material/Close";
 import styles from "./PriceMasterPage.module.scss";
 import dataGridStyles from "../../Styles/dataGridStyles";
 
-import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
-import GridAutocompleteComponent from "../../Components/GridAutocompleteComponent/GridAutocompleteComponent";
-import AlertWindow from "../../Components/AlertWindow/AlertWindow";
+import DataGridToolbar, {
+  DataGridToolbarProps,
+} from "../../Components/DataGridToolbar";
+import GridAutocompleteComponent from "../../Components/GridAutocompleteComponent";
+import AlertWindow from "../../Components/AlertWindow";
 
 import useErrorContext from "../../Hooks/useErrorContext";
 
 import LoaderDataType from "./types/LoaderType";
 import PriceMasterApiColumnsType from "./types/ApiColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
-import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
 
 import InitPriceRowValues from "../../Constants/InitPriceRowValues";
 import AlcoholCategories from "../../Constants/AlcoholCategories";
@@ -540,7 +541,7 @@ const PriceMasterPage = () => {
                   isAddButtonDisabled: isAddButtonClicked,
                   handleAddButtonClicked,
                   showQuickFilter: true,
-                } as DataGridToolbarPropTypes,
+                } as DataGridToolbarProps,
               }}
               sx={dataGridStyles}
             />

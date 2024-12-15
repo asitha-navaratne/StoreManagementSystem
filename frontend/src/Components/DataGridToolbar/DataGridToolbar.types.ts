@@ -1,4 +1,4 @@
-type PropTypes =
+export type DataGridToolbarProps =
   | {
       isAddButtonShown: boolean;
       isAddButtonDisabled?: boolean;
@@ -8,5 +8,3 @@ type PropTypes =
       isSaveButtonDisabled: boolean;
       handleSaveButtonClick: () => void;
     };
-
-export default PropTypes;

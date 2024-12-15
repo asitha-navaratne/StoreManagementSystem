@@ -26,15 +26,16 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import styles from "./InvoicesPage.module.scss";
 import dataGridStyles from "../../Styles/dataGridStyles";
 
-import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
-import AlertWindow from "../../Components/AlertWindow/AlertWindow";
+import DataGridToolbar, {
+  DataGridToolbarProps,
+} from "../../Components/DataGridToolbar";
+import AlertWindow from "../../Components/AlertWindow";
 
 import useErrorContext from "../../Hooks/useErrorContext";
 
 import InvoiceGridColumnsType from "./types/GridColumnsType";
 import InvoiceApiColumnsType from "./types/ApiColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
-import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
 
 import handleErrors from "../../Helpers/handleErrors";
 
@@ -384,7 +385,7 @@ const InvoicesPage = () => {
                 toolbar: {
                   isAddButtonShown: false,
                   showQuickFilter: true,
-                } as DataGridToolbarPropTypes,
+                } as DataGridToolbarProps,
               }}
               sx={dataGridStyles}
             />

@@ -7,8 +7,8 @@ import WarningIcon from "@mui/icons-material/Warning";
 
 import styles from "./Root.module.scss";
 
-import Sidebar from "../Sidebar/Sidebar";
-import ErrorBar from "../ErrorBar/ErrorBar";
+import Sidebar from "../Sidebar";
+import ErrorBar from "../ErrorBar";
 
 import useErrorContext from "../../Hooks/useErrorContext";
 

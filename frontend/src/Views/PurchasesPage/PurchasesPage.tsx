@@ -41,7 +41,9 @@ import {
 import styles from "./PurchasesPage.module.scss";
 import dataGridStyles from "../../Styles/dataGridStyles";
 
-import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
+import DataGridToolbar, {
+  DataGridToolbarProps,
+} from "../../Components/DataGridToolbar";
 
 import useErrorContext from "../../Hooks/useErrorContext";
 
@@ -50,7 +52,6 @@ import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErr
 import PurchaseGridColumnsType from "./types/GridColumnsType";
 import PurchaseApiColumnsType from "./types/ApiColumnsType";
 import InvoiceGridColumnsType from "../InvoicesPage/types/GridColumnsType";
-import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
 
 import InitInvoiceData from "../../Constants/InitInvoiceData";
 
@@ -821,7 +822,7 @@ const PurchasesPage = () => {
                 toolbar: {
                   isSaveButtonDisabled: isSaveButtonDisabled,
                   handleSaveButtonClick: handleSaveAllButtonClick,
-                } as DataGridToolbarPropTypes,
+                } as DataGridToolbarProps,
               }}
               sx={dataGridStyles}
             />

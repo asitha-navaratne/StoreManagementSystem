@@ -8,8 +8,8 @@ import {
 
 import ErrorProvider from "./Contexts/ErrorProvider";
 
-import Root from "./Components/Root/Root";
-import Fallback from "./Components/Fallback/Fallback";
+import Root from "./Components/Root";
+import Fallback from "./Components/Fallback";
 
 import LoginPage from "./Views/LoginPage/LoginPage";
 import ErrorPage from "./Views/ErrorPage/ErrorPage";

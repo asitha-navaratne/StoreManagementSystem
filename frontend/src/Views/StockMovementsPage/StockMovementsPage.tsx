@@ -27,14 +27,15 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import styles from "./StockMovementsPage.module.scss";
 import dataGridStyles from "../../Styles/dataGridStyles";
 
-import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
+import DataGridToolbar, {
+  DataGridToolbarProps,
+} from "../../Components/DataGridToolbar";
 
 import useErrorContext from "../../Hooks/useErrorContext";
 
 import StockMovementsApiColumnsType from "./types/ApiColumnsType";
 import StockMovementsGridColumnsType from "./types/GridColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
-import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
 
 import handleErrors from "../../Helpers/handleErrors";
 import getCurrentInHandAmount from "../../Helpers/getCurrentInHandAmount";
@@ -431,7 +432,7 @@ const StockMovementsPage = () => {
                 toolbar: {
                   isSaveButtonDisabled: isSaveButtonDisabled,
                   handleSaveButtonClick: handleSaveButtonClick,
-                } as DataGridToolbarPropTypes,
+                } as DataGridToolbarProps,
                 loadingOverlay: {
                   variant: "skeleton",
                   noRowsVariant: "skeleton",

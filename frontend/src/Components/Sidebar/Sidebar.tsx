@@ -18,9 +18,9 @@ import styles from "./Sidebar.module.scss";
 
 import { config } from "../../Configs/menu.config";
 
-import PropTypes from "./types/PropTypes";
+import { SidebarProps } from "./Sidebar.types";
 
-const Sidebar: FC<PropTypes> = (props) => {
+const Sidebar: FC<SidebarProps> = (props) => {
   const { instance } = useMsal();
 
   const handleLinkClick = function () {

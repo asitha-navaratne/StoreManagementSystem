@@ -29,15 +29,16 @@ import CloseIcon from "@mui/icons-material/Close";
 import styles from "./SuppliersPage.module.scss";
 import dataGridStyles from "../../Styles/dataGridStyles";
 
-import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
-import AlertWindow from "../../Components/AlertWindow/AlertWindow";
+import DataGridToolbar, {
+  DataGridToolbarProps,
+} from "../../Components/DataGridToolbar";
+import AlertWindow from "../../Components/AlertWindow";
 
 import useErrorContext from "../../Hooks/useErrorContext";
 
 import SuppliersGridColumnsType from "./types/GridColumnsType";
 import SuppliersApiColumnsType from "./types/ApiColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
-import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
 
 import InitSupplierRowValues from "../../Constants/InitSupplierRowValues";
 
@@ -438,7 +439,7 @@ const SuppliersPage = () => {
                   isAddButtonDisabled: isAddButtonClicked,
                   handleAddButtonClicked,
                   showQuickFilter: true,
-                } as DataGridToolbarPropTypes,
+                } as DataGridToolbarProps,
               }}
               sx={dataGridStyles}
             />

@@ -1,4 +1,4 @@
-type PropTypes = {
+export type AlertWindowProps = {
   isWindowOpen: boolean;
   handleClose: () => void;
   handleDisagreeAction: () => void;
@@ -6,5 +6,3 @@ type PropTypes = {
   windowTitle: string;
   description: string;
 };
-
-export default PropTypes;
