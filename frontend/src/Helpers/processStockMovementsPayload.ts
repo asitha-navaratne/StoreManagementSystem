@@ -31,7 +31,7 @@ function processStockMovementsPayload(
     current_in_hand: row.currentInHand,
     purchased_amount: row.purchasedAmount,
     sold: row.sold,
-    updated_by: "AsithaN",
+    updated_by: row.updatedBy,
   };
 }
 

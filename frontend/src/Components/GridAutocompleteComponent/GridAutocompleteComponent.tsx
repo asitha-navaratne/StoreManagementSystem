@@ -3,10 +3,10 @@ import { memo, SyntheticEvent, useCallback, useState } from "react";
 import { Autocomplete, InputBase } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid";
 
-import PropTypes from "./types/PropTypes";
+import { GridAutocompleteComponentProps } from "./GridAutocompleteComponent.types";
 
 const GridAutocompleteComponent = <T extends { [key: string]: unknown }>(
-  props: PropTypes<T>
+  props: GridAutocompleteComponentProps<T>
 ) => {
   const { id, field, handleValueChange, keyField } = props;
 

@@ -1,6 +1,4 @@
-type PropTypes = {
+export type SidebarProps = {
   isOpen: boolean;
   handleClose: () => void;
 };
-
-export default PropTypes;

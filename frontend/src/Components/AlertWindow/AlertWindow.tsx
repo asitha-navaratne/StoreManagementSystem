@@ -9,9 +9,9 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-import PropTypes from "./types/PropTypes";
+import { AlertWindowProps } from "./AlertWindow.types";
 
-const AlertWindow: FC<PropTypes> = (props) => {
+const AlertWindow: FC<AlertWindowProps> = (props) => {
   return (
     <Dialog open={props.isWindowOpen} onClose={props.handleClose}>
       <DialogTitle>{props.windowTitle}</DialogTitle>

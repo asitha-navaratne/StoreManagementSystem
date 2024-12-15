@@ -3,15 +3,13 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from database.models import Stores, Users
+from database.models import Stores
 
 from models.CreateStoreModel import CreateStoreModel
 
 
 def create_store(store: CreateStoreModel, db: Session):
     try:
-        user_id = db.scalars(select(Users.id).where(Users.username == store.created_by)).first()
-
         check_fields = [
             "id",
             "store_name",
@@ -71,7 +69,7 @@ def create_store(store: CreateStoreModel, db: Session):
             store_name = store.store_name,
             store_address = store.store_address,
             active = store.active,
-            created_by = user_id,
+            created_by = store.created_by,
             created_on = store.created_on,
             updated_by = store.updated_by,
             updated_on = store.updated_on

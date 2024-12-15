@@ -17,11 +17,11 @@ import ClearIcon from "@mui/icons-material/Clear";
 
 import styles from "./ErrorBar.module.scss";
 
-import PropTypes from "./types/PropTypes";
+import { ErrorBarProps } from "./ErrorBar.types";
 
 import useErrorContext from "../../Hooks/useErrorContext";
 
-const ErrorBar: FC<PropTypes> = (props) => {
+const ErrorBar: FC<ErrorBarProps> = (props) => {
   const { errorList, handleRemoveError } = useErrorContext();
 
   return (

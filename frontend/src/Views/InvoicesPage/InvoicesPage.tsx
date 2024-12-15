@@ -4,6 +4,7 @@ import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import { useLoaderData, useNavigation } from "react-router";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { useMsal } from "@azure/msal-react";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import {
   DataGrid,
@@ -26,15 +27,16 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import styles from "./InvoicesPage.module.scss";
 import dataGridStyles from "../../Styles/dataGridStyles";
 
-import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
-import AlertWindow from "../../Components/AlertWindow/AlertWindow";
+import DataGridToolbar, {
+  DataGridToolbarProps,
+} from "../../Components/DataGridToolbar";
+import AlertWindow from "../../Components/AlertWindow";
 
 import useErrorContext from "../../Hooks/useErrorContext";
 
 import InvoiceGridColumnsType from "./types/GridColumnsType";
 import InvoiceApiColumnsType from "./types/ApiColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
-import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
 
 import handleErrors from "../../Helpers/handleErrors";
 
@@ -50,6 +52,10 @@ const InvoicesPage = () => {
   const { data, refetch } = useSuspenseQuery(getInvoicesQuery);
 
   const isLoading = navigation.state === "loading";
+
+  const { instance } = useMsal();
+
+  const user = instance.getActiveAccount()?.name;
 
   const [rows, setRows] = useState<GridRowsProp>(loaderData);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
@@ -301,7 +307,7 @@ const InvoicesPage = () => {
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = {
       ...newRow,
-      updatedBy: "AsithaN",
+      updatedBy: user,
       updatedOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
       isNew: false,
     };
@@ -384,7 +390,7 @@ const InvoicesPage = () => {
                 toolbar: {
                   isAddButtonShown: false,
                   showQuickFilter: true,
-                } as DataGridToolbarPropTypes,
+                } as DataGridToolbarProps,
               }}
               sx={dataGridStyles}
             />

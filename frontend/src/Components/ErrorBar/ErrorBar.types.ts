@@ -1,6 +1,4 @@
-type PropTypes = {
+export type ErrorBarProps = {
   isOpen: boolean;
   handleClose: () => void;
 };
-
-export default PropTypes;

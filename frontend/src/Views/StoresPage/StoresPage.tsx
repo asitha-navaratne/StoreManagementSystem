@@ -4,6 +4,7 @@ import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import randomInteger from "random-int";
 import { useLoaderData, useNavigation } from "react-router";
+import { useMsal } from "@azure/msal-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import {
@@ -29,15 +30,16 @@ import CloseIcon from "@mui/icons-material/Close";
 import styles from "./StoresPage.module.scss";
 import dataGridStyles from "../../Styles/dataGridStyles";
 
-import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
-import AlertWindow from "../../Components/AlertWindow/AlertWindow";
+import DataGridToolbar, {
+  DataGridToolbarProps,
+} from "../../Components/DataGridToolbar";
+import AlertWindow from "../../Components/AlertWindow";
 
 import useErrorContext from "../../Hooks/useErrorContext";
 
 import StoreGridColumnsType from "./types/GridColumnsType";
 import StoreApiColumnsType from "./types/ApiColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
-import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
 
 import InitStoreRowValues from "../../Constants/InitStoreRowValues";
 
@@ -55,6 +57,10 @@ const StoresPage = () => {
   const { data, refetch } = useSuspenseQuery(getStoresQuery);
 
   const isLoading = navigation.state === "loading";
+
+  const { instance } = useMsal();
+
+  const user = instance.getActiveAccount()!.name ?? "";
 
   const [rows, setRows] = useState<GridRowsProp>(loaderData);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
@@ -252,7 +258,7 @@ const StoresPage = () => {
       {
         id,
         ...InitStoreRowValues,
-        createdBy: "AsithaN",
+        createdBy: user,
         createdOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         updatedBy: null,
         updatedOn: null,
@@ -288,7 +294,7 @@ const StoresPage = () => {
     } else {
       const updatedRow = {
         ...newRow,
-        updatedBy: "AsithaN",
+        updatedBy: user,
         updatedOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         isNew: false,
       };
@@ -380,7 +386,7 @@ const StoresPage = () => {
                   isAddButtonDisabled: isAddButtonClicked,
                   handleAddButtonClicked,
                   showQuickFilter: true,
-                } as DataGridToolbarPropTypes,
+                } as DataGridToolbarProps,
               }}
               sx={dataGridStyles}
             />

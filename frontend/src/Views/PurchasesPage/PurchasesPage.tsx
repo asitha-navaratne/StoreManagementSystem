@@ -3,6 +3,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { AxiosError } from "axios";
 import { useLoaderData, useNavigation } from "react-router";
 import randomInteger from "random-int";
+import { useMsal } from "@azure/msal-react";
 import dayjs, { Dayjs } from "dayjs";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -41,7 +42,9 @@ import {
 import styles from "./PurchasesPage.module.scss";
 import dataGridStyles from "../../Styles/dataGridStyles";
 
-import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
+import DataGridToolbar, {
+  DataGridToolbarProps,
+} from "../../Components/DataGridToolbar";
 
 import useErrorContext from "../../Hooks/useErrorContext";
 
@@ -50,7 +53,6 @@ import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErr
 import PurchaseGridColumnsType from "./types/GridColumnsType";
 import PurchaseApiColumnsType from "./types/ApiColumnsType";
 import InvoiceGridColumnsType from "../InvoicesPage/types/GridColumnsType";
-import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
 
 import InitInvoiceData from "../../Constants/InitInvoiceData";
 
@@ -70,6 +72,10 @@ const PurchasesPage = () => {
   const navigation = useNavigation();
 
   const isLoading = navigation.state === "loading";
+
+  const { instance } = useMsal();
+
+  const user = instance.getActiveAccount()!.name ?? "";
 
   const { suppliers: suppliersList, stores: storesList } =
     useLoaderData() as LoaderDataType;
@@ -424,7 +430,7 @@ const PurchasesPage = () => {
         supplierName: selectedSupplier,
         storeName: selectedStore,
         invoiceNumber: invoiceNumber,
-        updatedBy: "AsithaN",
+        updatedBy: user,
         updatedOn: dayjs().format("YYYY-MM-DD"),
       })
         .then(() => {
@@ -433,7 +439,7 @@ const PurchasesPage = () => {
               ...row,
               invoiceNumber: invoiceNumber,
               receivedDate: selectedReceivedDate?.format("YYYY-MM-DD"),
-              updatedBy: "AsithaN",
+              updatedBy: user,
               updatedOn: dayjs().format("YYYY-MM-DD"),
             })),
             selectedSupplier,
@@ -495,7 +501,7 @@ const PurchasesPage = () => {
         supplierName: selectedSupplier,
         storeName: selectedStore,
         invoiceNumber: invoiceNumber,
-        createdBy: "AsithaN",
+        createdBy: user,
       })
         .then(() => {
           AddPurchases(
@@ -511,7 +517,7 @@ const PurchasesPage = () => {
                   id,
                   invoiceNumber: invoiceNumber,
                   receivedDate: selectedReceivedDate?.format("YYYY-MM-DD"),
-                  createdBy: "AsithaN",
+                  createdBy: user,
                   createdOn: dayjs().format("YYYY-MM-DD"),
                   updatedBy: null,
                   updatedOn: null,
@@ -821,7 +827,7 @@ const PurchasesPage = () => {
                 toolbar: {
                   isSaveButtonDisabled: isSaveButtonDisabled,
                   handleSaveButtonClick: handleSaveAllButtonClick,
-                } as DataGridToolbarPropTypes,
+                } as DataGridToolbarProps,
               }}
               sx={dataGridStyles}
             />

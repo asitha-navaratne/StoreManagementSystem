@@ -5,9 +5,9 @@ import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from "@mui/icons-material/Save";
 import { GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
 
-import PropTypes from "./types/PropTypes";
+import { DataGridToolbarProps } from "./DataGridToolbar.types";
 
-const DataGridToolbar: FC<PropTypes> = (props) => {
+const DataGridToolbar: FC<DataGridToolbarProps> = (props) => {
   return (
     <GridToolbarContainer>
       {"isSaveButtonDisabled" in props ? (

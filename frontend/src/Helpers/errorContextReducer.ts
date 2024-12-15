@@ -8,12 +8,12 @@ function errorContextReducer(
   action: ErrorContextActionType
 ): ErrorContextStateType {
   switch (action.type) {
-    case "push":
+    case "PUSH":
       return {
         errorList: [action.payload, ...state.errorList],
         newError: action.payload,
       };
-    case "remove":
+    case "REMOVE":
       return {
         errorList: [
           ...state.errorList.filter((item) => item.id !== action.payload),

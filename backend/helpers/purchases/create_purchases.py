@@ -3,15 +3,13 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import select, insert
 from sqlalchemy.orm import Session
 
-from database.models import Purchases, PriceMaster, Stores, Suppliers, Invoices, Users
+from database.models import Purchases, PriceMaster, Stores, Suppliers, Invoices
 
 from models.CreatePurchaseModel import CreatePurchaseModel
 
 
 def create_purchases(purchases: list[CreatePurchaseModel], db: Session):
     try:
-        user_id = db.scalars(select(Users.id).where(Users.username == purchases[0].created_by)).first()
-
         create_purchases_list = []
 
         for purchase in purchases:
@@ -29,7 +27,7 @@ def create_purchases(purchases: list[CreatePurchaseModel], db: Session):
                 'received_date': purchase.received_date,
                 'quantity_ordered': purchase.quantity_ordered,
                 'quantity_received': purchase.quantity_received,
-                'created_by': user_id,
+                'created_by': purchase.created_by,
                 'created_on': purchase.created_on,
                 'updated_by': purchase.updated_by,
                 'updated_on': purchase.updated_on,

@@ -3,16 +3,13 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
-from database.models import Suppliers, Users
+from database.models import Suppliers
 
 from models.CreateSupplierModel import CreateSupplierModel
 
 
 def edit_supplier(supplier: CreateSupplierModel, db: Session):
     try:
-        created_user_id = db.scalars(select(Users.id).where(Users.username == supplier.created_by)).first()
-        updated_user_id = db.scalars(select(Users.id).where(Users.username == supplier.updated_by)).first()
-        
         check_fields = [
             "id",
             "company_name",
@@ -88,9 +85,9 @@ def edit_supplier(supplier: CreateSupplierModel, db: Session):
                 invoice_type = supplier.invoice_type,
                 payment_period = supplier.payment_period,
                 active = supplier.active,
-                created_by = created_user_id,
+                created_by = supplier.created_by,
                 created_on = supplier.created_on,
-                updated_by = updated_user_id,
+                updated_by = supplier.updated_by,
                 updated_on = supplier.updated_on,
             )
         )

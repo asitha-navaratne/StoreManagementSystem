@@ -5,6 +5,7 @@ import randomInteger from "random-int";
 import { AxiosError } from "axios";
 import { useLoaderData, useNavigation } from "react-router";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { useMsal } from "@azure/msal-react";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import {
   DataGrid,
@@ -29,16 +30,17 @@ import CloseIcon from "@mui/icons-material/Close";
 import styles from "./PriceMasterPage.module.scss";
 import dataGridStyles from "../../Styles/dataGridStyles";
 
-import DataGridToolbar from "../../Components/DataGridToolbar/DataGridToolbar";
-import GridAutocompleteComponent from "../../Components/GridAutocompleteComponent/GridAutocompleteComponent";
-import AlertWindow from "../../Components/AlertWindow/AlertWindow";
+import DataGridToolbar, {
+  DataGridToolbarProps,
+} from "../../Components/DataGridToolbar";
+import GridAutocompleteComponent from "../../Components/GridAutocompleteComponent";
+import AlertWindow from "../../Components/AlertWindow";
 
 import useErrorContext from "../../Hooks/useErrorContext";
 
 import LoaderDataType from "./types/LoaderType";
 import PriceMasterApiColumnsType from "./types/ApiColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
-import DataGridToolbarPropTypes from "../../Components/DataGridToolbar/types/PropTypes";
 
 import InitPriceRowValues from "../../Constants/InitPriceRowValues";
 import AlcoholCategories from "../../Constants/AlcoholCategories";
@@ -57,6 +59,10 @@ const PriceMasterPage = () => {
   const { data, refetch } = useSuspenseQuery(getPriceItemsQuery);
 
   const isLoading = navigation.state === "loading";
+
+  const { instance } = useMsal();
+
+  const user = instance.getActiveAccount()?.name;
 
   const [rows, setRows] = useState<GridRowsProp>(loaderData.products);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
@@ -409,7 +415,7 @@ const PriceMasterPage = () => {
       {
         id,
         ...InitPriceRowValues,
-        createdBy: "AsithaN",
+        createdBy: user,
         createdOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         updatedBy: null,
         updatedOn: null,
@@ -448,7 +454,7 @@ const PriceMasterPage = () => {
       const updatedRow = {
         ...newRow,
         commissions: commissionValue,
-        updatedBy: "AsithaN",
+        updatedBy: user,
         updatedOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         isNew: false,
       };
@@ -540,7 +546,7 @@ const PriceMasterPage = () => {
                   isAddButtonDisabled: isAddButtonClicked,
                   handleAddButtonClicked,
                   showQuickFilter: true,
-                } as DataGridToolbarPropTypes,
+                } as DataGridToolbarProps,
               }}
               sx={dataGridStyles}
             />
