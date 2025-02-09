@@ -116,8 +116,16 @@ const SuppliersPage = () => {
       headerAlign: "left",
     },
     {
+      field: "supplierCode",
+      headerName: "Supplier Code",
+      flex: 1,
+      editable: true,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
       field: "companyName",
-      headerName: "Company Name",
+      headerName: "Supplier Name",
       flex: 1,
       editable: true,
       align: "left",
@@ -126,14 +134,6 @@ const SuppliersPage = () => {
     {
       field: "contactPerson",
       headerName: "Contact Person",
-      flex: 1,
-      editable: true,
-      align: "left",
-      headerAlign: "left",
-    },
-    {
-      field: "supplierCode",
-      headerName: "Supplier Code",
       flex: 1,
       editable: true,
       align: "left",
@@ -428,6 +428,8 @@ const SuppliersPage = () => {
                 columns: {
                   columnVisibilityModel: {
                     id: false,
+                    contactPerson: false,
+                    number: false,
                     createdBy: false,
                     createdOn: false,
                     updatedBy: false,
