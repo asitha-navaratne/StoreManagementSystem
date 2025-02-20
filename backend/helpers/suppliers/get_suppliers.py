@@ -14,10 +14,11 @@ def get_suppliers(db: Session):
         for result in results:
             result_dict = {
                 'id': result[0].id,
-                'company_name': result[0].company_name,
+                'supplier_name': result[0].supplier_name,
                 'contact_person': result[0].contact_person,
+                'supplier_short_name': result[0].supplier_short_name,
                 'supplier_code': result[0].supplier_code,
-                'number': result[0].number,
+                'phone_number': result[0].phone_number,
                 'supplier_tin': result[0].supplier_tin,
                 'email': result[0].email,
                 'invoice_type': result[0].invoice_type,

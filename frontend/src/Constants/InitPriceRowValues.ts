@@ -1,6 +1,6 @@
 const InitPriceRowValues = {
   shopName: "",
-  companyName: "",
+  supplierName: "",
   brand: "",
   brandCode: "",
   category: "",

@@ -12,10 +12,11 @@ def create_supplier(supplier: CreateSupplierModel, db: Session):
     try:
         check_fields = [
             "id",
-            "company_name",
+            "supplier_name",
             "contact_person",
+            "supplier_short_name",
             "supplier_code",
-            "number",
+            "phone_number",
             "supplier_tin",
             "invoice_type",
             "payment_period",
@@ -50,7 +51,7 @@ def create_supplier(supplier: CreateSupplierModel, db: Session):
 
         item_exists = db.scalars(
             select(Suppliers.id)
-            .where(Suppliers.company_name == supplier.company_name)
+            .where(Suppliers.supplier_name == supplier.supplier_name)
             .where(Suppliers.supplier_tin == supplier.supplier_tin)
         ).first() is not None
 
@@ -73,10 +74,11 @@ def create_supplier(supplier: CreateSupplierModel, db: Session):
 
         db_supplier = Suppliers(
             id = supplier.id,
-            company_name = supplier.company_name,
+            supplier_name = supplier.supplier_name,
             contact_person = supplier.contact_person,
+            supplier_short_name = supplier.supplier_short_name,
             supplier_code = supplier.supplier_code,
-            number = supplier.number,
+            phone_number = supplier.phone_number,
             supplier_tin = supplier.supplier_tin,
             email = supplier.email,
             invoice_type = supplier.invoice_type,

@@ -69,11 +69,12 @@ class Suppliers(Base):
     __tablename__ = 'suppliers'
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    company_name: Mapped[str] = mapped_column(nullable=False)
-    contact_person: Mapped[str] = mapped_column(nullable=False)
     supplier_code: Mapped[str] = mapped_column(nullable=False)
-    number: Mapped[str] = mapped_column(nullable=False)
+    supplier_name: Mapped[str] = mapped_column(nullable=False)
+    supplier_short_name: Mapped[str] = mapped_column(nullable=False)
     supplier_tin: Mapped[str] = mapped_column(nullable=False)
+    contact_person: Mapped[str] = mapped_column(nullable=False)
+    phone_number: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str]
     invoice_type: Mapped[str]
     payment_period: Mapped[int]

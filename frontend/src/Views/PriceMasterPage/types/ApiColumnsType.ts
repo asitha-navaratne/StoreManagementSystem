@@ -1,7 +1,7 @@
 type PriceMasterApiColumnsType = {
   id: number;
   shop_name: string;
-  company_name: string;
+  supplier_name: string;
   brand: string;
   brand_code: string;
   category: string;

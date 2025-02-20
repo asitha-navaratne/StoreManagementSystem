@@ -8,7 +8,7 @@ from database.models import PriceMaster, Suppliers, Stores
 
 def get_price_items_by_supplier_and_store(supplier_name: str, store_name: str, db: Session):
     try:
-        supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.company_name == supplier_name)).first()
+        supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.supplier_name == supplier_name)).first()
         store_id = db.scalars(select(Stores.id).where(Stores.store_name == store_name)).first()
 
         stmt = (

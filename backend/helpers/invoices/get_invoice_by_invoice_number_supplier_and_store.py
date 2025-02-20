@@ -8,7 +8,7 @@ from database.models import Invoices, Suppliers, Stores
 
 def get_invoice_by_invoice_number_supplier_and_store(invoice_number: int, supplier_name: str, store_name: str, db: Session):
     try:
-        supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.company_name == supplier_name)).first()
+        supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.supplier_name == supplier_name)).first()
         store_id = db.scalars(select(Stores.id).where(Stores.store_name == store_name)).first()
 
         stmt = (
@@ -24,7 +24,7 @@ def get_invoice_by_invoice_number_supplier_and_store(invoice_number: int, suppli
             result_dict = {
                 'id': result[0].id,
                 'invoice_date': result[0].invoice_date,
-                'supplier_name': result[1].company_name,
+                'supplier_name': result[1].supplier_name,
                 'store_name': result[2].store_name,
                 'invoice_number': result[0].invoice_number,
                 'description': result[0].description,

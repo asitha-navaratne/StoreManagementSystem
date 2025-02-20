@@ -124,8 +124,16 @@ const SuppliersPage = () => {
       headerAlign: "left",
     },
     {
-      field: "companyName",
+      field: "supplierName",
       headerName: "Supplier Name",
+      flex: 1,
+      editable: true,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "supplierShortName",
+      headerName: "Supplier Short Name",
       flex: 1,
       editable: true,
       align: "left",
@@ -140,7 +148,7 @@ const SuppliersPage = () => {
       headerAlign: "left",
     },
     {
-      field: "number",
+      field: "phoneNumber",
       headerName: "Phone Number",
       flex: 1,
       editable: true,
@@ -317,7 +325,7 @@ const SuppliersPage = () => {
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "companyName" },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "supplierCode" },
     }));
   };
 
@@ -428,8 +436,6 @@ const SuppliersPage = () => {
                 columns: {
                   columnVisibilityModel: {
                     id: false,
-                    contactPerson: false,
-                    number: false,
                     createdBy: false,
                     createdOn: false,
                     updatedBy: false,

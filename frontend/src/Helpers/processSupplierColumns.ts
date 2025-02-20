@@ -6,10 +6,11 @@ function processSupplierColumns(
 ): SuppliersGridColumnsType {
   return {
     id: row.id,
-    companyName: row.company_name,
+    supplierName: row.supplier_name,
+    supplierShortName: row.supplier_short_name,
     contactPerson: row.contact_person,
     supplierCode: row.supplier_code,
-    number: row.number,
+    phoneNumber: row.phone_number,
     supplierTin: row.supplier_tin,
     email: row.email,
     invoiceType: row.invoice_type,

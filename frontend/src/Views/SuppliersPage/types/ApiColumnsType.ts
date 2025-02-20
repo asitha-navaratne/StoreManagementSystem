@@ -1,9 +1,10 @@
 type SuppliersApiColumnsType = {
   id: number;
-  company_name: string;
+  supplier_name: string;
+  supplier_short_name: string;
   contact_person: string;
   supplier_code: string;
-  number: string;
+  phone_number: string;
   supplier_tin: string;
   email: string;
   invoice_type: "Local" | "Foreign";
