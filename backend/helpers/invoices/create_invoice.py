@@ -10,7 +10,7 @@ from models.CreateInvoiceModel import CreateInvoiceModel
 
 def create_invoice(invoice: CreateInvoiceModel, db: Session):
     try:
-        supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.company_name == invoice.supplier_name)).first()
+        supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.supplier_name == invoice.supplier_name)).first()
         store_id = db.scalars(select(Stores.id).where(Stores.store_name == invoice.store_name)).first()
 
         check_fields = [

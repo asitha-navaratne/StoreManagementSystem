@@ -592,9 +592,9 @@ const PurchasesPage = () => {
                         suppliersList.map((supplier) => (
                           <MenuItem
                             key={supplier.id}
-                            value={supplier.companyName}
+                            value={supplier.supplierName}
                           >
-                            {supplier.companyName}
+                            {supplier.supplierName}
                           </MenuItem>
                         ))
                       ) : (

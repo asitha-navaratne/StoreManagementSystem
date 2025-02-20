@@ -6,7 +6,7 @@ from typing import Optional
 class CreatePriceModel(BaseModel):
     id: int
     shop_name: str
-    company_name: str
+    supplier_name: str
     brand: str
     brand_code: str
     category: str

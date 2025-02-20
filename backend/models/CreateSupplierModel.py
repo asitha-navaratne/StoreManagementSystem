@@ -5,10 +5,11 @@ from typing import Optional
 
 class CreateSupplierModel(BaseModel):
     id: int
-    company_name: str
+    supplier_name: str
     contact_person: str
+    supplier_short_name: str
     supplier_code: str
-    number: str
+    phone_number: str
     supplier_tin: str
     email: str
     invoice_type: str

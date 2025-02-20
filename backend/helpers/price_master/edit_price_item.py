@@ -11,12 +11,12 @@ from models.CreatePriceModel import CreatePriceModel
 def edit_price_item(price_item: CreatePriceModel, db: Session):
     try:
         store_id = db.scalars(select(Stores.id).where(Stores.store_name == price_item.shop_name)).first()
-        supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.company_name == price_item.company_name)).first()
+        supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.supplier_name == price_item.supplier_name)).first()
 
         check_fields = [
             "id",
             "shop_name",
-            "company_name",
+            "supplier_name",
             "brand",
             "brand_code",
             "category",

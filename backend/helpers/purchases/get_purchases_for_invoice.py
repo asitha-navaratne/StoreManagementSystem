@@ -9,11 +9,11 @@ from database.models import Purchases, Stores, PriceMaster, Suppliers, Invoices
 def get_purchases_for_invoice(invoice_number: int, supplier_name: str, store_name: str, db: Session):
     try:
         invoice_id = db.scalars(select(Invoices.id).where(Invoices.invoice_number == invoice_number)).first()
-        supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.company_name == supplier_name)).first()
+        supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.supplier_name == supplier_name)).first()
         store_id = db.scalars(select(Stores.id).where(Stores.store_name == store_name)).first()
 
         stmt = (
-            select(Purchases, Stores.store_name, PriceMaster, Suppliers.company_name)
+            select(Purchases, Stores.store_name, PriceMaster, Suppliers.supplier_name)
             .join(Stores, Purchases.store_id == Stores.id, isouter=True)
             .join(PriceMaster, Purchases.product_id == PriceMaster.id, isouter=True)
             .join(Suppliers, Purchases.supplier_id == Purchases.id, isouter=True)

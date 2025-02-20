@@ -1,7 +1,7 @@
 type PriceMasterGridColumnsType = {
   id: number;
   shopName: string;
-  companyName: string;
+  supplierName: string;
   brand: string;
   brandCode: string;
   category: string;

@@ -7,7 +7,7 @@ function processPriceMasterColumns(
   return {
     id: payload.id,
     shopName: payload.shop_name,
-    companyName: payload.company_name,
+    supplierName: payload.supplier_name,
     brand: payload.brand,
     brandCode: payload.brand_code,
     category: payload.category,

@@ -8,7 +8,7 @@ function processPriceMasterPayload(
   return {
     id: row.id,
     shop_name: row.shopName,
-    company_name: row.companyName,
+    supplier_name: row.supplierName,
     brand: row.brand,
     brand_code: row.brandCode,
     category: row.category,

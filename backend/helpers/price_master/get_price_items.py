@@ -9,7 +9,7 @@ from database.models import PriceMaster, Stores, Suppliers
 def get_price_items(db: Session):
     try:
         stmt = (
-            select(PriceMaster, Stores.store_name, Suppliers.company_name)
+            select(PriceMaster, Stores.store_name, Suppliers.supplier_name)
             .join(Stores, PriceMaster.store_id == Stores.id, isouter=True)
             .join(Suppliers, PriceMaster.supplier_id == Suppliers.id, isouter=True)
         )
@@ -20,7 +20,7 @@ def get_price_items(db: Session):
             result_dict = {
                 'id': result[0].id,
                 'shop_name': result[1],
-                'company_name': result[2],
+                'supplier_name': result[2],
                 'brand': result[0].brand,
                 'brand_code': result[0].brand_code,
                 'category': result[0].category,

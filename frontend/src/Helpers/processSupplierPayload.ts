@@ -7,10 +7,11 @@ function processSupplierPayload(
 ): SuppliersApiColumnsType {
   return {
     id: row.id,
-    company_name: row.companyName,
+    supplier_name: row.supplierName,
+    supplier_short_name: row.supplierShortName,
     contact_person: row.contactPerson,
     supplier_code: row.supplierCode,
-    number: row.number,
+    phone_number: row.phoneNumber,
     supplier_tin: row.supplierTin,
     email: row.email,
     invoice_type: row.invoiceType,

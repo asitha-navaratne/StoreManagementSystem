@@ -1,9 +1,10 @@
 type SuppliersGridColumnsType = {
   id: number;
-  companyName: string;
+  supplierName: string;
+  supplierShortName: string;
   contactPerson: string;
   supplierCode: string;
-  number: string;
+  phoneNumber: string;
   supplierTin: string;
   email: string;
   invoiceType: "Local" | "Foreign";

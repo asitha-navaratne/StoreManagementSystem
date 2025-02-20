@@ -140,7 +140,7 @@ const PriceMasterPage = () => {
       headerAlign: "left",
     },
     {
-      field: "companyName",
+      field: "supplierName",
       headerName: "Supplier Name",
       flex: 1,
       editable: true,
@@ -148,11 +148,11 @@ const PriceMasterPage = () => {
         <GridAutocompleteComponent
           {...params}
           options={loaderData.suppliers}
-          keyField="companyName"
+          keyField="supplierName"
           handleValueChange={handleSupplierValueChange}
           getInitialValue={() =>
             loaderData.suppliers.filter(
-              (option) => option.companyName === params.value
+              (option) => option.supplierName === params.value
             )[0] ?? null
           }
         />
@@ -392,7 +392,7 @@ const PriceMasterPage = () => {
         if (row.id === id) {
           return {
             ...row,
-            companyName: newValue?.companyName,
+            supplierName: newValue?.supplierName,
           };
         }
         return row;
