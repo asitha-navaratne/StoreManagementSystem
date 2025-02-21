@@ -1,10 +1,9 @@
+import { useEffect } from "react";
+
+import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
-import {
-  AuthenticatedTemplate,
-  UnauthenticatedTemplate,
-  useMsal,
-} from "@azure/msal-react";
+import { Button } from "@mui/material";
 
 import ErrorProvider from "./Contexts/ErrorProvider";
 
@@ -71,16 +70,29 @@ const router = createBrowserRouter([
 
 function App() {
   const { instance } = useMsal();
-  const activeAccount = instance.getActiveAccount();
+  const isAuthenticated = useIsAuthenticated();
+
+  useEffect(() => {
+    instance.ssoSilent({ scopes: ["User.Read"] }).catch((err) => {
+      throw err;
+    });
+  }, [instance]);
+
+  const handleLogin = async function () {
+    await instance.loginPopup({ scopes: ["User.Read"] });
+  };
 
   return (
     <ErrorProvider>
-      <AuthenticatedTemplate>
-        {activeAccount && <RouterProvider router={router} />}
-      </AuthenticatedTemplate>
-      <UnauthenticatedTemplate>
-        <LoginPage />
-      </UnauthenticatedTemplate>
+      {isAuthenticated ? (
+        <RouterProvider router={router} />
+      ) : (
+        <LoginPage>
+          <Button variant="contained" sx={{ mt: 5 }} onClick={handleLogin}>
+            Sign In
+          </Button>
+        </LoginPage>
+      )}
     </ErrorProvider>
   );
 }

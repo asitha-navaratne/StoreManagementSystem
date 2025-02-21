@@ -1,9 +1,11 @@
+import { PublicClientApplication } from "@azure/msal-browser";
+
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 const AUTHORITY = `https://${
   import.meta.env.VITE_TENANT_SUBDOMAIN
 }.ciamlogin.com/`;
 
-export const msalConfig = {
+const msalConfig = {
   auth: {
     clientId: CLIENT_ID,
     authority: AUTHORITY,
@@ -17,6 +19,4 @@ export const msalConfig = {
   },
 };
 
-export const loginRequest = {
-  scopes: [],
-};
+export const msalInstance = new PublicClientApplication(msalConfig);

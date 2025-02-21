@@ -1,24 +1,11 @@
-import { useMsal } from "@azure/msal-react";
-
-import { Button, Grid2, Paper, Stack, Typography } from "@mui/material";
+import { FC } from "react";
+import { Grid2, Paper, Stack, Typography } from "@mui/material";
 
 import styles from "./LoginPage.module.scss";
 
-import { loginRequest } from "../../Configs/auth.config";
+import { LoginPageProps } from "./LoginPage.types";
 
-const LoginPage = () => {
-  const { instance } = useMsal();
-
-  const handleRedirect = () => {
-    instance
-      .loginRedirect({
-        ...loginRequest,
-      })
-      .catch((err) => {
-        throw err;
-      });
-  };
-
+const LoginPage: FC<LoginPageProps> = (props) => {
   return (
     <Grid2
       height="100%"
@@ -34,9 +21,7 @@ const LoginPage = () => {
             Store Management System
           </Typography>
           <Typography variant="h3">v 1.0</Typography>
-          <Button variant="contained" sx={{ mt: 5 }} onClick={handleRedirect}>
-            Sign In
-          </Button>
+          {props.children}
         </Stack>
       </Paper>
     </Grid2>

@@ -6,12 +6,6 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ThemeProvider } from "@mui/material";
 import "material-icons/iconfont/material-icons.css";
-import {
-  AccountInfo,
-  AuthenticationResult,
-  EventType,
-  PublicClientApplication,
-} from "@azure/msal-browser";
 
 import App from "./App.tsx";
 
@@ -24,28 +18,7 @@ import "./index.scss";
 import theme from "./Styles/theme.ts";
 
 import queryClient from "./Utils/QueryClient.ts";
-import { msalConfig } from "./Configs/auth.config.ts";
-
-const msalInstance = new PublicClientApplication(msalConfig);
-
-if (
-  !msalInstance.getActiveAccount() &&
-  msalInstance.getAllAccounts().length > 0
-) {
-  const accounts: AccountInfo[] = msalInstance.getAllAccounts();
-  if (accounts.length > 0) {
-    msalInstance.setActiveAccount(accounts[0]);
-  }
-}
-
-msalInstance.addEventCallback((event) => {
-  if (event.eventType === EventType.LOGIN_SUCCESS && event?.payload) {
-    const authResult = event.payload as AuthenticationResult;
-    if (authResult.account) {
-      msalInstance.setActiveAccount(authResult.account);
-    }
-  }
-});
+import { msalInstance } from "./Configs/auth.config.ts";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
