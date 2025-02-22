@@ -30,12 +30,16 @@ jobs:
         working-directory: frontend
         run: echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL }}" >> .env
 
+      - name: Debug .env file
+        working-directory: frontend
+        run: cat .env || echo ".env file not created"
+
       - name: Build the app
         working-directory: frontend
         run: npm run build
 
       - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
+        uses: FirebaseExtended/action-hosting-deploy@v1
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_STORE_MANAGEMENT_SYSTEM_ECD55 }}
