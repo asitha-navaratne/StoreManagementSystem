@@ -28,7 +28,10 @@ jobs:
 
       - name: Create environment file
         working-directory: frontend
-        run: echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL }}" >> .env
+        run: |
+          echo "VITE_CLIENT_ID=${{ secrets.VITE_CLIENT_ID }}" >> .env
+          echo "VITE_TENANT_SUBDOMAIN=${{ secrets.VITE_TENANT_SUBDOMAIN }}" >> .env
+          echo "VITE_BASE_URL=${{ vars.VITE_BASE_URL }}" >> .env
 
       - name: Debug .env file
         working-directory: frontend
