@@ -5,7 +5,6 @@ import randomInteger from "random-int";
 import { AxiosError } from "axios";
 import { useLoaderData, useNavigation } from "react-router";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { useMsal } from "@azure/msal-react";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import {
   DataGrid,
@@ -36,6 +35,7 @@ import DataGridToolbar, {
 import GridAutocompleteComponent from "../../Components/GridAutocompleteComponent";
 import AlertWindow from "../../Components/AlertWindow";
 
+import useAuthContext from "../../Hooks/useAuthContext";
 import useErrorContext from "../../Hooks/useErrorContext";
 
 import LoaderDataType from "./types/LoaderType";
@@ -60,7 +60,7 @@ const PriceMasterPage = () => {
 
   const isLoading = navigation.state === "loading";
 
-  const { instance } = useMsal();
+  const { instance } = useAuthContext();
 
   const user = instance.getActiveAccount()?.name;
 

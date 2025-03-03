@@ -1,13 +1,13 @@
 import { createContext, FC, useCallback, useMemo, useReducer } from "react";
 
 import ErrorContextType, { ErrorListItemType } from "../Types/ErrorContextType";
-import ContextProviderProps from "../Types/ContextProviderProps";
+import ErrorProviderProps from "../Types/ErrorProviderProps";
 
 import errorContextReducer from "../Helpers/errorContextReducer";
 
 export const ErrorContext = createContext<ErrorContextType | null>(null);
 
-const ErrorProvider: FC<ContextProviderProps> = ({ children }) => {
+const ErrorProvider: FC<ErrorProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(errorContextReducer, {
     errorList: [],
     newError: null,

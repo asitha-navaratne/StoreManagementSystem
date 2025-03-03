@@ -4,7 +4,6 @@ import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import randomInteger from "random-int";
 import { useLoaderData, useNavigation } from "react-router";
-import { useMsal } from "@azure/msal-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import {
@@ -35,6 +34,7 @@ import DataGridToolbar, {
 } from "../../Components/DataGridToolbar";
 import AlertWindow from "../../Components/AlertWindow";
 
+import useAuthContext from "../../Hooks/useAuthContext";
 import useErrorContext from "../../Hooks/useErrorContext";
 
 import SuppliersGridColumnsType from "./types/GridColumnsType";
@@ -58,7 +58,7 @@ const SuppliersPage = () => {
 
   const isLoading = navigation.state === "loading";
 
-  const { instance } = useMsal();
+  const { instance } = useAuthContext();
 
   const user = instance.getActiveAccount()!.name ?? "";
 
