@@ -1,16 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
-import { Button } from "@mui/material";
 
 import ErrorProvider from "./Contexts/ErrorProvider";
 
 import Root from "./Components/Root";
 import Fallback from "./Components/Fallback";
+import AuthLoadingSpinner from "./Components/AuthLoadingSpinner";
 
-import LoginPage from "./Views/LoginPage/LoginPage";
 import ErrorPage from "./Views/ErrorPage/ErrorPage";
 import PriceMasterPage from "./Views/PriceMasterPage/PriceMasterPage";
 import PurchasesPage from "./Views/PurchasesPage/PurchasesPage";
@@ -26,6 +24,8 @@ import storesLoader from "./Views/StoresPage/StoresLoader";
 import suppliersLoader from "./Views/SuppliersPage/SuppliersLoader";
 
 import queryClient from "./Utils/QueryClient";
+
+import { msalInstance } from "./Configs/auth.config.ts";
 
 const router = createBrowserRouter([
   {
@@ -69,30 +69,25 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const { instance } = useMsal();
-  const isAuthenticated = useIsAuthenticated();
+  const [isMsalInstanceInitialized, setIsMsalInstanceInitialized] =
+    useState(false);
 
   useEffect(() => {
-    instance.ssoSilent({ scopes: ["User.Read"] }).catch((err) => {
-      throw err;
-    });
-  }, [instance]);
+    const initializeMsalInstance = async function () {
+      await msalInstance.initialize();
+      setIsMsalInstanceInitialized(true);
+    };
 
-  const handleLogin = async function () {
-    await instance.loginPopup({ scopes: ["User.Read"] });
-  };
+    initializeMsalInstance();
+  }, []);
+
+  if (!isMsalInstanceInitialized) {
+    return <AuthLoadingSpinner />;
+  }
 
   return (
     <ErrorProvider>
-      {isAuthenticated ? (
-        <RouterProvider router={router} />
-      ) : (
-        <LoginPage>
-          <Button variant="contained" sx={{ mt: 5 }} onClick={handleLogin}>
-            Sign In
-          </Button>
-        </LoginPage>
-      )}
+      <RouterProvider router={router} />
     </ErrorProvider>
   );
 }

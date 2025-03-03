@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { useIsAuthenticated } from "@azure/msal-react";
 import { Outlet } from "react-router";
 import { Badge, Box, Button, IconButton, Snackbar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -7,9 +8,12 @@ import WarningIcon from "@mui/icons-material/Warning";
 
 import styles from "./Root.module.scss";
 
+import LoginPage from "../../Views/LoginPage/LoginPage";
+
 import Sidebar from "../Sidebar";
 import ErrorBar from "../ErrorBar";
 
+import useAuthContext from "../../Hooks/useAuthContext";
 import useErrorContext from "../../Hooks/useErrorContext";
 
 const Root = () => {
@@ -18,7 +22,17 @@ const Root = () => {
   const [isSnackbarShown, setIsSnackbarShown] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
 
+  const { instance } = useAuthContext();
+
   const { errorCount, errorList, newError } = useErrorContext();
+
+  const isAuthenticated = useIsAuthenticated();
+
+  useEffect(() => {
+    instance.ssoSilent({ scopes: ["User.Read"] }).catch((err) => {
+      console.warn("Silent sign-in failed", err);
+    });
+  }, [instance]);
 
   useEffect(() => {
     if (newError) {
@@ -26,6 +40,10 @@ const Root = () => {
       setSnackbarMessage(errorList[0].description);
     }
   }, [errorList, newError]);
+
+  const handleLogin = async function () {
+    await instance.loginPopup({ scopes: ["User.Read"] });
+  };
 
   const handleMenuButtonClick = function () {
     setIsMenuShown(true);
@@ -47,6 +65,16 @@ const Root = () => {
     setIsSnackbarShown(false);
     setSnackbarMessage("");
   };
+
+  if (!isAuthenticated) {
+    return (
+      <LoginPage>
+        <Button variant="contained" sx={{ mt: 5 }} onClick={handleLogin}>
+          Sign In
+        </Button>
+      </LoginPage>
+    );
+  }
 
   return (
     <>

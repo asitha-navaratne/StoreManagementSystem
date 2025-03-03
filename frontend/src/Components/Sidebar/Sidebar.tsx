@@ -1,6 +1,5 @@
 import { FC } from "react";
 
-import { useMsal } from "@azure/msal-react";
 import {
   Box,
   Button,
@@ -20,8 +19,10 @@ import { config } from "../../Configs/menu.config";
 
 import { SidebarProps } from "./Sidebar.types";
 
+import useAuthContext from "../../Hooks/useAuthContext";
+
 const Sidebar: FC<SidebarProps> = (props) => {
-  const { instance } = useMsal();
+  const { instance } = useAuthContext();
 
   const handleLinkClick = function () {
     props.handleClose();

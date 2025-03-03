@@ -3,7 +3,6 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { AxiosError } from "axios";
 import { useLoaderData, useNavigation } from "react-router";
 import randomInteger from "random-int";
-import { useMsal } from "@azure/msal-react";
 import dayjs, { Dayjs } from "dayjs";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -46,6 +45,7 @@ import DataGridToolbar, {
   DataGridToolbarProps,
 } from "../../Components/DataGridToolbar";
 
+import useAuthContext from "../../Hooks/useAuthContext";
 import useErrorContext from "../../Hooks/useErrorContext";
 
 import LoaderDataType from "./types/LoaderDataType";
@@ -73,7 +73,7 @@ const PurchasesPage = () => {
 
   const isLoading = navigation.state === "loading";
 
-  const { instance } = useMsal();
+  const { instance } = useAuthContext();
 
   const user = instance.getActiveAccount()!.name ?? "";
 

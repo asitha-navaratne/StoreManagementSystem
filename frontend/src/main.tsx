@@ -17,7 +17,10 @@ import "./index.scss";
 
 import theme from "./Styles/theme.ts";
 
+import AuthProvider from "./Contexts/AuthProvider.tsx";
+
 import queryClient from "./Utils/QueryClient.ts";
+
 import { msalInstance } from "./Configs/auth.config.ts";
 
 createRoot(document.getElementById("root")!).render(
@@ -25,7 +28,9 @@ createRoot(document.getElementById("root")!).render(
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <MsalProvider instance={msalInstance}>
-          <App />
+          <AuthProvider>
+            <App />
+          </AuthProvider>
         </MsalProvider>
         <ReactQueryDevtools buttonPosition="bottom-left" />
       </QueryClientProvider>
