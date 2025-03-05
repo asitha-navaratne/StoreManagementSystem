@@ -16,6 +16,8 @@ import ErrorBar from "../ErrorBar";
 import useAuthContext from "../../Hooks/useAuthContext";
 import useErrorContext from "../../Hooks/useErrorContext";
 
+import { loginRequest } from "../../Configs/auth.config";
+
 const Root = () => {
   const [isMenuShown, setIsMenuShown] = useState<boolean>(false);
   const [isErrorBarShown, setIsErrorBarShown] = useState<boolean>(false);
@@ -29,20 +31,16 @@ const Root = () => {
   const isAuthenticated = useIsAuthenticated();
 
   useEffect(() => {
-    instance.ssoSilent({ scopes: ["User.Read"] }).catch((err) => {
-      console.warn("Silent sign-in failed", err);
-    });
-  }, [instance]);
-
-  useEffect(() => {
     if (newError) {
       setIsSnackbarShown(true);
       setSnackbarMessage(errorList[0].description);
     }
   }, [errorList, newError]);
 
-  const handleLogin = async function () {
-    await instance.loginPopup({ scopes: ["User.Read"] });
+  const handleLogin = function () {
+    instance.loginRedirect(loginRequest).catch((e) => {
+      console.error(e);
+    });
   };
 
   const handleMenuButtonClick = function () {
