@@ -53,9 +53,7 @@ const InvoicesPage = () => {
 
   const isLoading = navigation.state === "loading";
 
-  const { instance } = useAuthContext();
-
-  const user = instance.getActiveAccount()?.name;
+  const { account } = useAuthContext();
 
   const [rows, setRows] = useState<GridRowsProp>(loaderData);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
@@ -307,7 +305,7 @@ const InvoicesPage = () => {
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = {
       ...newRow,
-      updatedBy: user,
+      updatedBy: account.username,
       updatedOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
       isNew: false,
     };

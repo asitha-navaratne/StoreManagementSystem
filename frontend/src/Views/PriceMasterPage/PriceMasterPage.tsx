@@ -60,9 +60,7 @@ const PriceMasterPage = () => {
 
   const isLoading = navigation.state === "loading";
 
-  const { instance } = useAuthContext();
-
-  const user = instance.getActiveAccount()?.name;
+  const { account } = useAuthContext();
 
   const [rows, setRows] = useState<GridRowsProp>(loaderData.products);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
@@ -415,7 +413,7 @@ const PriceMasterPage = () => {
       {
         id,
         ...InitPriceRowValues,
-        createdBy: user,
+        createdBy: account.username,
         createdOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         updatedBy: null,
         updatedOn: null,
@@ -454,7 +452,7 @@ const PriceMasterPage = () => {
       const updatedRow = {
         ...newRow,
         commissions: commissionValue,
-        updatedBy: user,
+        updatedBy: account.username,
         updatedOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         isNew: false,
       };
