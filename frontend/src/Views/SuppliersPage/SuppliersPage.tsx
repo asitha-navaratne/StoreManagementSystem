@@ -58,9 +58,7 @@ const SuppliersPage = () => {
 
   const isLoading = navigation.state === "loading";
 
-  const { instance } = useAuthContext();
-
-  const user = instance.getActiveAccount()!.name ?? "";
+  const { account } = useAuthContext();
 
   const [rows, setRows] = useState<GridRowsProp>(loaderData);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
@@ -317,7 +315,7 @@ const SuppliersPage = () => {
       {
         id,
         ...InitSupplierRowValues,
-        createdBy: user,
+        createdBy: account.username,
         createdOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         updatedBy: null,
         updatedOn: null,
@@ -360,7 +358,7 @@ const SuppliersPage = () => {
       const updatedRow = {
         ...newRow,
         paymentPeriod: paymentPeriodValue,
-        updatedBy: user,
+        updatedBy: account.username,
         updatedOn: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         isNew: false,
       };

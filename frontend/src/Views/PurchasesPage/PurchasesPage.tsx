@@ -73,9 +73,7 @@ const PurchasesPage = () => {
 
   const isLoading = navigation.state === "loading";
 
-  const { instance } = useAuthContext();
-
-  const user = instance.getActiveAccount()!.name ?? "";
+  const { account } = useAuthContext();
 
   const { suppliers: suppliersList, stores: storesList } =
     useLoaderData() as LoaderDataType;
@@ -430,7 +428,7 @@ const PurchasesPage = () => {
         supplierName: selectedSupplier,
         storeName: selectedStore,
         invoiceNumber: invoiceNumber,
-        updatedBy: user,
+        updatedBy: account.username,
         updatedOn: dayjs().format("YYYY-MM-DD"),
       })
         .then(() => {
@@ -439,7 +437,7 @@ const PurchasesPage = () => {
               ...row,
               invoiceNumber: invoiceNumber,
               receivedDate: selectedReceivedDate?.format("YYYY-MM-DD"),
-              updatedBy: user,
+              updatedBy: account.username,
               updatedOn: dayjs().format("YYYY-MM-DD"),
             })),
             selectedSupplier,
@@ -501,7 +499,7 @@ const PurchasesPage = () => {
         supplierName: selectedSupplier,
         storeName: selectedStore,
         invoiceNumber: invoiceNumber,
-        createdBy: user,
+        createdBy: account.username,
       })
         .then(() => {
           AddPurchases(
@@ -517,7 +515,7 @@ const PurchasesPage = () => {
                   id,
                   invoiceNumber: invoiceNumber,
                   receivedDate: selectedReceivedDate?.format("YYYY-MM-DD"),
-                  createdBy: user,
+                  createdBy: account.username,
                   createdOn: dayjs().format("YYYY-MM-DD"),
                   updatedBy: null,
                   updatedOn: null,

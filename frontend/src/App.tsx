@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 
@@ -7,7 +5,6 @@ import ErrorProvider from "./Contexts/ErrorProvider";
 
 import Root from "./Components/Root";
 import Fallback from "./Components/Fallback";
-import AuthLoadingSpinner from "./Components/AuthLoadingSpinner";
 
 import ErrorPage from "./Views/ErrorPage/ErrorPage";
 import PriceMasterPage from "./Views/PriceMasterPage/PriceMasterPage";
@@ -24,8 +21,6 @@ import storesLoader from "./Views/StoresPage/StoresLoader";
 import suppliersLoader from "./Views/SuppliersPage/SuppliersLoader";
 
 import queryClient from "./Utils/QueryClient";
-
-import { msalInstance } from "./Configs/auth.config.ts";
 
 const router = createBrowserRouter([
   {
@@ -69,22 +64,6 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const [isMsalInstanceInitialized, setIsMsalInstanceInitialized] =
-    useState(false);
-
-  useEffect(() => {
-    const initializeMsalInstance = async function () {
-      await msalInstance.initialize();
-      setIsMsalInstanceInitialized(true);
-    };
-
-    initializeMsalInstance();
-  }, []);
-
-  if (!isMsalInstanceInitialized) {
-    return <AuthLoadingSpinner />;
-  }
-
   return (
     <ErrorProvider>
       <RouterProvider router={router} />
