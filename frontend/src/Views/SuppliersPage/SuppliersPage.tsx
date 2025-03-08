@@ -108,7 +108,6 @@ const SuppliersPage = () => {
     {
       field: "id",
       headerName: "Supplier ID",
-      flex: 1,
       type: "number",
       align: "left",
       headerAlign: "left",
@@ -116,7 +115,6 @@ const SuppliersPage = () => {
     {
       field: "supplierCode",
       headerName: "Supplier Code",
-      flex: 1,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -124,7 +122,6 @@ const SuppliersPage = () => {
     {
       field: "supplierName",
       headerName: "Supplier Name",
-      flex: 1,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -132,7 +129,6 @@ const SuppliersPage = () => {
     {
       field: "supplierShortName",
       headerName: "Supplier Short Name",
-      flex: 1,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -140,7 +136,6 @@ const SuppliersPage = () => {
     {
       field: "contactPerson",
       headerName: "Contact Person",
-      flex: 1,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -148,7 +143,6 @@ const SuppliersPage = () => {
     {
       field: "phoneNumber",
       headerName: "Phone Number",
-      flex: 1,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -156,7 +150,6 @@ const SuppliersPage = () => {
     {
       field: "supplierTin",
       headerName: "Supplier TIN Number",
-      flex: 1,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -164,7 +157,6 @@ const SuppliersPage = () => {
     {
       field: "email",
       headerName: "Email",
-      flex: 1,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -172,7 +164,6 @@ const SuppliersPage = () => {
     {
       field: "invoiceType",
       headerName: "Invoice Type",
-      flex: 1,
       editable: true,
       type: "singleSelect",
       valueOptions: ["Local", "Foreign"],
@@ -184,6 +175,7 @@ const SuppliersPage = () => {
       headerName: "Payment Period",
       type: "number",
       flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
       valueFormatter: (value) => (value === 1 ? "1 day" : `${value} days`),
@@ -191,7 +183,6 @@ const SuppliersPage = () => {
     {
       field: "active",
       headerName: "Active",
-      flex: 1,
       editable: true,
       type: "boolean",
       renderCell: (params) => {
@@ -213,14 +204,12 @@ const SuppliersPage = () => {
     {
       field: "createdBy",
       headerName: "Created By",
-      flex: 1,
       align: "left",
       headerAlign: "left",
     },
     {
       field: "createdOn",
       headerName: "Created On",
-      flex: 1,
       align: "left",
       headerAlign: "left",
       valueFormatter: (value) =>
@@ -229,14 +218,12 @@ const SuppliersPage = () => {
     {
       field: "updatedBy",
       headerName: "Updated By",
-      flex: 1,
       align: "left",
       headerAlign: "left",
     },
     {
       field: "updatedOn",
       headerName: "Updated On",
-      flex: 1,
       align: "left",
       headerAlign: "left",
       valueFormatter: (value) =>
@@ -246,7 +233,6 @@ const SuppliersPage = () => {
       field: "actions",
       type: "actions",
       headerName: "Actions",
-      flex: 1,
       getActions: ({ id }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
@@ -430,6 +416,22 @@ const SuppliersPage = () => {
               processRowUpdate={processRowUpdate}
               onRowModesModelChange={handleRowModesModelChange}
               onRowEditStop={handleRowEditStop}
+              autosizeOnMount
+              autosizeOptions={{
+                columns: [
+                  "supplierCode",
+                  "supplierName",
+                  "supplierShortName",
+                  "contactPerson",
+                  "phoneNumber",
+                  "supplierTin",
+                  "email",
+                  "invoiceType",
+                  "actions",
+                ],
+                includeOutliers: true,
+                includeHeaders: true,
+              }}
               initialState={{
                 columns: {
                   columnVisibilityModel: {
