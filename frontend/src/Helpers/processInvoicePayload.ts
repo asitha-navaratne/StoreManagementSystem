@@ -7,6 +7,7 @@ function processInvoicePayload(row: GridValidRowModel): InvoiceApiColumnsType {
     id: row.id,
     invoice_date: row.invoiceDate,
     supplier_name: row.supplierName,
+    supplier_tin: row.supplierTin,
     store_name: row.storeName,
     invoice_number: row.invoiceNumber,
     description: row.description,

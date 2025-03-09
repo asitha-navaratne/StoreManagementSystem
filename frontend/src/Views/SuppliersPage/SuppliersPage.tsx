@@ -108,6 +108,7 @@ const SuppliersPage = () => {
     {
       field: "id",
       headerName: "Supplier ID",
+      minWidth: 150,
       type: "number",
       align: "left",
       headerAlign: "left",
@@ -115,6 +116,7 @@ const SuppliersPage = () => {
     {
       field: "supplierCode",
       headerName: "Supplier Code",
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -122,6 +124,7 @@ const SuppliersPage = () => {
     {
       field: "supplierName",
       headerName: "Supplier Name",
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -129,6 +132,7 @@ const SuppliersPage = () => {
     {
       field: "supplierShortName",
       headerName: "Supplier Short Name",
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -136,6 +140,7 @@ const SuppliersPage = () => {
     {
       field: "contactPerson",
       headerName: "Contact Person",
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -143,6 +148,7 @@ const SuppliersPage = () => {
     {
       field: "phoneNumber",
       headerName: "Phone Number",
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -150,6 +156,7 @@ const SuppliersPage = () => {
     {
       field: "supplierTin",
       headerName: "Supplier TIN Number",
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -157,6 +164,7 @@ const SuppliersPage = () => {
     {
       field: "email",
       headerName: "Email",
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -164,6 +172,7 @@ const SuppliersPage = () => {
     {
       field: "invoiceType",
       headerName: "Invoice Type",
+      minWidth: 150,
       editable: true,
       type: "singleSelect",
       valueOptions: ["Local", "Foreign"],
@@ -183,6 +192,7 @@ const SuppliersPage = () => {
     {
       field: "active",
       headerName: "Active",
+      minWidth: 150,
       editable: true,
       type: "boolean",
       renderCell: (params) => {
@@ -204,12 +214,14 @@ const SuppliersPage = () => {
     {
       field: "createdBy",
       headerName: "Created By",
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
     },
     {
       field: "createdOn",
       headerName: "Created On",
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
       valueFormatter: (value) =>
@@ -218,12 +230,14 @@ const SuppliersPage = () => {
     {
       field: "updatedBy",
       headerName: "Updated By",
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
     },
     {
       field: "updatedOn",
       headerName: "Updated On",
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
       valueFormatter: (value) =>
@@ -231,8 +245,9 @@ const SuppliersPage = () => {
     },
     {
       field: "actions",
-      type: "actions",
       headerName: "Actions",
+      minWidth: 150,
+      type: "actions",
       getActions: ({ id }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
