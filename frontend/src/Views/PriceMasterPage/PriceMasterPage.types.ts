@@ -1,5 +1,5 @@
-import StoresGridColumnsType from "../StoresPage/types/GridColumnsType";
-import SuppliersGridColumnsType from "../SuppliersPage/types/GridColumnsType";
+import { StoreGridColumnsType } from "../StoresPage";
+import { SuppliersGridColumnsType } from "../SuppliersPage";
 
 export type PriceMasterGridColumnsType = {
   id: number;
@@ -58,7 +58,7 @@ export type VatRateType = {
 
 export type LoaderDataType = {
   products: PriceMasterGridColumnsType[];
-  stores: StoresGridColumnsType[];
+  stores: StoreGridColumnsType[];
   suppliers: SuppliersGridColumnsType[];
   vat: VatRateType | null;
 };

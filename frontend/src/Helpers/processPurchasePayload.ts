@@ -1,6 +1,6 @@
 import { GridValidRowModel } from "@mui/x-data-grid";
 
-import PurchaseApiColumnsType from "../Views/PurchasesPage/types/ApiColumnsType";
+import { PurchaseApiColumnsType } from "../Views/PurchasesPage";
 
 function processPurchasePayload(
   row: GridValidRowModel,

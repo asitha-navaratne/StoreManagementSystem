@@ -2,8 +2,8 @@ import { QueryClient, queryOptions } from "@tanstack/react-query";
 
 import { LoaderDataType } from "./PriceMasterPage.types";
 
-import { getSuppliersQuery } from "../SuppliersPage/SuppliersLoader";
-import { getStoresQuery } from "../StoresPage/StoresLoader";
+import { getSuppliersQuery } from "../SuppliersPage/SuppliersPage.loader";
+import { getStoresQuery } from "../StoresPage/StoresPage.loader";
 
 import PriceMasterService from "../../Services/PriceMasterService";
 import VatService from "../../Services/VatService";

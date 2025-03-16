@@ -8,7 +8,7 @@ import WarningIcon from "@mui/icons-material/Warning";
 
 import styles from "./Root.module.scss";
 
-import LoginPage from "../../Views/LoginPage/LoginPage";
+import LoginPage from "../../Views/LoginPage";
 
 import Sidebar from "../Sidebar";
 import ErrorBar from "../ErrorBar";

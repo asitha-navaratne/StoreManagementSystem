@@ -1,7 +1,7 @@
 import AxiosInstance from "../Utils/Axios";
 import config from "../Configs/urls.config";
 
-import { VatRateType } from "../Views/PriceMasterPage/PriceMasterPage.types";
+import { VatRateType } from "../Views/PriceMasterPage";
 
 const Service = () => {
   const GetVatRate = async function (): Promise<VatRateType> {

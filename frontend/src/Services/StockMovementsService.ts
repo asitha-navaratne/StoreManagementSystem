@@ -3,7 +3,7 @@ import { GridValidRowModel } from "@mui/x-data-grid";
 import AxiosInstance from "../Utils/Axios";
 import config from "../Configs/urls.config";
 
-import StockMovementsApiColumnsType from "../Views/StockMovementsPage/types/ApiColumnsType";
+import { StockMovementsApiColumnsType } from "../Views/StockMovementsPage";
 
 import processStockMovementsColumns from "../Helpers/processStockMovementsColumns";
 import processStockMovementsPayload from "../Helpers/processStockMovementsPayload";

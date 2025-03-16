@@ -10,16 +10,15 @@ import ErrorPage from "./Views/ErrorPage";
 import PriceMasterPage, {
   loader as priceMasterLoader,
 } from "./Views/PriceMasterPage";
-import PurchasesPage from "./Views/PurchasesPage/PurchasesPage";
-import InvoicesPage from "./Views/InvoicesPage/InvoicesPage";
-import StoresPage from "./Views/StoresPage/StoresPage";
-import SuppliersPage from "./Views/SuppliersPage/SuppliersPage";
-import StockMovementsPage from "./Views/StockMovementsPage/StockMovementsPage";
-
-import purchasesLoader from "./Views/PurchasesPage/PurchasesLoader";
-import invoicesLoader from "./Views/InvoicesPage/InvoicesLoader";
-import storesLoader from "./Views/StoresPage/StoresLoader";
-import suppliersLoader from "./Views/SuppliersPage/SuppliersLoader";
+import PurchasesPage, {
+  loader as purchasesLoader,
+} from "./Views/PurchasesPage";
+import InvoicesPage, { loader as invoicesLoader } from "./Views/InvoicesPage";
+import StoresPage, { loader as storesLoader } from "./Views/StoresPage";
+import SuppliersPage, {
+  loader as suppliersLoader,
+} from "./Views/SuppliersPage";
+import StockMovementsPage from "./Views/StockMovementsPage";
 
 import queryClient from "./Utils/QueryClient";
 

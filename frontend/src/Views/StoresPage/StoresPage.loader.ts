@@ -9,9 +9,7 @@ export const getStoresQuery = queryOptions({
   queryFn: GetStores,
 });
 
-const loader = (queryClient: QueryClient) =>
+export const loader = (queryClient: QueryClient) =>
   async function () {
     return queryClient.ensureQueryData(getStoresQuery);
   };
-
-export default loader;

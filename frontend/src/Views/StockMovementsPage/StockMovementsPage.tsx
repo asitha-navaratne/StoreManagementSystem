@@ -33,15 +33,18 @@ import DataGridToolbar, {
 
 import useErrorContext from "../../Hooks/useErrorContext";
 
-import StockMovementsApiColumnsType from "./types/ApiColumnsType";
-import StockMovementsGridColumnsType from "./types/GridColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
+import {
+  StockMovementsApiColumnsType,
+  StockMovementsGridColumnsType,
+} from "./StockMovementsPage.types";
 
 import handleErrors from "../../Helpers/handleErrors";
 import getCurrentInHandAmount from "../../Helpers/getCurrentInHandAmount";
 import getHeadersForGroupedColumns from "../../Helpers/getHeadersForGroupedColumns";
 
-import { getStoresQuery } from "../StoresPage/StoresLoader";
+import { getStoresQuery } from "../StoresPage/StoresPage.loader";
+
 import Service from "../../Services/StockMovementsService";
 
 const { GetStockMovements, UpdateStockMovement } = Service();

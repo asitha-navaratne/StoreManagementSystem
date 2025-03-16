@@ -37,15 +37,18 @@ import AlertWindow from "../../Components/AlertWindow";
 import useAuthContext from "../../Hooks/useAuthContext";
 import useErrorContext from "../../Hooks/useErrorContext";
 
-import SuppliersGridColumnsType from "./types/GridColumnsType";
-import SuppliersApiColumnsType from "./types/ApiColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
+import {
+  SuppliersApiColumnsType,
+  SuppliersGridColumnsType,
+} from "./SuppliersPage.types";
 
 import InitSupplierRowValues from "../../Constants/InitSupplierRowValues";
 
 import handleErrors from "../../Helpers/handleErrors";
 
-import { getSuppliersQuery } from "./SuppliersLoader";
+import { getSuppliersQuery } from "./SuppliersPage.loader";
+
 import Service from "../../Services/SupplierService";
 
 const { AddSupplier, EditSupplier, DeleteSupplier } = Service();

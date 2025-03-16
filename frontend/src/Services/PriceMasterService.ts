@@ -8,7 +8,7 @@ import {
   PriceMasterApiColumnsType,
   PriceMasterGridColumnsType,
 } from "../Views/PriceMasterPage";
-import PurchaseGridColumnsType from "../Views/PurchasesPage/types/GridColumnsType";
+import { PurchaseGridColumnsType } from "../Views/PurchasesPage";
 
 import processPriceMasterPayload from "../Helpers/processPriceMasterPayload";
 import processPriceMasterColumns from "../Helpers/processPriceMasterColumns";

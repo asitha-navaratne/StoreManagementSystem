@@ -1,6 +1,6 @@
 import { GridValidRowModel } from "@mui/x-data-grid";
 
-import InvoiceApiColumnsType from "../Views/InvoicesPage/types/ApiColumnsType";
+import { InvoiceApiColumnsType } from "../Views/InvoicesPage";
 
 function processInvoicePayload(row: GridValidRowModel): InvoiceApiColumnsType {
   return {

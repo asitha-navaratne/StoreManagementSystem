@@ -1,6 +1,6 @@
 import { GridValidRowModel } from "@mui/x-data-grid";
 
-import SuppliersApiColumnsType from "../Views/SuppliersPage/types/ApiColumnsType";
+import { SuppliersApiColumnsType } from "../Views/SuppliersPage";
 
 function processSupplierPayload(
   row: GridValidRowModel

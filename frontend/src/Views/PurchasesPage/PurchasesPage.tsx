@@ -48,11 +48,13 @@ import DataGridToolbar, {
 import useAuthContext from "../../Hooks/useAuthContext";
 import useErrorContext from "../../Hooks/useErrorContext";
 
-import LoaderDataType from "./types/LoaderDataType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
-import PurchaseGridColumnsType from "./types/GridColumnsType";
-import PurchaseApiColumnsType from "./types/ApiColumnsType";
-import InvoiceGridColumnsType from "../InvoicesPage/types/GridColumnsType";
+import {
+  LoaderDataType,
+  PurchaseApiColumnsType,
+  PurchaseGridColumnsType,
+} from "./PurchasesPage.types";
+import { InvoiceGridColumnsType } from "../InvoicesPage";
 
 import InitInvoiceData from "../../Constants/InitInvoiceData";
 

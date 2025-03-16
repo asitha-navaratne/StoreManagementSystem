@@ -34,13 +34,16 @@ import AlertWindow from "../../Components/AlertWindow";
 import useAuthContext from "../../Hooks/useAuthContext";
 import useErrorContext from "../../Hooks/useErrorContext";
 
-import InvoiceGridColumnsType from "./types/GridColumnsType";
-import InvoiceApiColumnsType from "./types/ApiColumnsType";
+import {
+  InvoiceApiColumnsType,
+  InvoiceGridColumnsType,
+} from "./InvoicesPage.types";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
 
 import handleErrors from "../../Helpers/handleErrors";
 
-import { getInvoicesQuery } from "./InvoicesLoader";
+import { getInvoicesQuery } from "./InvoicesPage.loader";
+
 import Service from "../../Services/InvoicesService";
 
 const { EditInvoice, DeleteInvoice } = Service();

@@ -4,4 +4,5 @@ export type {
   LoaderDataType,
   PriceMasterGridColumnsType,
   PriceMasterApiColumnsType,
+  VatRateType,
 } from "./PriceMasterPage.types";
