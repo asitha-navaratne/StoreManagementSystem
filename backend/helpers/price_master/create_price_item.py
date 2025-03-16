@@ -7,26 +7,15 @@ from database.models import PriceMaster, Stores, Suppliers
 
 from models.CreatePriceModel import CreatePriceModel
 
+from constants.price_master_check_fields import PRICE_MASTER_CHECK_FIELDS
+
 
 def create_price_item(price_item: CreatePriceModel, db: Session):
     try:
         store_id = db.scalars(select(Stores.id).where(Stores.store_name == price_item.shop_name)).first()
         supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.supplier_name == price_item.supplier_name)).first()
 
-        check_fields = [
-            "id",
-            "shop_name",
-            "supplier_name",
-            "brand",
-            "brand_code",
-            "category",
-            "bottle_size",
-            "tax_price",
-            "cost",
-            "price",
-            "created_by",
-            "created_on",
-        ]
+        check_fields = PRICE_MASTER_CHECK_FIELDS
 
         invalid_field = ""
 
@@ -57,7 +46,7 @@ def create_price_item(price_item: CreatePriceModel, db: Session):
             select(PriceMaster.id)
             .where(PriceMaster.store_id == store_id)
             .where(PriceMaster.supplier_id == supplier_id)
-            .where(PriceMaster.brand == price_item.brand)
+            .where(PriceMaster.product_name == price_item.product_name)
         ).first() is not None
 
         if item_exists:
@@ -81,16 +70,19 @@ def create_price_item(price_item: CreatePriceModel, db: Session):
             id = price_item.id,
             store_id = store_id,
             supplier_id = supplier_id,
-            brand = price_item.brand,
             brand_code = price_item.brand_code,
+            source_type = price_item.source_type,
             category = price_item.category,
+            country = price_item.country,
+            variety = price_item.variety,
+            volume = price_item.volume,
+            company_product_code = price_item.company_product_code,
+            product_name = price_item.product_name,
             bottle_size = price_item.bottle_size,
             container_size = price_item.container_size,
             tax_price = price_item.tax_price,
-            cost = price_item.cost,
             price = price_item.price,
-            commissions = price_item.commissions,
-            margin = price_item.margin,
+            staff_margin = price_item.staff_margin,
             active = price_item.active,
             created_by = price_item.created_by,
             created_on = price_item.created_on,

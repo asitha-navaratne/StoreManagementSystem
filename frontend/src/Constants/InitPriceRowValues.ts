@@ -1,16 +1,19 @@
 const InitPriceRowValues = {
   shopName: "",
   supplierName: "",
-  brand: "",
   brandCode: "",
+  sourceType: "",
   category: "",
+  country: "",
+  variety: "",
+  volume: 0,
+  companyProductCode: "",
+  productName: "",
   bottleSize: 0,
   containerSize: 0,
   taxPrice: 0,
-  cost: 0,
   price: 0,
-  commissions: 0,
-  margin: 0,
+  staffMargin: 0,
   active: true,
 };
 

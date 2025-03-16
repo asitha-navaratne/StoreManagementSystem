@@ -103,7 +103,7 @@ def get_stock_movements(store: str, date: str, db: Session):
             result_dict = {
                 'id': result[0].id,
                 'product_id': result[13].id,
-                'product_name': result[13].brand,
+                'product_name': result[13].product_name,
                 'brand_code': result[13].brand_code,
                 'store_id': result[14].id,
                 'store_name': result[14].store_name,

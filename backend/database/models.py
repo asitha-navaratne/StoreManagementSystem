@@ -90,18 +90,29 @@ class PriceMaster(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     store_id: Mapped[str] = mapped_column(ForeignKey('stores.id'), index=True, nullable=False)
     supplier_id: Mapped[int] = mapped_column(ForeignKey('suppliers.id'), index=True, nullable=False)
-    brand: Mapped[str] = mapped_column(nullable=False)
     brand_code: Mapped[str] = mapped_column(nullable=False)
+    source_type: Mapped[str] = mapped_column(nullable=False)
     category: Mapped[str] = mapped_column(nullable=False)
+    country: Mapped[str] = mapped_column(nullable=False)
+    variety: Mapped[str] = mapped_column(nullable=False)
+    volume: Mapped[int] = mapped_column(nullable=False)
+    company_product_code: Mapped[str] = mapped_column(nullable=False)
+    product_name: Mapped[str] = mapped_column(nullable=False)
     bottle_size: Mapped[int] = mapped_column(nullable=False)
     container_size: Mapped[int]
     tax_price: Mapped[int] = mapped_column(nullable=False)
-    cost: Mapped[int] = mapped_column(nullable=False)
     price: Mapped[int] = mapped_column(nullable=False)
-    commissions:Mapped[int]
-    margin:Mapped[int]
+    staff_margin:Mapped[int]
     active: Mapped[bool] = mapped_column(nullable=False)
     created_by: Mapped[str] = mapped_column(nullable=False)
     created_on: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_by: Mapped[str] = mapped_column(nullable=True)
     updated_on: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+
+class Vat(Base):
+    __tablename__ = 'vat'
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    rate: Mapped[int] = mapped_column(nullable=False)
+    updated_on: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    updated_by: Mapped[str] = mapped_column(nullable=True)

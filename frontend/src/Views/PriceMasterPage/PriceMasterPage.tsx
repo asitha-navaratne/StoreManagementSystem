@@ -5,7 +5,14 @@ import randomInteger from "random-int";
 import { AxiosError } from "axios";
 import { useLoaderData, useNavigation } from "react-router";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -35,11 +42,14 @@ import DataGridToolbar, {
 import GridAutocompleteComponent from "../../Components/GridAutocompleteComponent";
 import AlertWindow from "../../Components/AlertWindow";
 
+import {
+  LoaderDataType,
+  PriceMasterApiColumnsType,
+} from "./PriceMasterPage.types";
+
 import useAuthContext from "../../Hooks/useAuthContext";
 import useErrorContext from "../../Hooks/useErrorContext";
 
-import LoaderDataType from "./types/LoaderType";
-import PriceMasterApiColumnsType from "./types/ApiColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
 
 import InitPriceRowValues from "../../Constants/InitPriceRowValues";
@@ -47,16 +57,22 @@ import AlcoholCategories from "../../Constants/AlcoholCategories";
 
 import handleErrors from "../../Helpers/handleErrors";
 
-import { getPriceItemsQuery } from "./PriceMasterLoader";
-import Service from "../../Services/PriceMasterService";
+import { getPriceItemsQuery, getVatRateQuery } from "./PriceMasterPage.loader";
 
-const { AddPriceItem, EditPriceItem, DeletePriceItem } = Service();
+import PriceMasterService from "../../Services/PriceMasterService";
+import VatService from "../../Services/VatService";
+
+const { AddPriceItem, EditPriceItem, DeletePriceItem } = PriceMasterService();
+const { UpdateVatRate } = VatService();
 
 const PriceMasterPage = () => {
   const navigation = useNavigation();
   const loaderData = useLoaderData() as LoaderDataType;
 
-  const { data, refetch } = useSuspenseQuery(getPriceItemsQuery);
+  const { data: priceItemsData, refetch: priceItemsRefetch } =
+    useSuspenseQuery(getPriceItemsQuery);
+  const { data: vatRateData, refetch: vatRateRefetch } =
+    useSuspenseQuery(getVatRateQuery);
 
   const isLoading = navigation.state === "loading";
 
@@ -64,6 +80,7 @@ const PriceMasterPage = () => {
 
   const [rows, setRows] = useState<GridRowsProp>(loaderData.products);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+  const [vatRate, setVatRate] = useState<number>(loaderData.vat?.rate ?? 0);
   const [isAddButtonClicked, setIsAddButtonClicked] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<number>(0);
   const [isWindowOpen, setIsWindowOpen] = useState<boolean>(false);
@@ -87,7 +104,7 @@ const PriceMasterPage = () => {
       const { errorObject } = handleErrors(err, "Price Master Page");
       handlePushError(errorObject);
 
-      refetch();
+      priceItemsRefetch();
     },
   });
 
@@ -99,9 +116,21 @@ const PriceMasterPage = () => {
       const { errorObject } = handleErrors(err, "Price Master Page");
       handlePushError(errorObject);
 
-      refetch();
+      priceItemsRefetch();
     },
     onSettled: () => setDeleteId(0),
+  });
+
+  const updateVatMutation = useMutation({
+    mutationFn: UpdateVatRate,
+    onError: (
+      err: AxiosError<StoreManagementSystemErrorType<{ id: number }>>
+    ) => {
+      const { errorObject } = handleErrors(err, "Price Master Page");
+      handlePushError(errorObject);
+
+      vatRateRefetch();
+    },
   });
 
   const { handlePushError } = useErrorContext();
@@ -110,7 +139,7 @@ const PriceMasterPage = () => {
     {
       field: "id",
       headerName: "Product ID",
-      flex: 1,
+      minWidth: 150,
       type: "number",
       align: "left",
       headerAlign: "left",
@@ -118,7 +147,7 @@ const PriceMasterPage = () => {
     {
       field: "shopName",
       headerName: "Store Name",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       type: "singleSelect",
       renderEditCell: (params) => (
@@ -140,7 +169,7 @@ const PriceMasterPage = () => {
     {
       field: "supplierName",
       headerName: "Supplier Name",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       renderEditCell: (params) => (
         <GridAutocompleteComponent
@@ -161,7 +190,7 @@ const PriceMasterPage = () => {
     {
       field: "brand",
       headerName: "Brand",
-      flex: 1,
+      minWidth: 200,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -169,7 +198,7 @@ const PriceMasterPage = () => {
     {
       field: "brandCode",
       headerName: "Brand Code",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -177,7 +206,7 @@ const PriceMasterPage = () => {
     {
       field: "category",
       headerName: "Category",
-      flex: 1,
+      minWidth: 200,
       editable: true,
       type: "singleSelect",
       valueOptions: AlcoholCategories,
@@ -187,7 +216,7 @@ const PriceMasterPage = () => {
     {
       field: "bottleSize",
       headerName: "Bottle Size",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       type: "number",
       valueFormatter: (value) => `${value}L`,
@@ -197,7 +226,7 @@ const PriceMasterPage = () => {
     {
       field: "containerSize",
       headerName: "Container Size",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       type: "number",
       valueFormatter: (value) => `${value}L`,
@@ -207,7 +236,7 @@ const PriceMasterPage = () => {
     {
       field: "taxPrice",
       headerName: "Tax Price",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       type: "number",
       valueFormatter: (value) => `Rs. ${value}`,
@@ -217,7 +246,7 @@ const PriceMasterPage = () => {
     {
       field: "cost",
       headerName: "Cost",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       type: "number",
       valueFormatter: (value) => `Rs. ${value}`,
@@ -227,7 +256,7 @@ const PriceMasterPage = () => {
     {
       field: "price",
       headerName: "Price",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       type: "number",
       valueFormatter: (value) => `Rs. ${value}`,
@@ -237,7 +266,7 @@ const PriceMasterPage = () => {
     {
       field: "commissions",
       headerName: "Commissions",
-      flex: 1,
+      minWidth: 150,
       type: "number",
       align: "left",
       headerAlign: "left",
@@ -245,7 +274,7 @@ const PriceMasterPage = () => {
     {
       field: "margin",
       headerName: "Margin",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       type: "number",
       valueFormatter: (value) => `${value}%`,
@@ -255,7 +284,7 @@ const PriceMasterPage = () => {
     {
       field: "active",
       headerName: "Active",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       type: "boolean",
       renderCell: (params) => {
@@ -277,14 +306,14 @@ const PriceMasterPage = () => {
     {
       field: "createdBy",
       headerName: "Created By",
-      flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
     },
     {
       field: "createdOn",
       headerName: "Created On",
-      flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
       valueFormatter: (value) =>
@@ -293,14 +322,14 @@ const PriceMasterPage = () => {
     {
       field: "updatedBy",
       headerName: "Updated By",
-      flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
     },
     {
       field: "updatedOn",
       headerName: "Updated On",
-      flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
       valueFormatter: (value) =>
@@ -310,7 +339,7 @@ const PriceMasterPage = () => {
       field: "actions",
       type: "actions",
       headerName: "Actions",
-      flex: 1,
+      minWidth: 150,
       getActions: ({ id }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
@@ -358,10 +387,24 @@ const PriceMasterPage = () => {
   ];
 
   useEffect(() => {
-    if (data) {
-      setRows(data);
+    if (priceItemsData) {
+      setRows(priceItemsData);
     }
-  }, [data]);
+  }, [priceItemsData]);
+
+  useEffect(() => {
+    if (vatRateData) {
+      setVatRate(vatRateData.rate);
+    }
+  }, [vatRateData]);
+
+  const handleUpdateVatRate = function () {
+    updateVatMutation.mutate({
+      vatRate: vatRate,
+      username: account.username,
+      datetime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+    });
+  };
 
   const handleStoreValueChange = useCallback(function (
     id: GridRowId,
@@ -514,6 +557,40 @@ const PriceMasterPage = () => {
             <Typography variant="h4" component="h1">
               Price Master
             </Typography>
+          </Box>
+          <Box className={styles["price-master-page__vat-input-section"]}>
+            <Typography variant="body1">VAT Rate:</Typography>
+            <TextField
+              type="number"
+              value={vatRate}
+              onChange={(e) => setVatRate(Number(e.target.value))}
+              sx={(theme) => ({
+                ml: 2,
+                border: `1px solid ${theme.palette.primary.main}`,
+                "& fieldset": {
+                  borderRadius: "0px",
+                },
+                input: {
+                  color: "#fff",
+                },
+              })}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end" sx={{ color: "#fff" }}>
+                      <Typography>%</Typography>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+            <Button
+              variant="contained"
+              sx={{ ml: 2 }}
+              onClick={handleUpdateVatRate}
+            >
+              Update
+            </Button>
           </Box>
           <Box className={styles["price-master-page__grid-container"]}>
             <DataGrid

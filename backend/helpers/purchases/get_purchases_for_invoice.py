@@ -30,7 +30,7 @@ def get_purchases_for_invoice(invoice_number: int, supplier_name: str, store_nam
                 'id': result[0].id,
                 'category': result[2].category,
                 'shop_name': result[1],
-                'product_name': result[2].brand,
+                'product_name': result[2].product_name,
                 'supplier_name': result[3],
                 'invoice_id': result[0].invoice_id,
                 'received_date': result[0].received_date,

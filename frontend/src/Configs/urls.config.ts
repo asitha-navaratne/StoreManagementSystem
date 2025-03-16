@@ -37,6 +37,10 @@ const config = {
       GetStockMovements: "/stock-movements",
       UpdateStockMovement: "/stock-movements",
     },
+    vat: {
+      GetVatRate: "/vat",
+      UpdateVatRate: "/vat",
+    },
   },
 };
 

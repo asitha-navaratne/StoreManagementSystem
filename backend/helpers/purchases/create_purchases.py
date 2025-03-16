@@ -13,7 +13,7 @@ def create_purchases(purchases: list[CreatePurchaseModel], db: Session):
         create_purchases_list = []
 
         for purchase in purchases:
-            product_id = db.scalars(select(PriceMaster.id).where(PriceMaster.brand == purchase.product_name)).first()
+            product_id = db.scalars(select(PriceMaster.id).where(PriceMaster.product_name == purchase.product_name)).first()
             store_id = db.scalars(select(Stores.id).where(Stores.store_name == purchase.shop_name)).first()
             supplier_id = db.scalars(select(Suppliers.id).where(Suppliers.supplier_name == purchase.supplier_name)).first()
             invoice_id = db.scalars(select(Invoices.id).where(Invoices.invoice_number == purchase.invoice_number)).first()

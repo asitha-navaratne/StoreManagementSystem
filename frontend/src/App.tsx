@@ -6,15 +6,16 @@ import ErrorProvider from "./Contexts/ErrorProvider";
 import Root from "./Components/Root";
 import Fallback from "./Components/Fallback";
 
-import ErrorPage from "./Views/ErrorPage/ErrorPage";
-import PriceMasterPage from "./Views/PriceMasterPage/PriceMasterPage";
+import ErrorPage from "./Views/ErrorPage";
+import PriceMasterPage, {
+  loader as priceMasterLoader,
+} from "./Views/PriceMasterPage";
 import PurchasesPage from "./Views/PurchasesPage/PurchasesPage";
 import InvoicesPage from "./Views/InvoicesPage/InvoicesPage";
 import StoresPage from "./Views/StoresPage/StoresPage";
 import SuppliersPage from "./Views/SuppliersPage/SuppliersPage";
 import StockMovementsPage from "./Views/StockMovementsPage/StockMovementsPage";
 
-import priceMasterLoader from "./Views/PriceMasterPage/PriceMasterLoader";
 import purchasesLoader from "./Views/PurchasesPage/PurchasesLoader";
 import invoicesLoader from "./Views/InvoicesPage/InvoicesLoader";
 import storesLoader from "./Views/StoresPage/StoresLoader";

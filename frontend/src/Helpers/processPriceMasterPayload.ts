@@ -1,6 +1,6 @@
 import { GridValidRowModel } from "@mui/x-data-grid";
 
-import PriceMasterApiColumnsType from "../Views/PriceMasterPage/types/ApiColumnsType";
+import { PriceMasterApiColumnsType } from "../Views/PriceMasterPage";
 
 function processPriceMasterPayload(
   row: GridValidRowModel
@@ -9,16 +9,19 @@ function processPriceMasterPayload(
     id: row.id,
     shop_name: row.shopName,
     supplier_name: row.supplierName,
-    brand: row.brand,
     brand_code: row.brandCode,
+    source_type: row.sourceType,
     category: row.category,
+    country: row.country,
+    variety: row.variety,
+    volume: row.volume,
+    company_product_code: row.companyProductCode,
+    product_name: row.productName,
     bottle_size: row.bottleSize,
     container_size: row.containerSize,
     tax_price: row.taxPrice,
-    cost: row.cost,
     price: row.price,
-    commissions: row.commissions,
-    margin: row.margin,
+    staff_margin: row.staffMargin,
     active: row.active,
     created_by: row.createdBy,
     created_on: row.createdOn,
