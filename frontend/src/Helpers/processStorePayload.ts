@@ -1,6 +1,6 @@
 import { GridValidRowModel } from "@mui/x-data-grid";
 
-import StoreApiColumnsType from "../Views/StoresPage/types/ApiColumnsType";
+import { StoreApiColumnsType } from "../Views/StoresPage";
 
 function processStorePayload(row: GridValidRowModel): StoreApiColumnsType {
   return {

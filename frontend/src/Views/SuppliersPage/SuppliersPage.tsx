@@ -37,15 +37,18 @@ import AlertWindow from "../../Components/AlertWindow";
 import useAuthContext from "../../Hooks/useAuthContext";
 import useErrorContext from "../../Hooks/useErrorContext";
 
-import SuppliersGridColumnsType from "./types/GridColumnsType";
-import SuppliersApiColumnsType from "./types/ApiColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
+import {
+  SuppliersApiColumnsType,
+  SuppliersGridColumnsType,
+} from "./SuppliersPage.types";
 
 import InitSupplierRowValues from "../../Constants/InitSupplierRowValues";
 
 import handleErrors from "../../Helpers/handleErrors";
 
-import { getSuppliersQuery } from "./SuppliersLoader";
+import { getSuppliersQuery } from "./SuppliersPage.loader";
+
 import Service from "../../Services/SupplierService";
 
 const { AddSupplier, EditSupplier, DeleteSupplier } = Service();
@@ -108,7 +111,7 @@ const SuppliersPage = () => {
     {
       field: "id",
       headerName: "Supplier ID",
-      flex: 1,
+      minWidth: 150,
       type: "number",
       align: "left",
       headerAlign: "left",
@@ -116,7 +119,7 @@ const SuppliersPage = () => {
     {
       field: "supplierCode",
       headerName: "Supplier Code",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -124,7 +127,7 @@ const SuppliersPage = () => {
     {
       field: "supplierName",
       headerName: "Supplier Name",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -132,7 +135,7 @@ const SuppliersPage = () => {
     {
       field: "supplierShortName",
       headerName: "Supplier Short Name",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -140,7 +143,7 @@ const SuppliersPage = () => {
     {
       field: "contactPerson",
       headerName: "Contact Person",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -148,7 +151,7 @@ const SuppliersPage = () => {
     {
       field: "phoneNumber",
       headerName: "Phone Number",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -156,7 +159,7 @@ const SuppliersPage = () => {
     {
       field: "supplierTin",
       headerName: "Supplier TIN Number",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -164,7 +167,7 @@ const SuppliersPage = () => {
     {
       field: "email",
       headerName: "Email",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -172,7 +175,7 @@ const SuppliersPage = () => {
     {
       field: "invoiceType",
       headerName: "Invoice Type",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       type: "singleSelect",
       valueOptions: ["Local", "Foreign"],
@@ -184,6 +187,7 @@ const SuppliersPage = () => {
       headerName: "Payment Period",
       type: "number",
       flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
       valueFormatter: (value) => (value === 1 ? "1 day" : `${value} days`),
@@ -191,7 +195,7 @@ const SuppliersPage = () => {
     {
       field: "active",
       headerName: "Active",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       type: "boolean",
       renderCell: (params) => {
@@ -213,14 +217,14 @@ const SuppliersPage = () => {
     {
       field: "createdBy",
       headerName: "Created By",
-      flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
     },
     {
       field: "createdOn",
       headerName: "Created On",
-      flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
       valueFormatter: (value) =>
@@ -229,14 +233,14 @@ const SuppliersPage = () => {
     {
       field: "updatedBy",
       headerName: "Updated By",
-      flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
     },
     {
       field: "updatedOn",
       headerName: "Updated On",
-      flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
       valueFormatter: (value) =>
@@ -244,9 +248,9 @@ const SuppliersPage = () => {
     },
     {
       field: "actions",
-      type: "actions",
       headerName: "Actions",
-      flex: 1,
+      minWidth: 150,
+      type: "actions",
       getActions: ({ id }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
@@ -430,6 +434,22 @@ const SuppliersPage = () => {
               processRowUpdate={processRowUpdate}
               onRowModesModelChange={handleRowModesModelChange}
               onRowEditStop={handleRowEditStop}
+              autosizeOnMount
+              autosizeOptions={{
+                columns: [
+                  "supplierCode",
+                  "supplierName",
+                  "supplierShortName",
+                  "contactPerson",
+                  "phoneNumber",
+                  "supplierTin",
+                  "email",
+                  "invoiceType",
+                  "actions",
+                ],
+                includeOutliers: true,
+                includeHeaders: true,
+              }}
               initialState={{
                 columns: {
                   columnVisibilityModel: {

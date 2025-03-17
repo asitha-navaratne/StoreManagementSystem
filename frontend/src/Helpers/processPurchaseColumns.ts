@@ -1,5 +1,7 @@
-import PurchaseApiColumnsType from "../Views/PurchasesPage/types/ApiColumnsType";
-import PurchaseGridColumnsType from "../Views/PurchasesPage/types/GridColumnsType";
+import {
+  PurchaseApiColumnsType,
+  PurchaseGridColumnsType,
+} from "../Views/PurchasesPage";
 
 function processPurchaseColumns(
   payload: PurchaseApiColumnsType

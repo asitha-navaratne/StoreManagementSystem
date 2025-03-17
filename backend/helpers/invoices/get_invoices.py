@@ -21,6 +21,7 @@ def get_invoices(db: Session):
                 'id': result[0].id,
                 'invoice_date': result[0].invoice_date,
                 'supplier_name': result[1].supplier_name,
+                'supplier_tin': result[1].supplier_tin,
                 'store_name': result[2].store_name,
                 'invoice_number': result[0].invoice_number,
                 'description': result[0].description,

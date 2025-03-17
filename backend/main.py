@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from database.config import engine
 import database.models as models
 
-from routers import price_master, purchases, stores, suppliers, stock_movements, invoices
+from routers import price_master, purchases, stores, suppliers, stock_movements, invoices, vat
 
 
 app = FastAPI()
@@ -45,6 +45,7 @@ app.include_router(stores.router)
 app.include_router(suppliers.router)
 app.include_router(stock_movements.router)
 app.include_router(invoices.router)
+app.include_router(vat.router)
 
 PORT = os.getenv("PORT")
 

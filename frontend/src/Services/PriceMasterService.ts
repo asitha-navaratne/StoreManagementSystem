@@ -4,9 +4,11 @@ import { GridValidRowModel } from "@mui/x-data-grid";
 import AxiosInstance from "../Utils/Axios";
 import config from "../Configs/urls.config";
 
-import PriceMasterApiColumnsType from "../Views/PriceMasterPage/types/ApiColumnsType";
-import PriceMasterGridColumnsType from "../Views/PriceMasterPage/types/GridColumnsType";
-import PurchaseGridColumnsType from "../Views/PurchasesPage/types/GridColumnsType";
+import {
+  PriceMasterApiColumnsType,
+  PriceMasterGridColumnsType,
+} from "../Views/PriceMasterPage";
+import { PurchaseGridColumnsType } from "../Views/PurchasesPage";
 
 import processPriceMasterPayload from "../Helpers/processPriceMasterPayload";
 import processPriceMasterColumns from "../Helpers/processPriceMasterColumns";
@@ -68,7 +70,7 @@ const Service = () => {
           return {
             id,
             category: row.category,
-            productName: row.brand,
+            productName: row.product_name,
             bottleSize: row.bottle_size,
             quantityOrdered: 0,
             price: row.price,

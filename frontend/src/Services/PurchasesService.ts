@@ -3,7 +3,8 @@ import { GridValidRowModel } from "@mui/x-data-grid";
 import AxiosInstance from "../Utils/Axios";
 import config from "../Configs/urls.config";
 
-import PurchaseApiColumnsType from "../Views/PurchasesPage/types/ApiColumnsType";
+import { PurchaseApiColumnsType } from "../Views/PurchasesPage";
+
 import processPurchasePayload from "../Helpers/processPurchasePayload";
 import processPurchaseColumns from "../Helpers/processPurchaseColumns";
 

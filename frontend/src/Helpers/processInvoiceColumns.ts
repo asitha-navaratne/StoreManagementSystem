@@ -1,5 +1,7 @@
-import InvoiceApiColumnsType from "../Views/InvoicesPage/types/ApiColumnsType";
-import InvoiceGridColumnsType from "../Views/InvoicesPage/types/GridColumnsType";
+import {
+  InvoiceApiColumnsType,
+  InvoiceGridColumnsType,
+} from "../Views/InvoicesPage";
 
 function processInvoiceColumns(
   payload: InvoiceApiColumnsType
@@ -8,6 +10,7 @@ function processInvoiceColumns(
     id: payload.id,
     invoiceDate: payload.invoice_date,
     supplierName: payload.supplier_name,
+    supplierTin: payload.supplier_tin,
     storeName: payload.store_name,
     invoiceNumber: payload.invoice_number,
     description: payload.description,

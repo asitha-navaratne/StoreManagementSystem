@@ -1,4 +1,4 @@
-import LoaderDataType from "./types/LoaderDataType";
+import { LoaderDataType } from "./PurchasesPage.types";
 
 import SupplierService from "../../Services/SupplierService";
 import StoreService from "../../Services/StoreService";
@@ -6,7 +6,7 @@ import StoreService from "../../Services/StoreService";
 const { GetSuppliers } = SupplierService();
 const { GetStores } = StoreService();
 
-const loader = async function () {
+export const loader = async function () {
   const payload: LoaderDataType = { suppliers: [], stores: [] };
 
   return GetSuppliers()
@@ -24,5 +24,3 @@ const loader = async function () {
       throw err;
     });
 };
-
-export default loader;

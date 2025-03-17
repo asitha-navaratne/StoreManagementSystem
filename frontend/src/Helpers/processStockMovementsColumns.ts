@@ -1,5 +1,7 @@
-import StockMovementsGridColumnsType from "../Views/StockMovementsPage/types/GridColumnsType";
-import StockMovementsApiColumnsType from "../Views/StockMovementsPage/types/ApiColumnsType";
+import {
+  StockMovementsApiColumnsType,
+  StockMovementsGridColumnsType,
+} from "../Views/StockMovementsPage";
 
 function processStockMovementsColumns(
   payload: StockMovementsApiColumnsType

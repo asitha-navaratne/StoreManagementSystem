@@ -1,5 +1,7 @@
-import SuppliersApiColumnsType from "../Views/SuppliersPage/types/ApiColumnsType";
-import SuppliersGridColumnsType from "../Views/SuppliersPage/types/GridColumnsType";
+import {
+  SuppliersApiColumnsType,
+  SuppliersGridColumnsType,
+} from "../Views/SuppliersPage";
 
 function processSupplierColumns(
   row: SuppliersApiColumnsType

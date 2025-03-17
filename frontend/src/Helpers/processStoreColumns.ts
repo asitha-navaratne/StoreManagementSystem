@@ -1,5 +1,4 @@
-import StoreApiColumnsType from "../Views/StoresPage/types/ApiColumnsType";
-import StoreGridColumnsType from "../Views/StoresPage/types/GridColumnsType";
+import { StoreApiColumnsType, StoreGridColumnsType } from "../Views/StoresPage";
 
 function processStoreColumns(
   payload: StoreApiColumnsType

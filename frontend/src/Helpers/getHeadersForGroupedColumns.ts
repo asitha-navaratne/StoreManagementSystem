@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import StockMovementsGridColumnsType from "../Views/StockMovementsPage/types/GridColumnsType";
+import { StockMovementsGridColumnsType } from "../Views/StockMovementsPage";
 
 function getHeadersForGroupedColumns(
   row: StockMovementsGridColumnsType | null

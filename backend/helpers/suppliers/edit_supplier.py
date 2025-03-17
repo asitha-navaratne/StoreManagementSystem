@@ -7,27 +7,17 @@ from database.models import Suppliers
 
 from models.CreateSupplierModel import CreateSupplierModel
 
+from constants.supplier_check_fields import SUPPLIER_CHECK_FIELDS
+
 
 def edit_supplier(supplier: CreateSupplierModel, db: Session):
     try:
-        check_fields = [
-            "id",
-            "supplier_name",
-            "contact_person",
-            "supplier_short_name",
-            "supplier_code",
-            "phone_number",
-            "supplier_tin",
-            "invoice_type",
-            "payment_period",
-            "created_by",
-            "created_on",
-        ]
+        check_fields = SUPPLIER_CHECK_FIELDS + ['updated_by', 'updated_on']
 
         invalid_field = ""
 
         for field in check_fields:
-            is_value_valid = getattr(supplier, field) not in ("", 0, None)
+            is_value_valid = getattr(supplier, field) not in ("", None)
             if not is_value_valid:
                 invalid_field = field
                 break

@@ -37,15 +37,15 @@ import AlertWindow from "../../Components/AlertWindow";
 import useAuthContext from "../../Hooks/useAuthContext";
 import useErrorContext from "../../Hooks/useErrorContext";
 
-import StoreGridColumnsType from "./types/GridColumnsType";
-import StoreApiColumnsType from "./types/ApiColumnsType";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
+import { StoreApiColumnsType, StoreGridColumnsType } from "./StoresPage.types";
 
 import InitStoreRowValues from "../../Constants/InitStoreRowValues";
 
 import handleErrors from "../../Helpers/handleErrors";
 
-import { getStoresQuery } from "./StoresLoader";
+import { getStoresQuery } from "./StoresPage.loader";
+
 import Service from "../../Services/StoreService";
 
 const { AddStore, EditStore, DeleteStore } = Service();

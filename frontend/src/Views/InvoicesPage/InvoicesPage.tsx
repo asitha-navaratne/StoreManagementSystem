@@ -34,13 +34,16 @@ import AlertWindow from "../../Components/AlertWindow";
 import useAuthContext from "../../Hooks/useAuthContext";
 import useErrorContext from "../../Hooks/useErrorContext";
 
-import InvoiceGridColumnsType from "./types/GridColumnsType";
-import InvoiceApiColumnsType from "./types/ApiColumnsType";
+import {
+  InvoiceApiColumnsType,
+  InvoiceGridColumnsType,
+} from "./InvoicesPage.types";
 import StoreManagementSystemErrorType from "../../Types/StoreManagementSystemErrorType";
 
 import handleErrors from "../../Helpers/handleErrors";
 
-import { getInvoicesQuery } from "./InvoicesLoader";
+import { getInvoicesQuery } from "./InvoicesPage.loader";
+
 import Service from "../../Services/InvoicesService";
 
 const { EditInvoice, DeleteInvoice } = Service();
@@ -91,7 +94,7 @@ const InvoicesPage = () => {
     {
       field: "id",
       headerName: "Invoice ID",
-      flex: 1,
+      minWidth: 50,
       type: "number",
       align: "left",
       headerAlign: "left",
@@ -99,8 +102,8 @@ const InvoicesPage = () => {
     {
       field: "invoiceDate",
       headerName: "Invoice Date",
-      flex: 1,
       type: "date",
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -110,7 +113,15 @@ const InvoicesPage = () => {
     {
       field: "supplierName",
       headerName: "Supplier Name",
-      flex: 1,
+      minWidth: 150,
+      editable: true,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "supplierTin",
+      headerName: "Supplier TIN",
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -118,7 +129,7 @@ const InvoicesPage = () => {
     {
       field: "storeName",
       headerName: "Store Name",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -126,7 +137,7 @@ const InvoicesPage = () => {
     {
       field: "invoiceNumber",
       headerName: "Invoice Number",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -135,6 +146,7 @@ const InvoicesPage = () => {
       field: "description",
       headerName: "Description",
       flex: 1,
+      minWidth: 250,
       editable: true,
       align: "left",
       headerAlign: "left",
@@ -142,28 +154,28 @@ const InvoicesPage = () => {
     {
       field: "valueOfPurchases",
       headerName: "Value of Purchases",
-      flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
     },
     {
       field: "vat",
       headerName: "Value Added Tax",
-      flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
     },
     {
       field: "totalPayable",
       headerName: "Total Payable",
-      flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
     },
     {
       field: "invoiceType",
       headerName: "Invoice Type",
-      flex: 1,
+      minWidth: 150,
       editable: true,
       type: "singleSelect",
       valueOptions: ["Foreign", "Local"],
@@ -173,7 +185,7 @@ const InvoicesPage = () => {
     {
       field: "receivedDate",
       headerName: "Received Date",
-      flex: 1,
+      minWidth: 150,
       type: "date",
       editable: true,
       align: "left",
@@ -184,7 +196,7 @@ const InvoicesPage = () => {
     {
       field: "paymentDate",
       headerName: "Payment Date",
-      flex: 1,
+      minWidth: 150,
       type: "date",
       editable: true,
       align: "left",
@@ -195,14 +207,14 @@ const InvoicesPage = () => {
     {
       field: "createdBy",
       headerName: "Created By",
-      flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
     },
     {
       field: "createdOn",
       headerName: "Created On",
-      flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
       valueFormatter: (value) =>
@@ -211,14 +223,14 @@ const InvoicesPage = () => {
     {
       field: "updatedBy",
       headerName: "Updated By",
-      flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
     },
     {
       field: "updatedOn",
       headerName: "Updated On",
-      flex: 1,
+      minWidth: 150,
       align: "left",
       headerAlign: "left",
       valueFormatter: (value) =>
@@ -226,9 +238,9 @@ const InvoicesPage = () => {
     },
     {
       field: "actions",
-      type: "actions",
       headerName: "Actions",
-      flex: 1,
+      minWidth: 150,
+      type: "actions",
       getActions: ({ id }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
@@ -370,10 +382,28 @@ const InvoicesPage = () => {
               processRowUpdate={processRowUpdate}
               onRowModesModelChange={handleRowModesModelChange}
               onRowEditStop={handleRowEditStop}
+              autosizeOnMount
+              autosizeOptions={{
+                columns: [
+                  "invoiceDate",
+                  "supplierName",
+                  "invoiceNumber",
+                  "valueOfPurchases",
+                  "vat",
+                  "totalPayable",
+                  "invoiceType",
+                  "receivedDate",
+                  "paymentDate",
+                  "actions",
+                ],
+                includeOutliers: true,
+                includeHeaders: true,
+              }}
               initialState={{
                 columns: {
                   columnVisibilityModel: {
                     id: false,
+                    storeName: false,
                     createdBy: false,
                     createdOn: false,
                     updatedBy: false,

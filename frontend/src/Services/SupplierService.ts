@@ -3,8 +3,10 @@ import { GridValidRowModel } from "@mui/x-data-grid";
 import AxiosInstance from "../Utils/Axios";
 import config from "../Configs/urls.config";
 
-import SuppliersGridColumnsType from "../Views/SuppliersPage/types/GridColumnsType";
-import SuppliersApiColumnsType from "../Views/SuppliersPage/types/ApiColumnsType";
+import {
+  SuppliersApiColumnsType,
+  SuppliersGridColumnsType,
+} from "../Views/SuppliersPage";
 
 import processSupplierColumns from "../Helpers/processSupplierColumns";
 import processSupplierPayload from "../Helpers/processSupplierPayload";

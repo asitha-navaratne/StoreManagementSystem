@@ -1,6 +1,6 @@
 import { GridValidRowModel } from "@mui/x-data-grid";
 
-import StockMovementsApiColumnsType from "../Views/StockMovementsPage/types/ApiColumnsType";
+import { StockMovementsApiColumnsType } from "../Views/StockMovementsPage";
 
 function processStockMovementsPayload(
   row: GridValidRowModel

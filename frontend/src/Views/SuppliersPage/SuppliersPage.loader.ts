@@ -9,9 +9,7 @@ export const getSuppliersQuery = queryOptions({
   queryFn: GetSuppliers,
 });
 
-const loader = (queryClient: QueryClient) =>
+export const loader = (queryClient: QueryClient) =>
   async function () {
     return queryClient.ensureQueryData(getSuppliersQuery);
   };
-
-export default loader;

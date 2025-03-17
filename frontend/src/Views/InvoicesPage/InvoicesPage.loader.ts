@@ -9,9 +9,7 @@ export const getInvoicesQuery = queryOptions({
   queryFn: GetInvoices,
 });
 
-const loader = (queryClient: QueryClient) =>
+export const loader = (queryClient: QueryClient) =>
   async function () {
     return queryClient.ensureQueryData(getInvoicesQuery);
   };
-
-export default loader;
