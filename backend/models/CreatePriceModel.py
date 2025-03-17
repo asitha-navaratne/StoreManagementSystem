@@ -13,8 +13,8 @@ class CreatePriceModel(BaseModel):
     country: str
     variety: str
     volume: int
-    company_product_code: int
-    product_name: int
+    company_product_code: str
+    product_name: str
     bottle_size: int
     container_size: int
     tax_price: int
