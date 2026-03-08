@@ -292,7 +292,8 @@ const PriceMasterPage = () => {
       headerName: "Cost",
       minWidth: 150,
       type: "number",
-      valueGetter: (_value, row) => (row.taxPrice * (vatRate + 100)) / 100,
+      valueGetter: (_value, row) =>
+        ((row.taxPrice * (vatRate + 100)) / 100).toFixed(2),
       valueFormatter: (value) => `Rs. ${value}`,
       align: "left",
       headerAlign: "left",
@@ -313,7 +314,7 @@ const PriceMasterPage = () => {
       minWidth: 150,
       type: "number",
       valueGetter: (_value, row) => {
-        return row.price - (row.taxPrice * (vatRate + 100)) / 100;
+        return (row.price - (row.taxPrice * (vatRate + 100)) / 100).toFixed(2);
       },
       valueFormatter: (value) => `Rs. ${value}`,
       align: "left",
